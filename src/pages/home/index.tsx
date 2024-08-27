@@ -17,7 +17,6 @@ const Home = () => {
         router.push("/");
       })
       .catch((e) => {
-        throw new Error(`Error during logout: ${e.message || e}`);
       });
   };
 

@@ -18,7 +18,6 @@ const Login = () => {
       })
       .catch((e) => {
         console.error('Error during login:', e);
-        throw new Error(`Error during login: ${e.message || e}`);
       });
   };
 
