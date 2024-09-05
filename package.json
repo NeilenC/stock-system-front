@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "build-image": "docker build -t rural-front:latest .",
+    "to-run-image": "docker run -p 8090:3000 rural-front:latest",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -7,7 +7,7 @@ const Layout = ({ children }: any) => {
     <>
       <AppBar position="static" sx={{ height: '40px' }}>
         <Toolbar sx={{ minHeight: '40px' }}>
-          <Typography variant="h6" component="div" sx={{  }}>
+          <Typography variant="h6" component="div" sx={{ marginBottom:'20px'}}>
             Navbar
           </Typography>
         </Toolbar>

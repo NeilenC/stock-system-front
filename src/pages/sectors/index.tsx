@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-export const index = () => {
+const SectorsPage = () => {
   return (
-    <div>index</div>
-  )
-}
+    <div>SectorsPage</div>
+  );
+};
+
+export default SectorsPage;

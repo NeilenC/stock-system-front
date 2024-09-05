@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 
@@ -10,20 +11,22 @@ const CustomButton = styled(Button)(({ theme }) => ({
 }));
 
 const CustomButtonComponent = () => (
-    <>
+    <Box sx={{margin: '10px'}}>
   <CustomButton variant="contained">Boton personalizado</CustomButton>
-  <Button
+  <CustomButton
       sx={{
-        backgroundColor: theme => theme.palette.primary.light,
+        backgroundColor: theme => theme.palette.primary.main,
         color: theme => theme.palette.primary.contrastText,
         '&:hover': {
           backgroundColor: theme => theme.palette.success.light,
         },
+        marginLeft: '5px'
       }}
     >
       OTRO MAS
-    </Button>
-    </>
+    </CustomButton>
+    </Box>
+
 );
 
 export default CustomButtonComponent;

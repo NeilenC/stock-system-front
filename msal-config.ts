@@ -8,7 +8,7 @@ export const msalConfig = {
 
     clientId: "7a57e61b-ae10-4e21-b08b-8ec064228edf", // Microsoft Entra ID,
     authority: "https://login.microsoftonline.com/0457d8f0-7265-49d0-9ebe-9da765cdb102", // Microsoft
-    redirectUri: "http://localhost:3000/home", // Redirect URI
+    redirectUri: "http://localhost:3000", // Redirect URI
     
     // clientId: process.env.MSAL_CLIENT_ID,
     // authority: process.env.MSAL_AUTHORITY, // Directory (tenant) ID
