@@ -1,14 +1,14 @@
 // colors.js
 const colors = {
     primary: {
-      light: '#7986cb',
-      main: '#3f51b5',
-      dark: '#303f9f',
-      contrastText: '#fff',
+      light: '#E1E6EF',
+      main: '#F5F5F5',
+      dark: '#191B26',
+      contrastText: '#FFFFFF',
     },
     secondary: {
       light: '#ff4081',
-      main: '#f50057',
+      main: '#2563EB',
       dark: '#c51162',
       contrastText: '#fff',
     },

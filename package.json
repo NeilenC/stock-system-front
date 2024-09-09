@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build-image": "docker build -t rural-front:latest .",
-    "to-run-image": "docker run -p 8090:3000 rural-front:latest",
+    "to-run-image": "docker run -p 3000:3000 rural-front:latest",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,9 +13,10 @@
   "dependencies": {
     "@azure/msal-browser": "^3.21.0",
     "@azure/msal-react": "^2.0.22",
-    "@emotion/react": "^11.13.0",
-    "@emotion/styled": "^11.13.0",
-    "@mui/material": "^5.16.7",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "11.5.0",
+    "@mui/icons-material": "^6.0.2",
+    "@mui/material": "^6.0.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",

@@ -1,7 +1,6 @@
 import { useMsal } from "@azure/msal-react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import AuthButton from "../../../commons/AuthButton";
 import { Box, Typography } from "@mui/material";
 
 const Home = () => {
@@ -32,7 +31,8 @@ const Home = () => {
 
   return (
     <Box>
-      <Typography variant="h5">{prueba}</Typography>
+      HOME
+      {/* <Typography variant="h5">{prueba}</Typography> */}
       {/* <AuthButton handlerFunction={handleLogout} text="Cerrar sesión" /> */}
     </Box>
   );

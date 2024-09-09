@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Memo = () => {
+const MemoComponent = () => {
   return (
     <div>Memo</div>
   )
 }
 
-export default Memo
+export default MemoComponent
