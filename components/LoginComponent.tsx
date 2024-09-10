@@ -1,9 +1,10 @@
 import { useMsal } from '@azure/msal-react';
 import { useState } from 'react';
-import { sendTokenToBackend } from '../functions/user/sendTokenToBackend';
+import { sendUserInfoToBackend } from '../functions/user/sendUserInfoToBackend';
 import AuthButton from '../commons/buttons-commons/AuthButton';
 import { loginRequest } from '../msal-config';
 import { useRouter } from 'next/router';
+import { Box } from '@mui/material';
 
 const LoginComponent = () => {
   const { instance } = useMsal();
@@ -14,16 +15,21 @@ const LoginComponent = () => {
   const handleLogin = async () => {
     try {
       const response = await instance.loginPopup(loginRequest);
-
+  
       const token = response.accessToken;
-
-      console.log("acesstoken", token)
-
-      const isValid = await sendTokenToBackend(token);
-
-      if (isValid) {
+  
+      if (response ) {
+        const userInfo = {
+          name: response.account.name ?? 'Unknown user',
+          email: response.account.username,
+          microsoftId: response.uniqueId 
+        };
+  
+        // await sendUserInfoToBackend(userInfo); 
+  
         setUserToken(token);
-        router.push('/home'); 
+  
+        router.push('/home');
       } else {
         setError("Token inválido. Por favor, inicie sesión nuevamente.");
       }
@@ -32,13 +38,23 @@ const LoginComponent = () => {
       setError("Ocurrió un error al intentar iniciar sesión. Intente de nuevo.");
     }
   };
+  
 
   return (
-    <div>
-      <AuthButton handlerFunction={handleLogin} text='LOGIN'></AuthButton>
+    <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      textAlign: 'center',
+      padding: 2,
+    }}>
+      <AuthButton handlerFunction={handleLogin} text='Iniciar sesión'></AuthButton>
 
       {error && <p className="error-message">{error}</p>}
-    </div>
+    </Box>
   );
 };
 

@@ -1,15 +1,17 @@
-export const sendTokenToBackend = async (token: string) => {
+export const sendUserInfoToBackend = async (userInfo: { name: string; email: string; microsoftId: string }) => {
     try {
+
+      console.log("userinfo", userInfo)
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userInfo}`,
         },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ userInfo }),
       });
 
-      console.log("TOKEN", token)
+      console.log("userInfo", userInfo)
       if (response.ok) {
         const result = await response.json();
         return result.isValid;

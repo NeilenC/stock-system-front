@@ -7,27 +7,26 @@ import LoginComponent from "../../components/LoginComponent";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [prueba, setPrueba] = useState("");
+  // const [prueba, setPrueba] = useState("");
 
-  const getHelloWorld = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`, {
-      method: "GET",
-      mode: "cors",
-    });
-    const texto = await response.text();
-    setPrueba(texto);
-  };
+  // const getHelloWorld = async () => {
+  //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`, {
+  //     method: "GET",
+  //     mode: "cors",
+  //   });
+  //   const texto = await response.text();
+  //   setPrueba(texto);
+  // };
 
-
-  useEffect(() => {
-    getHelloWorld();
-  }, []);
-
+  // useEffect(() => {
+  //   getHelloWorld();
+  // }, []);
+console.log("ACA")
   return (
     <>
-<TimeLine/>
-<LoginComponent/>
-      <Typography variant="body2">{prueba}</Typography>
+      {/* <TimeLine/> */}
+      <LoginComponent />
+      {/* <Typography variant="body2">{prueba}</Typography> */}
     </>
   );
 }

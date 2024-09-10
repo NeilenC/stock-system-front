@@ -5,14 +5,17 @@ import { msalInstance } from "../../msal-config";
 import { ThemeProvider } from "@mui/material";
 import theme from "../../theme";
 import Layout from "../../layout/Layout";
+import { InactivityProvider } from "../../context/InactivityProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <MsalProvider instance={msalInstance}>
       <ThemeProvider theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <InactivityProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </InactivityProvider>
       </ThemeProvider>
     </MsalProvider>
   );
