@@ -11,10 +11,14 @@ import account from '../../../public/navbar/account.png';
 import notifications from '../../../public/navbar/notifications.png';
 import info from '../../../public/navbar/info-icon.png';
 import theme from '../../../theme';
+import { useRouter } from 'next/router';
+import estadisticas from '../../../public/navbar/estadisticas.png'
+import CustomButton from '../../../commons/buttons-commons/CustomButton';
 
 const NavbarComponent = ({ children }: any) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownMenu, setDropdownMenu] = React.useState<string | null>(null);
+  const router = useRouter();
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, menu: string) => {
     setAnchorEl(event.currentTarget);
@@ -34,8 +38,13 @@ const NavbarComponent = ({ children }: any) => {
       startIcon: <img src={gestion.src} alt="Gestion" style={{ width: 24, height: 24 }} />,
       endIcon: <KeyboardArrowDownOutlinedIcon />,
       options: [
-        { label: 'Subgestión 1', href: '/gestion/subgestion1' },
-        { label: 'Subgestión 2', href: '/gestion/subgestion2' }
+        { label: 'Línea de Tiempo', href: '/gestion/timeline' },
+        { label: 'Listados', href: '/gestion/listings' },
+        { label: 'Solicitudes', href: '/gestion/request' },
+        { label: 'Lista de Clientes', href: '/gestion/clientslist' },
+        { label: 'Proveedores', href: '/gestion/suppliers' },
+        { label: 'Sectores', href: '/gestion/sectors' },
+        { label: <CustomButton text='Crear Reserva' />, href: '/gestion/sectors' },
       ]
     },
     {
@@ -47,7 +56,12 @@ const NavbarComponent = ({ children }: any) => {
         { label: 'Subdepósito 2', href: '/deposito/subdeposito2' }
       ]
     },
-  ]
+    {
+      label: `Estadísticas`,
+      href: '/estadisticas',
+      startIcon: <img src={estadisticas.src} alt="Estadisticas" style={{ width: 24, height: 24 }} />,
+    },
+  ];
 
   return (
     <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.dark, paddingInline: '16px', paddingBlock: '8px' }}>
@@ -59,9 +73,9 @@ const NavbarComponent = ({ children }: any) => {
 
         {/* Navbar Options */}
         <Grid item xs={12} sm={8} md={7}>
-          <Grid container alignItems="center" justifyContent={{ xs: 'center', md: 'flex-end' }} spacing={2}>
+          <Grid container alignItems="center" justifyContent={{ xs: 'center', md: 'flex-start' }} spacing={1}>
             {navbarOptions.map((option, index) => (
-              <Grid item key={index} sx={{paddingInline: '12px'}}>
+              <Grid item key={index} sx={{ paddingInline: '12px' }}>
                 {option.options ? (
                   <>
                     <Button
@@ -70,7 +84,6 @@ const NavbarComponent = ({ children }: any) => {
                       startIcon={option.startIcon}
                       endIcon={option.endIcon}
                     >
-                      
                       {option.label}
                     </Button>
                     <Menu anchorEl={anchorEl} open={dropdownMenu === option.label} onClose={handleCloseMenu}>
@@ -90,26 +103,48 @@ const NavbarComponent = ({ children }: any) => {
                 )}
               </Grid>
             ))}
-          </Grid>
-        </Grid>
 
-        {/* Right Icons Section */}
-        <Grid item xs={12} sm={6} md={3} sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' }, alignItems: 'center' }}>
-          <IconButton sx={{ color: theme.palette.primary.contrastText }}>
-            <img src={notifications.src} alt="notifications" style={{ width: 25, height: 25 }} />
-          </IconButton>
-          <IconButton>
-            <img src={info.src} alt="info" style={{ width: 20, height: 20 }} />
-          </IconButton>
-          <IconButton>
-            <img src={account.src} alt="account" style={{ width: 30, height: 30 }} />
-          </IconButton>
-          <Typography variant="body2" sx={{ color: '#FFFFFF', fontSize: '13px', paddingInline: '3px' }}>
-            Nombre Usuario
-            <br />
-            Ventas
-          </Typography>
-          <KeyboardArrowDownOutlinedIcon sx={{ paddingInline: '2px' }} />
+            {/* Icons Section for Notifications and Info */}
+            <Grid item sx={{ display: 'flex', alignItems: 'center', paddingInline: '12px' }}>
+              <IconButton sx={{ color: theme.palette.primary.contrastText }}>
+                <img src={notifications.src} alt="notifications" style={{ width: 25, height: 25 }} />
+              </IconButton>
+              <IconButton sx={{ color: theme.palette.primary.contrastText }}>
+                <img src={info.src} alt="info" style={{ width: 20, height: 20 }} />
+              </IconButton>
+            </Grid>
+
+            {/* User Section */}
+            <Grid item sx={{ paddingInline: '12px' }}>
+              <Button
+                onClick={(e) => handleOpenMenu(e, 'Nombre usuario')}
+                sx={{ color: theme.palette.primary.contrastText, textTransform: 'none' }}
+                startIcon={
+                  <IconButton>
+                    <img src={account.src} alt="account" style={{ width: 30, height: 30 }} />
+                  </IconButton>
+                }
+                endIcon={<KeyboardArrowDownOutlinedIcon />}
+              >
+                Nombre Usuario <br />
+                Ventas
+              </Button>
+              <Menu anchorEl={anchorEl} open={dropdownMenu === 'Nombre usuario'} onClose={handleCloseMenu}>
+                <MenuItem onClick={handleCloseMenu}>
+                  <Link href="/perfil">Perfil</Link>
+                </MenuItem>
+                <MenuItem onClick={handleCloseMenu}>
+                  <Link href="/roles-permisos">Roles y Permisos</Link>
+                </MenuItem>
+                <MenuItem onClick={handleCloseMenu}>
+                  <Link href="/ajustes">Ajustes</Link>
+                </MenuItem>
+                <MenuItem onClick={handleCloseMenu}>
+                  <CustomButton text="Cerrar Sesión" />
+                </MenuItem>
+              </Menu>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </AppBar>
@@ -117,3 +152,4 @@ const NavbarComponent = ({ children }: any) => {
 };
 
 export default NavbarComponent;
+

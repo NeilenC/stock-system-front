@@ -11,9 +11,8 @@ export const InactivityProvider = ({ children }: { children: ReactNode }) => {
     router.push('/'); 
   };
 
-  if (router.pathname !== '/') {
-    useInactivityLogout(handleLogout);
-  }
+  // Llama al hook siempre, pero controla la lógica dentro de él
+  useInactivityLogout(handleLogout, router.pathname !== '/');
 
   return (
     <InactivityContext.Provider value={null}>
