@@ -1,10 +1,9 @@
-import { useMsal } from '@azure/msal-react';
-import { useState } from 'react';
-import { sendUserInfoToBackend } from '../functions/user/sendUserInfoToBackend';
-import AuthButton from '../commons/buttons-commons/AuthButton';
-import { loginRequest } from '../msal-config';
-import { useRouter } from 'next/router';
-import { Box } from '@mui/material';
+import { useMsal } from "@azure/msal-react";
+import { useState } from "react";
+import AuthButton from "../commons/buttons-commons/AuthButton";
+import { loginRequest } from "../msal-config";
+import { useRouter } from "next/router";
+import { Box } from "@mui/material";
 
 const LoginComponent = () => {
   const { instance } = useMsal();
@@ -14,44 +13,52 @@ const LoginComponent = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await instance.loginPopup(loginRequest);
-  
+      const response = await instance.loginPopup({
+        ...loginRequest,
+        prompt: "login", 
+      });
+
       const token = response.accessToken;
-  
-      if (response ) {
+
+      if (response) {
         const userInfo = {
-          name: response.account.name ?? 'Unknown user',
+          name: response.account.name ?? "Unknown user",
           email: response.account.username,
-          microsoftId: response.uniqueId 
+          microsoftId: response.uniqueId,
         };
-  
-        // await sendUserInfoToBackend(userInfo); 
-  
+
+        // await sendUserInfoToBackend(userInfo);
+
         setUserToken(token);
-  
-        router.push('/home');
+
+        router.push("/home");
       } else {
         setError("Token inválido. Por favor, inicie sesión nuevamente.");
       }
     } catch (error) {
       console.error("Error en login:", error);
-      setError("Ocurrió un error al intentar iniciar sesión. Intente de nuevo.");
+      setError(
+        "Ocurrió un error al intentar iniciar sesión. Intente de nuevo."
+      );
     }
   };
-  
 
   return (
     <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      textAlign: 'center',
-      padding: 2,
-    }}>
-      <AuthButton handlerFunction={handleLogin} text='Iniciar sesión'></AuthButton>
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        textAlign: "center",
+        padding: 2,
+      }}
+    >
+      <AuthButton
+        handlerFunction={handleLogin}
+        text="Iniciar sesión"
+      ></AuthButton>
 
       {error && <p className="error-message">{error}</p>}
     </Box>

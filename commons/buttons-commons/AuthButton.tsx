@@ -1,6 +1,4 @@
 import { Button, Box } from "@mui/material";
-import Image from "next/image";
-import logo from "../../public/logo-button-solo.png"; // Ajusta la ruta del logo según tu proyecto
 
 interface AuthButtonProps {
   handlerFunction: () => void;
@@ -11,9 +9,9 @@ function AuthButton({ handlerFunction, text }: AuthButtonProps) {
   return (
     <Button
       variant="contained"
-      color="primary"
+      // color="primary"
       onClick={handlerFunction}
-      sx= {{textTransform:'none'}}
+      sx= {{textTransform:'none', bgcolor:'black'}}
     >
       {text}
     </Button>
