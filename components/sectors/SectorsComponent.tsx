@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import ModalComponent from "../../commons/modal/ModalComponent";
 import { Box, Button } from "@mui/material";
 import SectorForm from "./SectorForm";
 import theme from "../../theme";
+import ModalComponent from "../../commons/modals/ModalComponent";
 
 const SectorsComponent = () => {
   const [isModalOpen, setModalOpen] = useState(false);

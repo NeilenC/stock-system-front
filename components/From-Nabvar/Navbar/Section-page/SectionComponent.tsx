@@ -2,12 +2,13 @@ import Image from "next/image";
 import { SectionComponentProps } from "./model";
 import { Box, Grid, Typography } from "@mui/material";
 import theme from "../../../../theme";
+import zIndex from "@mui/material/styles/zIndex";
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
   icon,
   secondaryIcon,
   text,
-  button,
+  children,
 }) => {
   return (
     <Box
@@ -17,6 +18,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         backgroundColor: theme.palette.primary.main,
         justifyContent: "center",
         padding: "16px",
+        zIndex: -1
       }}
     >
       <Grid container alignItems="center" justifyContent="center">
@@ -53,9 +55,9 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           )}
         </Grid>
 
-        {button && (
+        {children && (
           <Grid item sx={{ marginLeft: "auto" }}>
-            {button}
+            {children}
           </Grid>
         )}
       </Grid>

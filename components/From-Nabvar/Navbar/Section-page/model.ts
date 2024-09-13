@@ -5,5 +5,5 @@ export interface SectionComponentProps {
   secondaryIcon?: StaticImageData;
   buttonIcon?: StaticImageData;
   text: string;
-  button?: React.ReactNode;
+  children?: React.ReactNode;
 }

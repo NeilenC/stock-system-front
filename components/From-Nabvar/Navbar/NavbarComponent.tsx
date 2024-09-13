@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Grid, Typography, Menu, MenuItem, IconButton, Button, Divider, Box } from '@mui/material';
+import { AppBar, Grid, Typography, Menu, MenuItem, IconButton, Button, Divider, Box, useMediaQuery } from '@mui/material';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import Link from 'next/link';
 import controlPanel from '../../../public/navbar/control-panel.png';
@@ -15,9 +15,14 @@ import { useRouter } from 'next/router';
 import estadisticas from '../../../public/navbar/estadisticas.png'
 import CustomButton from '../../../commons/buttons-commons/CustomButton';
 
-const NavbarComponent = ({ children }: any) => {
+
+
+const NavbarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownMenu, setDropdownMenu] = React.useState<string | null>(null);
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const username = 'Nombre Usuario'; 
+
   const router = useRouter();
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, menu: string) => {
@@ -40,7 +45,7 @@ const NavbarComponent = ({ children }: any) => {
       options: [
         { label: 'Línea de Tiempo', href: '/gestion/timeline' },
         { label: 'Listados', href: '/gestion/listings' },
-        { label: 'Solicitudes', href: '/gestion/request' },
+        { label: 'Solicitudes', href: '/gestion/requests' },
         { label: 'Lista de Clientes', href: '/gestion/clientslist' },
         { label: 'Proveedores', href: '/gestion/suppliers' },
         { label: 'Sectores', href: '/gestion/sectors' },
@@ -64,7 +69,7 @@ const NavbarComponent = ({ children }: any) => {
   ];
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.dark, paddingInline: '16px', paddingBlock: '8px' }}>
+    <AppBar position="static" sx={{ zIndex: 1,backgroundColor: theme.palette.primary.dark, paddingInline: '16px', paddingBlock: '8px' }}>
     <Grid container alignItems="center" justifyContent="space-between">
       {/* Logo Section */}
       <Grid item xs={2}>
@@ -80,7 +85,7 @@ const NavbarComponent = ({ children }: any) => {
                 <>
                   <Button
                     onClick={(e) => handleOpenMenu(e, option.label)}
-                    sx={{ color: theme.palette.primary.contrastText, textTransform: 'none' }}
+                    sx={{ color: theme.palette.secondary.contrastText, textTransform: 'none' }}
                     startIcon={option.startIcon}
                     endIcon={option.endIcon}
                   >
@@ -96,7 +101,7 @@ const NavbarComponent = ({ children }: any) => {
                 </>
               ) : (
                 <Link href={option.href} passHref>
-                  <Button sx={{ color: theme.palette.primary.contrastText, textTransform: 'none' }} startIcon={option.startIcon}>
+                  <Button sx={{ color: theme.palette.secondary.contrastText, textTransform: 'none' }} startIcon={option.startIcon}>
                     {option.label}
                   </Button>
                 </Link>
@@ -108,23 +113,23 @@ const NavbarComponent = ({ children }: any) => {
   
       {/* Icons Section */}
       <Grid item sx={{ display: 'flex', alignItems: 'center' , marginLeft: '30px'}}>
-      <IconButton sx={{ color: theme.palette.primary.contrastText }}>
+      <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
         <img src={notifications.src} alt="notifications" style={{ width: 25, height: 25 }} />
       </IconButton>
-      <IconButton sx={{ color: theme.palette.primary.contrastText }}>
+      <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
         <img src={info.src} alt="info" style={{ width: 20, height: 20 }} />
       </IconButton>
     </Grid>
     {/* Divider Section */}
     <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-      <Divider orientation="vertical" flexItem sx={{ bgcolor: theme.palette.primary.contrastText, height: 28, mx: 2 }} />
+      <Divider orientation="vertical" flexItem sx={{ bgcolor: "#FFFF", height: 28, mx: 2 }} />
     </Grid>
 {/* User Section */}
 <Grid item>
   <Button
-    onClick={(e) => handleOpenMenu(e, 'username')}
+    onClick={(e) => handleOpenMenu(e, username)}
     sx={{ 
-      color: theme.palette.primary.contrastText, 
+      color: theme.palette.secondary.contrastText, 
       textTransform: 'none',
       display: 'flex',
       alignItems: 'center',

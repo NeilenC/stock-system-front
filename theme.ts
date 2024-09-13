@@ -63,6 +63,31 @@ const theme = createTheme({
       fontWeight: 400,
     },
   },
+// COMPONENTES PERSONALIZADOS
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          // height: 'var(--EspaciostamaosSize-12)', // var(--EspaciostamaosSize-12)
+          // padding: 'var(--EspaciostamaosSize-2) var(--EspaciostamaosSize-3)', // var(--EspaciostamaosSize-2) var(--EspaciostamaosSize-3)
+          // gap: 'var(--EspaciostamaosSize-2) ', // var(--EspaciostamaosSize-2)
+          // borderRadius: '8px 0 0 0',
+          // border: '1px solid grey',
+          // opacity: '0',
+        },
+      },
+    },
+  },
+
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
 });
 
 export default theme;

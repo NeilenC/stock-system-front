@@ -1,16 +1,15 @@
-// colors.js
 const colors = {
     primary: {
       light: '#E1E6EF',
       main: '#F5F5F5',
       dark: '#191B26',
-      contrastText: '#FFFFFF',
+      contrastText: '#282828',
     },
     secondary: {
       light: '#ff4081',
       main: '#2563EB',
       dark: '#c51162',
-      contrastText: '#fff',
+      contrastText: '#FFFFF',
     },
     error: {
       light: '#e57373',
@@ -20,13 +19,13 @@ const colors = {
     },
     warning: {
       light: '#ffb74d',
-      main: '#ff9800',
+      main: '#E15662',
       dark: '#f57c00',
       contrastText: '#fff',
     },
     info: {
-      light: '#64b5f6',
-      main: '#2196f3',
+      light: '#E1E6EF',
+      main: '#B0BEC5',
       dark: '#1976d2',
       contrastText: '#fff',
     },
@@ -41,8 +40,8 @@ const colors = {
       paper: '#ffffff',
     },
     text: {
-      primary: '#000000',
-      secondary: '#555555',
+      primary: '#282828',
+      secondary: '#FFFFF',
     },
   };
   

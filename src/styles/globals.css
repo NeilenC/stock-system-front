@@ -1,3 +1,24 @@
 body {
     margin: 0px;
 }
+:root {
+    --navbar-height: 70px
+
+    --EspaciostamaosSize-2: 8px; 
+    --EspaciostamaosSize-3: 12px;
+    --EspaciostamaosSize-12: 24px;
+
+
+    --drawer-width: 491px
+}
+
+
+.textfield {
+    width: 459px;
+    height: var(--EspaciostamaosSize-12);
+    padding: var(--EspaciostamaosSize-2) var(--EspaciostamaosSize-3);
+    gap: var(--EspaciostamaosSize-2);
+    border-radius: 8px 0 0 0;
+    border: 1px solid transparent; /* Ajusta el color del borde si es necesario */
+    opacity: 0;
+}

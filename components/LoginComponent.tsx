@@ -15,7 +15,7 @@ const LoginComponent = () => {
     try {
       const response = await instance.loginPopup({
         ...loginRequest,
-        prompt: "login", 
+        // prompt: "login", 
       });
 
       const token = response.accessToken;
