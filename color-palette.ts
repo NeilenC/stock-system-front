@@ -8,7 +8,7 @@ const colors = {
     secondary: {
       light: '#ff4081',
       main: '#2563EB',
-      dark: '#c51162',
+      dark: '#191B26',
       contrastText: '#FFFFF',
     },
     error: {

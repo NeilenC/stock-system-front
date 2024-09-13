@@ -6,7 +6,7 @@ import iconButton from '../../public/plus-icon.png';
 import infoIcon from '../../public/info-icon-black.png';
 import { Box } from '@mui/material';
 import CustomButton from '../../commons/buttons-commons/CustomButton';
-import DrawerBooking from '../../commons/activities-commons/DrawerBooking';
+import DrawerBooking from '../../commons/activities-commons/DrawerBooking/DrawerBooking';
 
 const TimeLineComponent = () => {
   // Estado para controlar la apertura del Drawer

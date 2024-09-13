@@ -49,17 +49,11 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: [
-      'Roboto',
-      'Arial',
-      'sans-serif',
-    ].join(','),
-    h1: {
-      fontFamily: 'Roboto',
+    fontFamily: 'Gotham Rounded, Arial, sans-serif',
+    h6: {
       fontWeight: 700,
     },
     body1: {
-      fontFamily: 'Arial',
       fontWeight: 400,
     },
   },
