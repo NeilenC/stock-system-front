@@ -1,47 +1,149 @@
 import { FC, useState } from "react";
 import { SecondTitleComponent, TitleComponent } from "../../TitlesComponent";
-import { Box, Collapse, MenuItem } from "@mui/material";
+import { Box, Collapse, FormControl, MenuItem, TextField } from "@mui/material";
 import {
   CustomSelect,
   CustomTextField,
   FormLabelComponent,
 } from "../../../styled-components/CustomTextFields";
+import CustomDateTimePicker from "../../../styled-components/CustomDatePicker";
+import useEventStore from "../activity-hook/useEventStore";
+import theme from "../../../../theme";
+// import CustomDateTimePicker from "../../../styled-components/CustomDatePicker";
 
 const LogisticsSection: React.FC = () => {
+  const {
+    eventData,
+    setLogisticsAssembly,
+    setLogisticsDismantling,
+    setLogisticsDetails,
+  } = useEventStore();
+
   const [openLogistics, setOpenLogistics] = useState(true);
   const [openDetalles, setOpenDetalles] = useState(true);
   const [openDesarme, setOpenDesarme] = useState(true);
-  
+
   const handleToggleLogistics = () => setOpenLogistics(!openLogistics);
   const handleToggleDesarme = () => setOpenDesarme(!openDesarme);
   const handleToggleDetalles = () => setOpenDetalles(!openDetalles);
+
+  const handleInputChangeAssembly = (
+    key: keyof typeof eventData.logistics.assembly,
+    value: string
+  ) => {
+    setLogisticsAssembly(key, value); // Adjust to use the appropriate setter method
+  };
+
+  const handleInputChangeDetails = (
+    key: keyof typeof eventData.logistics.detailsLogistics,
+    value: string
+  ) => {
+    setLogisticsDetails(key, value); // Adjust to use the appropriate setter method
+  };
+
+  const handleInputChangeDismantling = (
+    key: keyof typeof eventData.logistics.dismantling,
+    value: string
+  ) => {
+    setLogisticsDismantling(key, value); // Adjust to use the appropriate setter method
+  };
+
+  const handleDateTimeChangeAssembly = (newValue: Date | null) => {
+    if (newValue && !isNaN(newValue.getTime())) {
+      // Verifica si la fecha es válida
+      const date = newValue.toLocaleDateString("en-CA");
+      const time = newValue.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      console.log("dismantling date", date, "time", time);
+      handleInputChangeAssembly("initialDateAssembly", date);
+      handleInputChangeAssembly("initialTimeAssembly", time);
+    } else {
+      console.error("Fecha inválida seleccionada para initialTimeAssembly");
+    }
+  };
+
+  const handleDateTimeChangeDismantling = (newValue: Date | null) => {
+    if (newValue && !isNaN(newValue.getTime())) {
+      // Verifica si la fecha es válida
+      const date = newValue.toLocaleDateString("en-CA");
+      const time = newValue.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      console.log("dismantling date", date, "time", time);
+      handleInputChangeDismantling("initialDateDismantling", date);
+      handleInputChangeDismantling("initialTimeDismantling", time);
+    } else {
+      console.error("Fecha inválida seleccionada para Dismantling");
+    }
+  };
+
+  const handleDateTimeChangeDetails = (newValue: Date | null) => {
+    if (newValue && !isNaN(newValue.getTime())) {
+      // Verifica si la fecha es válida
+      const date = newValue.toLocaleDateString("en-CA");
+      const time = newValue.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      handleInputChangeDetails("dateActivity", date);
+      handleInputChangeDetails("timeActivity", time);
+    } else {
+      console.error("Fecha inválida seleccionada para Details");
+    }
+  };
+
   return (
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
       {/* Armado */}
-      <Box sx={{ marginBottom: 2 }}>
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleLogistics}
           open={openLogistics}
           text={"Armado"}
         />
         <Collapse in={openLogistics}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
               Lugar de Ingreso
-              <CustomTextField
-                placeholder="Seleccionar área" // ACA VAN MAPEADOS TOOS LOS SECTORES
-                variant="outlined"
+              <CustomSelect
+                defaultValue=""
+                placeholder="Seleccionar área"
                 fullWidth
-              />
+                value={eventData.logistics.assembly.entryPlaceAssembly || ""}
+                onChange={(e: any) =>
+                  handleInputChangeAssembly(
+                    "entryPlaceAssembly",
+                    e.target.value
+                  )
+                }
+              >
+                <MenuItem value="Juncal y Biiilingud">
+                  Juncal y Biiilingud
+                </MenuItem>
+                <MenuItem value="Otra área">Otra área</MenuItem>
+                <MenuItem value="Otra más">Otra más</MenuItem>
+              </CustomSelect>
             </FormLabelComponent>
 
             <FormLabelComponent>
               Fecha
-              <CustomTextField
-                placeholder="Seleccionar fecha y hora "
-                variant="outlined"
-                fullWidth
+              <CustomDateTimePicker
+                value={
+                  eventData.logistics.assembly.initialDateAssembly &&
+                  eventData.logistics.assembly.initialTimeAssembly
+                    ? new Date(
+                        `${eventData.logistics.assembly.initialDateAssembly}T${eventData.logistics.assembly.initialTimeAssembly}`
+                      )
+                    : null
+                }
+                onChange={handleDateTimeChangeAssembly}
               />
             </FormLabelComponent>
           </Box>
@@ -49,30 +151,45 @@ const LogisticsSection: React.FC = () => {
       </Box>
       {/* Desarme  */}
 
-      <Box sx={{ marginBottom: 2 }}>
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleDesarme}
           open={openDesarme}
           text={"Desarme"}
         />
         <Collapse in={openDesarme}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
               Lugar de Ingreso
               <CustomTextField
                 placeholder="Seleccionar área" // ACA VAN MAPEADOS TOOS LOS SECTORES
                 variant="outlined"
                 fullWidth
+                value={
+                  eventData.logistics.dismantling.entryPlaceDismantling || ""
+                }
+                onChange={(e: any) =>
+                  handleInputChangeDismantling(
+                    "entryPlaceDismantling",
+                    e.target.value
+                  )
+                }
               />
             </FormLabelComponent>
 
             <FormLabelComponent>
               Fecha
-              <CustomTextField
-                placeholder="Seleccionar fecha y hora "
-                variant="outlined"
-                fullWidth
+              <CustomDateTimePicker
+                value={
+                  eventData.logistics.dismantling.initialDateDismantling
+                    ? new Date(
+                        `${eventData.logistics.assembly.initialDateAssembly}T${eventData.logistics.assembly.initialTimeAssembly}`
+                      )
+                    : null
+                }
+                onChange={handleDateTimeChangeDismantling}
               />
+              {/* // AGREGAR FECHA Y HORA */}
             </FormLabelComponent>
           </Box>
         </Collapse>
@@ -80,44 +197,83 @@ const LogisticsSection: React.FC = () => {
 
       {/* Más Detalles  */}
 
-      <Box sx={{ marginBottom: 2 }}>
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleDetalles}
           open={openDetalles}
           text={"Detalles"}
         />
         <Collapse in={openDetalles}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
               Areas Arrendadas
               <CustomTextField
                 placeholder="Seleccionar áreas" // ACA VAN MAPEADOS TOOS LOS SECTORES
                 variant="outlined"
                 fullWidth
+                value={eventData.logistics.detailsLogistics.sectors || ""}
+                onChange={(e: any) =>
+                  handleInputChangeDetails("sectors", e.target.value)
+                }
               />
             </FormLabelComponent>
-
             <FormLabelComponent>
               Horario de actividad en Predio
-              <CustomTextField
+              {/* <CustomTextField
                 placeholder="Seleccionar la fecha "
                 variant="outlined"
                 fullWidth
+                // value={eventData.logistics.detailsLogistics.sectors || ""} 
+                // onChange={(e: any) => handleInputChangeDetails('sectors', e.target.value)}
+              /> */}
+              <CustomDateTimePicker
+                value={
+                  eventData.logistics.detailsLogistics.dateActivity
+                    ? new Date(
+                        `${eventData.logistics.assembly.initialDateAssembly}T${
+                          eventData.logistics.detailsLogistics.timeActivity ||
+                          "00:00"
+                        }`
+                      )
+                    : null
+                }
+                onChange={handleDateTimeChangeDetails}
               />
             </FormLabelComponent>
-
-            <FormLabelComponent>
-              Ingreso al Público
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <FormLabelComponent>Ingreso al Público</FormLabelComponent>
               <CustomSelect
                 fullWidth
                 defaultValue=""
                 placeholder="Seleccionar áreas"
+                value={eventData.logistics.detailsLogistics.entryPoint || ""}
+                onChange={(e: any) =>
+                  handleInputChangeDetails("entryPoint", e.target.value)
+                }
               >
-                <MenuItem value="parcial">sector 1</MenuItem>
-                <MenuItem value="completa">sector 2</MenuItem>
+                <MenuItem value="sector1">sector 1</MenuItem>
+                <MenuItem value="sector2">sector 2</MenuItem>
               </CustomSelect>
-              agregar notas
-            </FormLabelComponent>
+            </FormControl>
+
+            <TextField
+              sx={{
+                marginBlock: "16px 24px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.palette.info.light}`,
+                },
+              }}
+              placeholder="Nota"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={2.5} // Adjust rows as needed
+              value={eventData.logistics.detailsLogistics.notes || ""}
+              onChange={(e: any) =>
+                handleInputChangeDetails("notes", e.target.value)
+              }
+            />
           </Box>
         </Collapse>
       </Box>

@@ -20,7 +20,8 @@ const TitleComponent = ({ text, sx, ...props }: any) => {
             weight: 400,
             fontSize: "18px",
             lineHeight: "22px",
-            marginTop: 2,
+            // marginTop: 2,
+            marginBottom: '24px',
             p: "8px 16px",
             ...sx, // Allows to add others styles if its necessary
           }}
@@ -35,13 +36,17 @@ const TitleComponent = ({ text, sx, ...props }: any) => {
   
 const SecondTitleComponent = ({ text, open , sx, ...props}: any) => {
     return (
+          
+          <Box sx={{ paddingBottom:'24px'}}>
+
       <Box
         sx={{
           bgcolor: theme.palette.primary.light,
           gap: "4.07px",
           borderRadius: "8px",
+          
         }}
-      >
+        >
         <Typography
           variant="h6"
           sx={{
@@ -51,13 +56,13 @@ const SecondTitleComponent = ({ text, open , sx, ...props}: any) => {
             display: "flex",
             alignItems: "center",
             lineHeight: "22px",
-            marginTop: 2,
+            // marginTop: 2,
             p: "8px 16px",
-  
+            
             ...sx, 
           }}
           {...props}
-        >
+          >
           {text}
           <Box  sx={{
             display: 'flex',
@@ -73,6 +78,7 @@ const SecondTitleComponent = ({ text, open , sx, ...props}: any) => {
           </Box>
         </Typography>
       </Box>
+          </Box>
     );
   };
 

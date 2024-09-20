@@ -1,7 +1,8 @@
 import React from "react";
 import { Button, Box } from "@mui/material";
-import Image, { StaticImageData } from "next/image";
+import  { StaticImageData } from "next/image";
 import theme from "../../theme";
+import IconToImage from "../styled-components/IconImages";
 
 interface CustomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -17,7 +18,6 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon }) => (
       backgroundColor: theme.palette.secondary.main,
       color: '#FFFF',
       textTransform: "none",
-      maxWidth: "175px",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -27,7 +27,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon }) => (
   >
     {icon && (
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Image src={icon} alt="Icon" width={20} height={20} />
+        <IconToImage icon={icon} w={20} h={20} />
       </Box>
     )}
     <Box sx={{ display: "flex", alignItems: "center", marginLeft: "4px" }}>

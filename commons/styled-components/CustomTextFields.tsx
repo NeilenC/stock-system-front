@@ -36,12 +36,12 @@ const FormLabelComponent = styled(FormLabel)(() => ({
 
 
   
-  const StyledSelect = styled(Select)`
-  border: 1px solid ${theme.palette.info.light};  // Estilo de borde
-  border-radius: 8px;          // Borde redondeado
-  height: 40px;               // Altura personalizada
+  const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
+  border: 1px solid ${theme.palette.info.light};  
+  border-radius: 8px;        
+  height: 40px;     
   &:hover {
-    border-color: ${theme.palette.info.light};  // Color del borde al hacer hover
+    border-color: ${theme.palette.info.light};  
   },
     &.Mui-focused {
     border-color: ${theme.palette.info.light};  
@@ -53,6 +53,7 @@ const FormLabelComponent = styled(FormLabel)(() => ({
 // Componente CustomSelect que maneja el placeholder 
 const CustomSelect = ({ placeholder, ...props }: any) => {
   return (
+
     <StyledSelect
       displayEmpty
       renderValue={(selected) => {
@@ -63,7 +64,7 @@ const CustomSelect = ({ placeholder, ...props }: any) => {
       }}
       IconComponent={props.open ? ExpandLessOutlinedIcon : ExpandMoreOutlinedIcon} 
       {...props}
-    >
+      >
       {props.children}
     </StyledSelect>
 

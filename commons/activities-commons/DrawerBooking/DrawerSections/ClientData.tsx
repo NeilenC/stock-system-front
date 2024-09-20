@@ -5,133 +5,212 @@ import {
   FormLabelComponent,
 } from "../../../styled-components/CustomTextFields";
 import { useState } from "react";
+import useEventStore from "../activity-hook/useEventStore";
 
 const ClientData: React.FC = () => {
-    const [openClient, setOpenClient] = useState(true);
-    const [openOrganizer, setOpenOrganizer] = useState(true);
-    const [openDirector, setOpenDirector] = useState(true);
-    const [openIntendente, setOpenIntendente] = useState(true);
+  const { eventData, setClientData, setOrganizerOrResponsible,
+    setTechnicalDirector,
+    setAdministrator } = useEventStore();
+  const [openClient, setOpenClient] = useState(true);
+  const [openOrganizer, setOpenOrganizer] = useState(true);
+  const [openDirector, setOpenDirector] = useState(true);
+  const [openIntendente, setOpenIntendente] = useState(true);
+
+  const handleToggleClient = () => setOpenClient(!openClient);
+  const handleToggleOrganizer = () => setOpenOrganizer(!openOrganizer);
+  const handleToggleDirector = () => setOpenDirector(!openDirector);
+  const handleToggleIntendente = () => setOpenIntendente(!openIntendente);
   
-    const handleToggleClient = () => setOpenClient(!openClient);
-    const handleToggleOrganizer = () => setOpenOrganizer(!openOrganizer);
-    const handleToggleDirector = () => setOpenDirector(!openDirector);
-    const handleToggleIntendente = () => setOpenIntendente(!openIntendente);
+  const handleClientNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClientData('clientId', event.target.value);
+  };
+
+  const handleClientPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClientData('phoneNumber', event.target.value);
+  };
+
+  const handleClientEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClientData('email', event.target.value);
+  };
+
+  const handleOrganizerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOrganizerOrResponsible('responsibleName', event.target.value);
+  };
+
+  const handleOrganizerPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOrganizerOrResponsible('phoneNumber', event.target.value);
+  };
+
+  const handleOrganizerEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOrganizerOrResponsible('email', event.target.value);
+  };
+
+  const handleDirectorNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTechnicalDirector('techDirectorName', event.target.value);
+  };
+
+  const handleDirectorPhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTechnicalDirector('phoneNumber', event.target.value);
+  };
+
+  const handleDirectorEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTechnicalDirector('email', event.target.value);
+  };
+
+  const handleIntendenteNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdministrator('administratorName', event.target.value);
+  };
+
+  const handleIntendentePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdministrator('phoneNumber', event.target.value);
+  };
+
+  const handleIntendenteEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdministrator('email', event.target.value);
+  };
+
+  // Utility function to handle null values
+  const getSafeValue = (value: string | number | null | undefined) => {
+    if (value === null || value === undefined) {
+      return "";
+    }
+    return typeof value === 'number' ? value.toString() : value;
+  };
+  
+
   return (
     <>
       <TitleComponent variant="h6" text={"Datos del Cliente / Organizador"} />
-       {/* Datos del cliente  */}
-      <Box sx={{ marginBottom: 2 }}>
+      
+      {/* Datos del cliente */}
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleClient}
           open={openClient}
           text={"Cliente"}
         />
         <Collapse in={openClient}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
-             Cliente
+              Cliente
               <CustomTextField
-                placeholder="Seleccione o ingrese nuevo cliente" //Imagino que abrirá un modal
+                placeholder="Seleccione o ingrese nuevo cliente"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.client.clientId)}
+                onChange={handleClientNameChange}
               />
             </FormLabelComponent>
 
             <FormLabelComponent>
-             Teléfono
+              Teléfono
               <CustomTextField
-                placeholder="Ingrese teléfono" 
+                placeholder="Ingrese teléfono"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.client.phoneNumber)}
+                onChange={handleClientPhoneChange}
               />
             </FormLabelComponent>
 
             <FormLabelComponent>
-             Correo electrónico
+              Correo electrónico
               <CustomTextField
-                placeholder="Ingrese correo electrónico" 
+                placeholder="Ingrese correo electrónico"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.client.email)}
+                onChange={handleClientEmailChange}
               />
             </FormLabelComponent>
-
           </Box>
         </Collapse>
       </Box>
 
-      {/* Organizador responsable  */}
-
-      <Box sx={{ marginBottom: 2 }}>
+      {/* Organizador responsable */}
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleOrganizer}
           open={openOrganizer}
           text={"Organizador o Responsable"}
         />
         <Collapse in={openOrganizer}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
-             Nombre
+              Nombre
               <CustomTextField
-                placeholder="Ingrese nombre" 
+                placeholder="Ingrese nombre"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.organizerOrResponsible.responsibleName)}
+                onChange={handleOrganizerNameChange}
               />
             </FormLabelComponent>
 
             <FormLabelComponent>
-             Teléfono
+              Teléfono
               <CustomTextField
-                placeholder="Ingrese teléfono" 
+                placeholder="Ingrese teléfono"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.organizerOrResponsible.phoneNumber)}
+                onChange={handleOrganizerPhoneChange}
               />
             </FormLabelComponent>
 
             <FormLabelComponent>
-             Correo electrónico
+              Correo electrónico
               <CustomTextField
-                placeholder="Ingrese correo electrónico" 
+                placeholder="Ingrese correo electrónico"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.organizerOrResponsible.email)}
+                onChange={handleOrganizerEmailChange}
               />
             </FormLabelComponent>
-
           </Box>
         </Collapse>
       </Box>
 
       {/* Director Técnico */}
-      <Box sx={{ marginBottom: 2 }}>
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleDirector}
           open={openDirector}
           text={"Director técnico"}
         />
-
         <Collapse in={openDirector}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
               Nombre
               <CustomTextField
                 placeholder="Ingresa nombre"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.technicalDirector.techDirectorName)}
+                onChange={handleDirectorNameChange}
               />
             </FormLabelComponent>
+
             <FormLabelComponent>
               Teléfono
               <CustomTextField
-                placeholder="Ingresa télefono"
+                placeholder="Ingresa teléfono"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.technicalDirector.phoneNumber)}
+                onChange={handleDirectorPhoneChange}
               />
             </FormLabelComponent>
+
             <FormLabelComponent>
               Correo Electrónico
               <CustomTextField
-                placeholder="Ingresa Correo electrónicoectrónico"
+                placeholder="Ingresa Correo electrónico"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.technicalDirector.email)}
+                onChange={handleDirectorEmailChange}
               />
             </FormLabelComponent>
           </Box>
@@ -139,37 +218,44 @@ const ClientData: React.FC = () => {
       </Box>
 
       {/* Intendente */}
-      <Box sx={{ marginTop: "24px" }}>
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleIntendente}
           open={openIntendente}
           text={"Intendente"}
         />
-
         <Collapse in={openIntendente}>
-          <Box sx={{ marginTop: "24px" }}>
+          <Box>
             <FormLabelComponent>
               Nombre
               <CustomTextField
                 placeholder="Ingresa nombre"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.administrator.administratorName)}
+                onChange={handleIntendenteNameChange}
               />
             </FormLabelComponent>
+
             <FormLabelComponent>
               Teléfono
               <CustomTextField
-                placeholder="Ingresa télefono"
+                placeholder="Ingresa teléfono"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.administrator.phoneNumber)}
+                onChange={handleIntendentePhoneChange}
               />
             </FormLabelComponent>
+
             <FormLabelComponent>
               Correo electrónico
               <CustomTextField
-                placeholder="Ingresa Correo ectrónico"
+                placeholder="Ingresa Correo electrónico"
                 variant="outlined"
                 fullWidth
+                value={getSafeValue(eventData.logistics.clientData.administrator.email)}
+                onChange={handleIntendenteEmailChange}
               />
             </FormLabelComponent>
           </Box>

@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { SectionComponentProps } from "./model";
 import { Box, Grid, Typography } from "@mui/material";
 import theme from "../../../../theme";
-import zIndex from "@mui/material/styles/zIndex";
+import IconToImage from "../../../../commons/styled-components/IconImages";
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
   icon,
@@ -24,7 +23,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
       <Grid container alignItems="center" justifyContent="center">
         {icon && (
           <Grid item>
-            <Image src={icon} alt="Icon" width={40} height={40} />
+            <IconToImage icon={icon} w={40} h={40} />
           </Grid>
         )}
 
@@ -50,7 +49,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                 alignItems: 'center', // Center vertically
               }}
             >
-              <Image src={secondaryIcon} alt="Info-Icon" width={18} height={18} />
+              <IconToImage icon={secondaryIcon} w={18} h={18} />
             </Box>
           )}
         </Grid>
