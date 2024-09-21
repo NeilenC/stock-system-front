@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Box } from "@mui/material";
-import  { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import theme from "../../theme";
 import IconToImage from "../styled-components/IconImages";
 
@@ -8,12 +8,14 @@ interface CustomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   icon?: StaticImageData;
   text: string;
+  sx?: object; // add aditional styles
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon }) => (
+const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon, sx }) => (
   <Button
     variant="contained"
     onClick={onClick}
+    fullWidth
     sx={{
       backgroundColor: theme.palette.secondary.main,
       color: '#FFFF',
@@ -23,6 +25,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon }) => (
       justifyContent: "center",
       borderRadius: "8px",
       height: "40px",
+      ...sx, // Combina los estilos adicionales
     }}
   >
     {icon && (

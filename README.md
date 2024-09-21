@@ -9,7 +9,8 @@ npm run dev
 # or
 yarn dev
 # or
-pnpm dev
+pnpm dev - in case you don't have pnpm installed
+https://pnpm.io/es/installation
 # or
 bun dev
 ```

@@ -7,11 +7,22 @@ import infoIcon from '../../public/info-icon-black.png';
 import { Box } from '@mui/material';
 import CustomButton from '../../commons/buttons-commons/CustomButton';
 import DrawerBooking from '../../commons/activities-commons/DrawerBooking/DrawerBooking';
+import { Stack } from '@mui/material';
+import { SelectPicker } from 'rsuite';
+import useWindowSize from '../../hooks/useWindowSize';
+// const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map(
+//   item => ({ label: item, value: item })
+// );
 
+const data: any = [
+  { label: 'Sector 1', value: 'sector1' },
+  { label: 'Sector 2', value: 'sector2' },
+  { label: 'Sector 3', value: 'sector3' },
+];
 const TimeLineComponent = () => {
   // Estado para controlar la apertura del Drawer
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const { width, height } = useWindowSize();
   // Función para manejar la apertura del Drawer
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true);
@@ -21,6 +32,8 @@ const TimeLineComponent = () => {
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
   };
+
+  console.log("width, height ", width, height )
 
   return (
     <Box>
@@ -35,6 +48,12 @@ const TimeLineComponent = () => {
             onClick={handleOpenDrawer} // Llama a la función para abrir el Drawer
           />
         }
+      />
+
+<SelectPicker 
+        data={data}  // Los datos deben estar en este formato
+        style={{ width: 380 }}  // Define el ancho del picker
+        placeholder="Seleccionar opción"
       />
 
       {/* Aquí se usa el DrawerBooking */}

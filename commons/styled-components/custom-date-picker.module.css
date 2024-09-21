@@ -1,0 +1,19 @@
+/* CustomDatePicker.css */
+.custom-datepicker {
+    width: 100%;
+    margin-bottom: 24px;
+    margin-top: 12px;
+    background-color: 'pink'
+  }
+  
+  .custom-datepicker .rs-picker-toggle {
+    height: 43px;
+    border-radius: 8px;
+    border: 1px solid #E1E6EF;
+    padding: 10px 14px;
+  }
+  
+  .custom-datepicker .rs-picker-toggle:hover {
+    border-color: #B0BEC5;
+  }
+  

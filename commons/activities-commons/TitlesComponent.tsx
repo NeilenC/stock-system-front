@@ -34,54 +34,102 @@ const TitleComponent = ({ text, sx, ...props }: any) => {
   };
 
   
-const SecondTitleComponent = ({ text, open , sx, ...props}: any) => {
+  const SecondTitleComponent = ({ text, open, sx, ...props }: any) => {
     return (
-          
-          <Box sx={{ paddingBottom:'24px'}}>
-
-      <Box
-        sx={{
-          bgcolor: theme.palette.primary.light,
-          gap: "4.07px",
-          borderRadius: "8px",
-          
-        }}
-        >
-        <Typography
-          variant="h6"
+      <Box sx={{ paddingBottom: '24px' }}>
+        <Box
           sx={{
-            color: "black",
-            cursor: "pointer",
-            fontSize: "18px",
-            display: "flex",
-            alignItems: "center",
-            lineHeight: "22px",
-            // marginTop: 2,
-            p: "8px 16px",
-            
-            ...sx, 
+            bgcolor: theme.palette.primary.light,
+            gap: '4.07px',
+            borderRadius: '8px',
           }}
-          {...props}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'black',
+              cursor: 'pointer',
+              fontSize: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              lineHeight: '22px',
+              p: '8px 16px',
+              ...sx,
+            }}
+            {...props}
           >
-          {text}
-          <Box  sx={{
-            display: 'flex',
-            alignItems: 'center',
-            ml: 'auto', 
-          }}>
-  
-          {open ? (
-            <ExpandLessOutlinedIcon sx={{ marginLeft: 1 }} />
-          ) : (
-            <ExpandMoreOutlinedIcon sx={{ marginLeft: 1 }} />
-          )}
-          </Box>
-        </Typography>
+            {text}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                ml: 'auto',
+                transition: 'transform 0.3s ease', // Suave transición de rotación
+                transform: open ? 'rotate(180deg)' : 'rotate(0deg)', // Rotación dependiendo del estado
+              }}
+            >
+              <ExpandMoreOutlinedIcon />
+            </Box>
+
+            
+
+            
+          </Typography>
+        </Box>
       </Box>
-          </Box>
     );
   };
 
+  // SECOND TITLE COMPONENT WITHOUT ARROW EFFECT 
+  // const SecondTitleComponent = ({ text, open , sx, ...props}: any) => {
+  //   return (
+          
+  //         <Box sx={{ paddingBottom:'24px'}}>
+
+  //     <Box
+  //       sx={{
+  //         bgcolor: theme.palette.primary.light,
+  //         gap: "4.07px",
+  //         borderRadius: "8px",
+          
+  //       }}
+  //       >
+  //       <Typography
+  //         variant="h6"
+  //         sx={{
+  //           color: "black",
+  //           cursor: "pointer",
+  //           fontSize: "18px",
+  //           display: "flex",
+  //           alignItems: "center",
+  //           lineHeight: "22px",
+  //           // marginTop: 2,
+  //           p: "8px 16px",
+            
+  //           ...sx, 
+  //         }}
+  //         {...props}
+  //         >
+  //         {text}
+  //         <Box  sx={{
+  //           display: 'flex',
+  //           alignItems: 'center',
+  //           ml: 'auto', 
+  //         }}>
+  
+  //         {open ? (
+  //           <ExpandLessOutlinedIcon sx={{ marginLeft: 1 }} />
+  //         ) : (
+  //           <ExpandMoreOutlinedIcon sx={{ marginLeft: 1 }} />
+  //         )}
+  //         </Box>
+  //       </Typography>
+  //     </Box>
+  //         </Box>
+  //   );
+  // };
+
+  
 
   
 
