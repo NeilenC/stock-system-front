@@ -37,7 +37,7 @@ const colors = {
     },
     background: {
       default: '#fafafa',
-      paper: '#ffffff',
+      paper: '#e0e0e0',
     },
     text: {
       primary: '#282828',

@@ -1,4 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Collapse, IconButton } from "@mui/material";
+import { useState } from "react";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import useSalas from "../../hooks/useSalas";
 import theme from "../../theme";
 
@@ -16,53 +19,69 @@ const groupSectorsByCategory = (sectors: any) => {
 
 const SectorsInTimeLine = () => {
   const { salas } = useSalas();
-  console.log("sector", salas);
 
   // Agrupar sectores por su campo "sector"
   const groupedSectors = groupSectorsByCategory(salas);
 
+  // Estado para manejar qué categorías están abiertas
+  const [openCategories, setOpenCategories] = useState<{ [key: string]: boolean }>({});
+
+  // Función para alternar la categoría colapsada o expandida
+  const handleToggleCategory = (category: string) => {
+    setOpenCategories((prevState) => ({
+      ...prevState,
+      [category]: !prevState[category],
+    }));
+  };
+
   return (
-    <Box sx={{ maxWidth: "450px" }}>
+    <Box sx={{ width: "310px", pt: '42px' }}>
       {Object.keys(groupedSectors).map((category) => (
-        <Box key={category} >
+        <Box key={category}>
           <Box
             sx={{
               backgroundColor: theme.palette.primary.dark,
-              paddingBlock: '8px',
-              paddingInline:'16px',
-               alignItems:'center'
+              paddingBlock: '9px',
+              paddingInline: '16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: 'pointer', // Hacer el área clicable
             }}
+            onClick={() => handleToggleCategory(category)} // Alterna la categoría al hacer click
           >
-            <Typography variant="body1" sx={{ color: "#fff", fontWeight: "bold" ,}}>
+            <Typography variant="body1" sx={{ color: "#fff", fontWeight: "bold" }}>
               {category}
             </Typography>
+            <IconButton size="small" sx={{ color: "#fff" }}>
+              {openCategories[category] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
           </Box>
 
-          {groupedSectors[category].map((sector: any) => (
-            <Box
-              key={sector.id}
-              sx={{
-                display: "flex",
-                flexDirection:'column',
-                alignItems: "start",
-                paddingBlock: '6px',
-                paddingInline:'24px',
-                bgcolor: theme.palette.primary.main,
-                border: "1px solid #E1E6EF",
-
-              }}
-            >
-              <Typography
-                variant="subtitle1"
-                sx={{ fontWeight: "bold", }}
+          {/* Collapse para mostrar u ocultar los sectores */}
+          <Collapse in={openCategories[category]}>
+            {groupedSectors[category].map((sector: any) => (
+              <Box
+                key={sector.id}
+                sx={{
+                  display: "flex",
+                  flexDirection: 'column',
+                  alignItems: "start",
+                  paddingBlock: '6px',
+                  paddingInline: '24px',
+                  bgcolor: theme.palette.primary.main,
+                  border: "1px solid #E1E6EF",
+                }}
               >
-                {sector.name}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ }}>
-                {sector.square_meters} m²
-              </Typography>
-            </Box>
-          ))}
+                <Typography variant="body2" sx={{ fontWeight: "bold", fontSize: '12px' }}>
+                  {sector.name}
+                </Typography>
+                <Typography variant="body2" sx={{ fontSize: '12px' }}>
+                  {sector.square_meters} m²
+                </Typography>
+              </Box>
+            ))}
+          </Collapse>
         </Box>
       ))}
     </Box>

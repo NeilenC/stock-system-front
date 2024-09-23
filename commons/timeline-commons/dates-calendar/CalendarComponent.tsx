@@ -12,14 +12,14 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
   return (
     <Box sx={{ backgroundColor: '#FBFBFB' }}>
       {/* Título del mes */}
-      <Box sx={{ textAlign: "center", backgroundColor: "#e0e0e0", height: '18px' }}>
-        <Typography variant="subtitle1" sx={{ fontSize: '10px', lineHeight: '18px' }}>
+      <Box sx={{ textAlign: "center", backgroundColor: "#e0e0e0" }}>
+        <Typography variant="subtitle1" sx={{ fontSize: '12px' }}>
           {format(startDate, "MMMM yyyy", { locale: es })}
         </Typography>
       </Box>
 
-      {/* Días del mes */}
-      <Grid container sx={{ borderLeft: '1px solid #E1E6EF', height: '20px' }}>
+      {/* Días del mes en fila */}
+      <Grid container sx={{ borderLeft: '1px solid #E1E6EF'}}>
         {daysInMonth.map((day, index) => {
           const dayOfWeek = day.getDay(); // 0 = Domingo, 6 = Sábado
           const isSaturday = dayOfWeek === 6;
@@ -33,10 +33,17 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
                   flexDirection: "column",
                   alignItems: "center",
                   lineHeight: '10px',
-                  paddingInline: 0.5, // Reduce el padding horizontal
-                  height: '20px', // Ajusta la altura
+                  paddingInline: 1,
                   borderRight: '1px solid #E1E6EF',
-                  backgroundColor: isSaturday || isSunday ? "#F5F5F5" : "#FFF",
+                  // Color diferente para sábados y domingos
+                  backgroundColor: isSaturday
+                    ? "#F5F5F5" // Color para sábado
+                    : isSunday
+                    ? "#F5F5F5" // Color para domingo
+                    : "#FFF", // Color para días de semana
+                  boxShadow: '0px 4px 3.9px 0px #00000044',
+                  zIndex: 1,
+                  position: 'relative', // Para mantener el stacking context y las líneas
                 }}
               >
                 {/* Inicial del día */}
@@ -47,6 +54,26 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
                 <Typography align="center" variant="caption" sx={{ fontWeight: "bold", fontSize: '8px' }}>
                   {format(day, "dd")}
                 </Typography>
+
+                {/* Líneas divisorias verticales */}
+                <Box
+  sx={{
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: '100%',
+    borderRight: '1px solid #E1E6EF', // Línea divisoria que baja hasta abajo
+    height: 'calc(100vh - 30px)', // Ajusta la altura según tu diseño
+    backgroundColor: isSaturday
+      ? "rgba(245, 245, 245, 0.5)" // Gris claro semi-transparente para sábado
+      : isSunday
+      ? "rgba(245, 245, 245, 0.5)" // Gris claro semi-transparente para domingo
+      : "rgba(255, 255, 255, 0.5)", // Blanco semi-transparente para días de semana
+    zIndex: -1, // Asegura que el fondo esté detrás del contenido
+  }}
+/>
+
+
               </Box>
             </Grid>
           );
@@ -59,13 +86,13 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
 // Componente principal con funcionalidad de scroll infinito horizontal
 const InfiniteScrollCalendar = () => {
   const [months, setMonths] = useState<{ year: number; month: number }[]>([
-    { year: 2024, month: 6 }, // Mes inicial: Junio 2024
+    { year: 2024, month: 9 }, // Mes inicial: Septiembre 2024
   ]);
 
   // Manejador de scroll
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const element = e.currentTarget;
-    if (element.scrollWidth - element.scrollLeft === element.clientWidth) {
+    if (element.scrollWidth - element.scrollLeft <= element.clientWidth + 10) {
       loadMoreMonths();
     }
   };
@@ -86,8 +113,7 @@ const InfiniteScrollCalendar = () => {
       sx={{
         display: 'flex',
         overflowX: 'auto',
-        maxHeight: '38px',
-        padding: '8px 0', // Reduce el padding general
+        // maxHeight: '80px', // Aumenta la altura del contenedor para más espacio
         whiteSpace: 'nowrap',
         '&::-webkit-scrollbar': {
           height: '8px',
