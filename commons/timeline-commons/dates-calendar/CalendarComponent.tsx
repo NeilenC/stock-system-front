@@ -4,25 +4,24 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths } from '
 import { es } from 'date-fns/locale';
 import theme from '../../../theme';
 
-// Componente que renderiza un solo mes
 const MonthComponent = ({ year, month }: { year: number; month: number }) => {
   const startDate = startOfMonth(new Date(year, month - 1));
   const endDate = endOfMonth(new Date(year, month - 1));
   const daysInMonth = eachDayOfInterval({ start: startDate, end: endDate });
+  const numberOfDays = daysInMonth.length;
 
+  console.log("numberOfDays", numberOfDays)
   return (
-    <Box sx={{ minWidth: '810px',
-    //  bgcolor: theme.palette.background.paper 
-     }}> {/* Fijar ancho mínimo */}
+    <Box sx={{ minWidth: numberOfDays * 26, bgcolor: theme.palette.background.paper, paddingLeft: 1}}>
       {/* Título del mes */}
-      <Box sx={{ textAlign: 'center', backgroundColor: '#e0e0e0' }}>
+      <Box sx={{ textAlign: 'center', backgroundColor: theme.palette.background.paper,  }}>
         <Typography variant="subtitle1" sx={{ fontSize: '12px' }}>
           {format(startDate, 'MMMM yyyy', { locale: es })}
         </Typography>
       </Box>
 
       {/* Días del mes en fila */}
-      <Grid container sx={{ borderLeft: '1px solid #E1E6EF', justifyContent: 'center' }}>
+      <Grid container sx={{ borderLeft: '1px solid #E1E6EF' }}>
         {daysInMonth.map((day, index) => {
           const dayOfWeek = day.getDay(); // 0 = Domingo, 6 = Sábado
           const isSaturday = dayOfWeek === 6;
@@ -40,6 +39,7 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
                   backgroundColor: isSaturday || isSunday ? '#F5F5F5' : '#FFF',
                   boxShadow: '0px 4px 3.9px 0px #00000044',
                   position: 'relative',
+                  zIndex: 1,
                 }}
               >
                 {/* Inicial del día */}
@@ -68,6 +68,25 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
           );
         })}
       </Grid>
+
+      {/* Box transparente para ver el fondo */}
+      <Box
+        sx={{
+          // display:'flex',
+          // justifyContent:'center',
+          // alignItems:'center',
+          // position: 'relative',
+          width: numberOfDays * 25.9,
+          height: '100vh', // Ajusta la altura según sea necesario
+          backgroundColor: 'rgba(255, 255, 255, 10)', // Fondo blanco con opacidad
+          backdropFilter: 'blur(5px)', // Efecto de desenfoque
+          margin: '40px 0px auto', // Espaciado superior opcional
+          top: 0,
+          left: 0,
+          
+        }}
+      >
+      </Box>
     </Box>
   );
 };
@@ -101,8 +120,8 @@ const InfiniteScrollCalendar = () => {
       onScroll={handleScroll}
       sx={{
         display: 'flex',
-        overflowX: 'auto', // Habilitar scroll horizontal
-        flexDirection: 'row', // Asegura que los meses se alineen en fila
+        overflowX: 'auto',
+        flexDirection: 'row', 
         whiteSpace: 'nowrap',
         '&::-webkit-scrollbar': {
           height: '8px',

@@ -35,7 +35,7 @@ const SectorsInTimeLine = () => {
   };
 
   return (
-    <Box sx={{ width: "310px", pt: '42px' }}>
+    <Box sx={{ minWidth: "310px", pt: '42px' }}>
       {Object.keys(groupedSectors).map((category) => (
         <Box key={category}>
           <Box
