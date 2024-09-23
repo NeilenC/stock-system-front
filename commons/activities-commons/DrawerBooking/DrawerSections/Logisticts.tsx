@@ -1,7 +1,15 @@
 import { FC, useState } from "react";
 import { SecondTitleComponent, TitleComponent } from "../../TitlesComponent";
-import { Box, Collapse, FormControl, MenuItem, TextField } from "@mui/material";
 import {
+  Autocomplete,
+  Box,
+  Collapse,
+  FormControl,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import {
+  CustomAutocomplete,
   CustomSelect,
   CustomTextField,
   FormLabelComponent,
@@ -10,23 +18,25 @@ import CustomDateTimePicker from "../../../styled-components/CustomDatePicker";
 import useEventStore from "../activity-hook/useEventStore";
 import theme from "../../../../theme";
 // import { SelectPicker, Stack } from 'rsuite';
-import { Stack } from '@mui/material';
-import { SelectPicker } from 'rsuite';
+import { Stack } from "@mui/material";
+import useSalas from "../../../../hooks/useSalas";
 
 const sectoresOptions: any = [
-  { label: 'Sector 1', value: 'sector1' },
-  { label: 'Sector 2', value: 'sector2' },
-  { label: 'Sector 3', value: 'sector3' },
+  { label: "Sector 1", value: "sector1" },
+  { label: "Sector 2", value: "sector2" },
+  { label: "Sector 3", value: "sector3" },
 ];
 
-const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map(
-  item => ({ label: item, value: item })
-);
-
-
-
-
-
+const data = [
+  "Eugenia",
+  "Bryan",
+  "Linda",
+  "Nancy",
+  "Lloyd",
+  "Alice",
+  "Julia",
+  "Albert",
+].map((item) => ({ label: item, value: item }));
 
 const LogisticsSection: React.FC = () => {
   const {
@@ -34,15 +44,35 @@ const LogisticsSection: React.FC = () => {
     setLogisticsAssembly,
     setLogisticsDismantling,
     setLogisticsDetails,
+    setSectors,
   } = useEventStore();
 
+  const [selectedSectors, setSelectedSectors] = useState<number[]>([]);
   const [openLogistics, setOpenLogistics] = useState(true);
   const [openDetalles, setOpenDetalles] = useState(true);
   const [openDesarme, setOpenDesarme] = useState(true);
-
   const handleToggleLogistics = () => setOpenLogistics(!openLogistics);
   const handleToggleDesarme = () => setOpenDesarme(!openDesarme);
   const handleToggleDetalles = () => setOpenDetalles(!openDetalles);
+  const { salas } = useSalas();
+
+  // Transforma los sectores en el formato { label, value } para el Autocomplete
+  const sectorOptions = salas.map((sector: any, index: number) => ({
+    label: sector.name,
+    value: `${sector.id}-${index}`, // Combina id e índice para asegurar unicidad
+  }));
+
+  // Función que se llama al seleccionar un sector
+  const handleSectorSelect = (event: any, newValue: any) => {
+    if (newValue) {
+      const newSectorIds = newValue.map((sector: any) => sector.value);
+      setSelectedSectors(newSectorIds); // Actualiza el estado local
+      setSectors(newSectorIds); // Actualiza el estado en Zustand
+    } else {
+      setSelectedSectors([]); // Resetea si no hay selección
+      setSectors([]); // Resetea en Zustand
+    }
+  };
 
   const handleInputChangeAssembly = (
     key: keyof typeof eventData.logistics.assembly,
@@ -114,7 +144,6 @@ const LogisticsSection: React.FC = () => {
       console.error("Fecha inválida seleccionada para Details");
     }
   };
-
 
 
   return (
@@ -216,7 +245,7 @@ const LogisticsSection: React.FC = () => {
 
       {/* Más Detalles  */}
 
-      <Box >
+      <Box>
         <SecondTitleComponent
           onClick={handleToggleDetalles}
           open={openDetalles}
@@ -224,21 +253,28 @@ const LogisticsSection: React.FC = () => {
         />
         <Collapse in={openDetalles}>
           <Box>
-            <FormLabelComponent >
+            <FormLabelComponent>
               Areas Arrendadas
               <Stack spacing={10} direction="column" alignItems="flex-start">
-      {/* SelectPicker con datos correctos */}
-      <SelectPicker 
-        data={data}  // Los datos deben estar en este formato
-        style={{ width: 380 }}  // Define el ancho del picker
-        placeholder="Seleccionar opción"
-      />
-      
-     
-    </Stack>
+                {/* SelectPicker con datos correctos */}
 
+                <CustomAutocomplete
+                  options={sectorOptions}
+                  getOptionLabel={(option: any) => option.label}
+                  onChange={handleSectorSelect}
+                  multiple
+                  renderInput={(params: any) => (
+                    <TextField
+                      {...params}
+                      label="Seleccionar Sectores"
+                      variant="outlined"
+                    />
+                  )}
+                />
+
+              </Stack>
             </FormLabelComponent>
-            <FormLabelComponent >
+            <FormLabelComponent>
               Horario de actividad en Predio
               {/* <CustomTextField
                 placeholder="Seleccionar la fecha "

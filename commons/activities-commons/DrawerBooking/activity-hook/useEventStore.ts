@@ -24,7 +24,7 @@ export interface EventData {
       initialTimeDismantling: string;
     };
     detailsLogistics: {
-      sectors: string[];
+      sectors: number[];
       dateActivity: string;
       timeActivity: string;
       entryPoint: string;
@@ -109,8 +109,10 @@ interface EventStore {
     key: keyof EventData["logistics"]["clientData"]["administrator"],
     value: string | number
   ) => void;
+  setSectors: (sectorIds: number[]) => void; // Añade este método
   resetForm: () => void;
 }
+
 
 const useEventStore = create<EventStore>((set) => ({
   eventData: {
@@ -242,6 +244,21 @@ const useEventStore = create<EventStore>((set) => ({
         },
       },
     })),
+
+    setSectors: (sectorIds: number[]) => 
+      set((state) => ({
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            detailsLogistics: {
+              ...state.eventData.logistics.detailsLogistics,
+              sectors: sectorIds,
+            },
+          },
+        },
+      })),
+    
 
   setTicketOfficeDetails: (key, value) =>
     set((state) => ({

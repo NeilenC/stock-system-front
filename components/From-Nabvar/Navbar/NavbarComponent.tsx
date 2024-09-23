@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Box,
@@ -43,7 +43,6 @@ import { useRouter } from "next/router";
 const NavbarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownMenu, setDropdownMenu] = React.useState<string | null>(null);
-  const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
   const router = useRouter();
 
   const [openDropdowns, setOpenDropdowns] = React.useState<{
@@ -53,6 +52,22 @@ const NavbarComponent = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useWindowSize().width <= 1025;
   const username = "Nombre Usuario";
+
+  useEffect(() => {
+    // Detect route change and reset isSelected state after 2 seconds
+    const handleRouteChange = () => {
+      setTimeout(() => {
+        setIsSelected(null);
+      }, 1000);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    // Cleanup event listener when component unmounts
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLElement>,
@@ -69,7 +84,6 @@ const NavbarComponent = () => {
   const handleCloseMenu = (menu: string) => {
     setAnchorEl(null);
     setDropdownMenu(null);
-    // Make sure you close the menu and toggle the down arrow
     setOpenDropdowns((prevState) => ({
       ...prevState,
       [menu]: false,
@@ -77,7 +91,7 @@ const NavbarComponent = () => {
   };
 
   const handleSelectItem = (label: string, menu: string) => {
-    setSelectedItem(label);
+    setIsSelected(label);
     handleCloseMenu(menu);
   };
 
@@ -145,13 +159,6 @@ const NavbarComponent = () => {
           href: "/gestion/sectors",
           icon: <IconToImage icon={sectores} w={20} h={20} />, // Ejemplo de ícono
         },
-        // {
-        //   label: <Box sx={{ width: '208px' , bgcolor:'pink'}}> {/* Asegúrate de que el contenedor sea del 100% de ancho */}
-        //   <CustomButton text="Crear Reserva" icon={iconButton} sx={{}} />
-        // </Box>,
-        //   href: "/gestion/sectors",
-        //   // icon: <IconToImage icon={iconButton} w={10} h={10} />, // Ejemplo de ícono
-        // },
       ],
     },
     {
@@ -200,7 +207,7 @@ const NavbarComponent = () => {
       sx={{
         backgroundColor: theme.palette.primary.dark,
         paddingInline: isMobile ? "8px" : "16px",
-        paddingBlock: isMobile ? "8px" : "12px",
+        paddingBlock: isMobile ? "8px" : "8px",
       }}
     >
       <Box
@@ -222,28 +229,29 @@ const NavbarComponent = () => {
         <Box
           display="flex"
           justifyContent={isMediumScreen ? "flex-start" : "center"}
+          gap={isMediumScreen ? "2px" : "5px"} // Separacion de las opciones principales
           flexGrow={1}
         >
           {navbarOptions.map((option, index) => (
             <Box
               key={index}
               sx={{
+                // bgcolor:"pink",
                 borderRadius: "8px",
                 p: isMobile ? "0px" : "1px 6px",
               }}
             >
               {option.options ? (
                 <>
-                  {/* Opción con submenú */}
                   <Button
                     onClick={(e) => {
-                      handleOpenMenu(e, option.label);
-                      setIsSelected(option.label);
+                      handleOpenMenu(e, option.label); // Controla la apertura/cierre del menú
+                      setIsSelected(option.label); // Cambia el estado seleccionado
                     }}
                     sx={{
                       color: theme.palette.secondary.contrastText,
                       textTransform: "none",
-                      fontSize: isMediumScreen ? "0.9rem" : "1rem",
+                      fontSize: isMediumScreen ? "10px" : "0.8rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -258,18 +266,19 @@ const NavbarComponent = () => {
                       boxShadow:
                         isSelected === option.label
                           ? "0px 4px 12px rgba(0, 0, 0, 0.1)"
-                          : "none", // Optional shadow for active
+                          : "none", // Sombra opcional cuando está activo
                     }}
                     startIcon={option.startIcon}
                     endIcon={
                       <Box
                         sx={{
                           display: "flex",
+                          fontSize: isMediumScreen ? "10px" : "0.8rem",
                           alignItems: "center",
                           transition: "transform 0.3s ease",
                           transform: openDropdowns[option.label]
-                            ? "rotate(180deg)"
-                            : "rotate(0deg)",
+                            ? "rotate(180deg)" // Flecha hacia arriba si está abierto
+                            : "rotate(0deg)", // Flecha hacia abajo si está cerrado
                         }}
                       >
                         <ExpandMoreOutlinedIcon />
@@ -308,12 +317,7 @@ const NavbarComponent = () => {
                           <MenuItem
                             key={subIndex}
                             onClick={() =>
-                              handleSelectItem(
-                                typeof option.label === "string"
-                                  ? option.label
-                                  : "",
-                                ""
-                              )
+                              handleSelectItem(subOption.label, option.label)
                             }
                             sx={{
                               padding: "8px 16px",
@@ -322,38 +326,46 @@ const NavbarComponent = () => {
                               },
                             }}
                           >
-                            <Box
-                              onClick={() => router.push(subOption.href)} // router.push to redirect
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer",
+                            <Link
+                              href={subOption.href}
+                              style={{
+                                textTransform: "none",
+                                textDecoration: "none",
+                                color: "black",
                               }}
                             >
-                              {subOption.icon && (
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    mr: "12px",
-                                  }}
-                                >
-                                  {subOption.icon}
-                                </Box>
-                              )}
-                              <Typography
-                                variant="body2"
+                              <Box
                                 sx={{
-                                  fontWeight: 500,
-                                  fontSize: "14px",
                                   display: "flex",
                                   alignItems: "center",
+                                  cursor: "pointer",
                                 }}
                               >
-                                {subOption.label}
-                              </Typography>
-                            </Box>
+                                {subOption.icon && (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      mr: "12px",
+                                    }}
+                                  >
+                                    {subOption.icon}
+                                  </Box>
+                                )}
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 500,
+                                    fontSize: "14px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  {subOption.label}
+                                </Typography>
+                              </Box>
+                            </Link>
                           </MenuItem>
                         ))}
                         {/* adding button at the end of the menu in "Gestión" option  */}
@@ -386,7 +398,8 @@ const NavbarComponent = () => {
                     sx={{
                       color: theme.palette.secondary.contrastText,
                       textTransform: "none",
-                      fontSize: isMediumScreen ? "0.9rem" : "1rem",
+                      fontSize: isMediumScreen ? "10px" : "0.8rem",
+
                       // display: "flex",
                       // alignItems: "center",
                       backgroundColor:
@@ -408,7 +421,11 @@ const NavbarComponent = () => {
         </Box>
 
         {/* Icons and User Section */}
-        <Box display="flex" alignItems="center">
+        <Box
+          display="flex"
+          alignItems="center"
+          marginLeft={isMobile ? "0px" : "2px"}
+        >
           {/* Icons */}
           <Box display="flex" alignItems="center">
             <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
@@ -497,10 +514,20 @@ const NavbarComponent = () => {
                     p: "5px 0px",
                   }}
                 >
-                  <Typography sx={{ fontSize: "14px", lineHeight: "13px" }}>
+                  <Typography
+                    sx={{
+                      fontSize: isMediumScreen ? "10px" : "0.7rem",
+                      lineHeight: "13px",
+                    }}
+                  >
                     {username}
                   </Typography>
-                  <Typography sx={{ fontSize: "12px", fontWeight: "regular" }}>
+                  <Typography
+                    sx={{
+                      fontSize: isMediumScreen ? "10px" : "0.7rem",
+                      fontWeight: "regular",
+                    }}
+                  >
                     Ventas
                   </Typography>
                 </Box>

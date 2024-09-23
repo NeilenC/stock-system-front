@@ -114,13 +114,13 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     administrator_email: eventData.logistics.clientData.administrator.email,
   };
 
-  console.log("cliente id --",  eventData.logistics.clientData.client.clientId)
-  console.log("createMemoActivityDto --", createMemoActivityDto)
-  console.log("Datos enviados --", JSON.stringify(createMemoActivityDto));
+  // console.log("cliente id --",  eventData.logistics.clientData.client.clientId)
+  // console.log("createMemoActivityDto --", createMemoActivityDto)
+  // console.log("Datos enviados --", JSON.stringify(createMemoActivityDto));
 
   // Función para enviar los datos al backend
   const handleConfirmBooking = async () => {
-    console.log("createMemoActivityDto justo antes de enviar:", createMemoActivityDto);
+    // console.log("createMemoActivityDto justo antes de enviar:", createMemoActivityDto);
   
     try {
       const response = await fetch(
@@ -165,6 +165,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
           display: "flex",
           flexDirection: "column",
         },
+        zIndex: 0
       }}
     >
       {/* Encabezado - Fijo en la parte superior */}

@@ -1,4 +1,4 @@
-import { Box, Collapse } from "@mui/material";
+import { Box, Collapse, InputAdornment } from "@mui/material";
 import { SecondTitleComponent, TitleComponent } from "../../TitlesComponent";
 import {
   CustomTextField,
@@ -6,6 +6,10 @@ import {
 } from "../../../styled-components/CustomTextFields";
 import { useState } from "react";
 import useEventStore from "../activity-hook/useEventStore";
+import email from '../../../../public/drawer/email.png'
+import phone from '../../../../public/drawer/phone.png'
+import IconToImage from "../../../styled-components/IconImages";
+import theme from "../../../../theme";
 
 const ClientData: React.FC = () => {
   const { eventData, setClientData, setOrganizerOrResponsible,
@@ -110,6 +114,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.client.phoneNumber)}
                 onChange={handleClientPhoneChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={phone} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
 
@@ -121,6 +132,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.client.email)}
                 onChange={handleClientEmailChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={email} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
           </Box>
@@ -155,6 +173,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.organizerOrResponsible.phoneNumber)}
                 onChange={handleOrganizerPhoneChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={phone} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
 
@@ -166,6 +191,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.organizerOrResponsible.email)}
                 onChange={handleOrganizerEmailChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={email} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
           </Box>
@@ -200,6 +232,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.technicalDirector.phoneNumber)}
                 onChange={handleDirectorPhoneChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={phone} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
 
@@ -211,6 +250,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.technicalDirector.email)}
                 onChange={handleDirectorEmailChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={email} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
           </Box>
@@ -245,6 +291,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.administrator.phoneNumber)}
                 onChange={handleIntendentePhoneChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={phone} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
 
@@ -256,6 +309,13 @@ const ClientData: React.FC = () => {
                 fullWidth
                 value={getSafeValue(eventData.logistics.clientData.administrator.email)}
                 onChange={handleIntendenteEmailChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" >
+                      <IconToImage icon={email} w={20} h={20} />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormLabelComponent>
           </Box>

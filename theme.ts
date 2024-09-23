@@ -59,6 +59,13 @@ const theme = createTheme({
   },
 // COMPONENTES PERSONALIZADOS
   components: {
+    MuiInputAdornment: {
+      styleOverrides: {
+        root: {
+          marginRight: '1px', // Ajusta este valor según tus necesidades
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {

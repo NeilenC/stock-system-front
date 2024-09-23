@@ -16,6 +16,6 @@ const Management = () => {
       {option === 'timeline' && <TimeLineComponent/>}
     </div>
   );
-};
+};  
 
 export default Management;

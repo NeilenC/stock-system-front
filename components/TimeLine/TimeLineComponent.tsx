@@ -10,6 +10,9 @@ import DrawerBooking from '../../commons/activities-commons/DrawerBooking/Drawer
 import { Stack } from '@mui/material';
 import { SelectPicker } from 'rsuite';
 import useWindowSize from '../../hooks/useWindowSize';
+import SectorsInTimeLine from '../../commons/timeline-commons/SectorsInTimeLine';
+import CalendarComponent from '../../commons/timeline-commons/dates-calendar/CalendarComponent';
+import InfiniteScrollCalendar from '../../commons/timeline-commons/dates-calendar/CalendarComponent';
 // const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map(
 //   item => ({ label: item, value: item })
 // );
@@ -50,17 +53,18 @@ const TimeLineComponent = () => {
         }
       />
 
-<SelectPicker 
-        data={data}  // Los datos deben estar en este formato
-        style={{ width: 380 }}  // Define el ancho del picker
-        placeholder="Seleccionar opción"
-      />
+
 
       {/* Aquí se usa el DrawerBooking */}
       <DrawerBooking
         isOpen={isDrawerOpen}
         setIsOpen={setIsDrawerOpen} // Pasar la función para cerrar el Drawer
       />
+
+
+      {/* <SectorsInTimeLine/> */}
+      <InfiniteScrollCalendar />
+
     </Box>
   );
 };

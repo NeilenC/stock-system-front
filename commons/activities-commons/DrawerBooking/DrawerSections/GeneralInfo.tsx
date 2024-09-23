@@ -72,7 +72,7 @@ const GeneralInfoContent: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   value={eventData.generalInfo.details.nameEvent}
-                  onChange={(e) =>
+                  onChange={(e: any) =>
                     handleInputChange("nameEvent", e.target.value)
                   }
                 />
