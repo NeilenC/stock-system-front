@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths } from 'date-fns';
-import { es } from 'date-fns/locale'; // Si usas locale en español
+import { es } from 'date-fns/locale';
+import theme from '../../../theme';
 
 // Componente que renderiza un solo mes
 const MonthComponent = ({ year, month }: { year: number; month: number }) => {
@@ -10,70 +11,58 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
   const daysInMonth = eachDayOfInterval({ start: startDate, end: endDate });
 
   return (
-    <Box sx={{ backgroundColor: '#FBFBFB' }}>
+    <Box sx={{ minWidth: '810px',
+    //  bgcolor: theme.palette.background.paper 
+     }}> {/* Fijar ancho mínimo */}
       {/* Título del mes */}
-      <Box sx={{ textAlign: "center", backgroundColor: "#e0e0e0" }}>
+      <Box sx={{ textAlign: 'center', backgroundColor: '#e0e0e0' }}>
         <Typography variant="subtitle1" sx={{ fontSize: '12px' }}>
-          {format(startDate, "MMMM yyyy", { locale: es })}
+          {format(startDate, 'MMMM yyyy', { locale: es })}
         </Typography>
       </Box>
 
       {/* Días del mes en fila */}
-      <Grid container sx={{ borderLeft: '1px solid #E1E6EF'}}>
+      <Grid container sx={{ borderLeft: '1px solid #E1E6EF', justifyContent: 'center' }}>
         {daysInMonth.map((day, index) => {
           const dayOfWeek = day.getDay(); // 0 = Domingo, 6 = Sábado
           const isSaturday = dayOfWeek === 6;
           const isSunday = dayOfWeek === 0;
 
           return (
-            <Grid item xs key={index}>
+            <Grid item key={index}>
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  lineHeight: '10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                   paddingInline: 1,
                   borderRight: '1px solid #E1E6EF',
-                  // Color diferente para sábados y domingos
-                  backgroundColor: isSaturday
-                    ? "#F5F5F5" // Color para sábado
-                    : isSunday
-                    ? "#F5F5F5" // Color para domingo
-                    : "#FFF", // Color para días de semana
+                  backgroundColor: isSaturday || isSunday ? '#F5F5F5' : '#FFF',
                   boxShadow: '0px 4px 3.9px 0px #00000044',
-                  zIndex: 1,
-                  position: 'relative', // Para mantener el stacking context y las líneas
+                  position: 'relative',
                 }}
               >
                 {/* Inicial del día */}
-                <Typography align="center" variant="caption" sx={{ fontSize: '8px', lineHeight: '10px' }}>
-                  {format(day, "EEE", { locale: es }).charAt(0).toUpperCase()}
+                <Typography align="center" variant="caption" sx={{ fontSize: '8px' }}>
+                  {format(day, 'EEE', { locale: es }).charAt(0).toUpperCase()}
                 </Typography>
                 {/* Fecha numérica */}
-                <Typography align="center" variant="caption" sx={{ fontWeight: "bold", fontSize: '8px' }}>
-                  {format(day, "dd")}
+                <Typography align="center" variant="caption" sx={{ fontWeight: 'bold', fontSize: '8px' }}>
+                  {format(day, 'dd')}
                 </Typography>
 
                 {/* Líneas divisorias verticales */}
                 <Box
-  sx={{
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    width: '100%',
-    borderRight: '1px solid #E1E6EF', // Línea divisoria que baja hasta abajo
-    height: 'calc(100vh - 30px)', // Ajusta la altura según tu diseño
-    backgroundColor: isSaturday
-      ? "rgba(245, 245, 245, 0.5)" // Gris claro semi-transparente para sábado
-      : isSunday
-      ? "rgba(245, 245, 245, 0.5)" // Gris claro semi-transparente para domingo
-      : "rgba(255, 255, 255, 0.5)", // Blanco semi-transparente para días de semana
-    zIndex: -1, // Asegura que el fondo esté detrás del contenido
-  }}
-/>
-
-
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    width: '100%',
+                    borderRight: '1px solid #E1E6EF',
+                    height: 'calc(100vh - 30px)',
+                    backgroundColor: isSaturday || isSunday ? 'rgba(245, 245, 245, 0.5)' : 'rgba(255, 255, 255, 0.5)',
+                  }}
+                />
               </Box>
             </Grid>
           );
@@ -112,8 +101,8 @@ const InfiniteScrollCalendar = () => {
       onScroll={handleScroll}
       sx={{
         display: 'flex',
-        overflowX: 'auto',
-        // maxHeight: '80px', // Aumenta la altura del contenedor para más espacio
+        overflowX: 'auto', // Habilitar scroll horizontal
+        flexDirection: 'row', // Asegura que los meses se alineen en fila
         whiteSpace: 'nowrap',
         '&::-webkit-scrollbar': {
           height: '8px',
