@@ -36,8 +36,8 @@ const colors = {
       contrastText: '#fff',
     },
     background: {
-      default: '#fafafa',
-      paper: '#e0e0e0',
+      default: '#e0e0e0',
+      paper: '#fafafa',
     },
     text: {
       primary: '#282828',

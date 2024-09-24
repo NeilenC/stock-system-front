@@ -12,10 +12,10 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
 
   console.log("numberOfDays", numberOfDays)
   return (
-    <Box sx={{ minWidth: numberOfDays * 26, bgcolor: theme.palette.background.paper, paddingLeft: 1}}>
+    <Box sx={{ minWidth: numberOfDays * 43.5, bgcolor: theme.palette.background.default, paddingLeft: 1}}>
       {/* Título del mes */}
-      <Box sx={{ textAlign: 'center', backgroundColor: theme.palette.background.paper,  }}>
-        <Typography variant="subtitle1" sx={{ fontSize: '12px' }}>
+      <Box sx={{ textAlign: 'center', backgroundColor: theme.palette.background.default, pt:'9px' }}>
+        <Typography variant="subtitle1" sx={{ fontSize: '12px', fontWeight:'bold' }}>
           {format(startDate, 'MMMM yyyy', { locale: es })}
         </Typography>
       </Box>
@@ -31,10 +31,11 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
             <Grid item key={index}>
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  paddingInline: 1,
+                 
+                  
+                  // paddingInline: 1,
+                  width:'42px',
+                  height:'38px',
                   borderRight: '1px solid #E1E6EF',
                   backgroundColor: isSaturday || isSunday ? '#F5F5F5' : '#FFF',
                   boxShadow: '0px 4px 3.9px 0px #00000044',
@@ -43,13 +44,18 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
                 }}
               >
                 {/* Inicial del día */}
-                <Typography align="center" variant="caption" sx={{ fontSize: '8px' }}>
+                 <Box sx={{ display: 'flex',
+                  flexDirection: 'column', justifyContent:'center' }}>
+
+                  <Typography align="center" variant="caption" sx={{ fontSize: '12px',lineHeight:'18px' }}>
                   {format(day, 'EEE', { locale: es }).charAt(0).toUpperCase()}
+
                 </Typography>
                 {/* Fecha numérica */}
-                <Typography align="center" variant="caption" sx={{ fontWeight: 'bold', fontSize: '8px' }}>
+                <Typography align="center" variant="caption" sx={{ fontWeight: 'bold', fontSize: '14px', lineHeight:'18px' }}>
                   {format(day, 'dd')}
                 </Typography>
+                </Box>
 
                 {/* Líneas divisorias verticales */}
                 <Box
@@ -76,7 +82,7 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
           // justifyContent:'center',
           // alignItems:'center',
           // position: 'relative',
-          width: numberOfDays * 25.9,
+          width: numberOfDays * 43.04,
           height: '100vh', // Ajusta la altura según sea necesario
           backgroundColor: 'rgba(255, 255, 255, 10)', // Fondo blanco con opacidad
           backdropFilter: 'blur(5px)', // Efecto de desenfoque
@@ -121,8 +127,7 @@ const InfiniteScrollCalendar = () => {
       sx={{
         display: 'flex',
         overflowX: 'auto',
-        flexDirection: 'row', 
-        whiteSpace: 'nowrap',
+        flexDirection: 'row',
         '&::-webkit-scrollbar': {
           height: '8px',
         },

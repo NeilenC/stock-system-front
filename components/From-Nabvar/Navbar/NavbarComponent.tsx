@@ -229,7 +229,7 @@ const NavbarComponent = () => {
         <Box
           display="flex"
           justifyContent={isMediumScreen ? "flex-start" : "center"}
-          gap={isMediumScreen ? "2px" : "5px"} // Separacion de las opciones principales
+          gap={isMediumScreen ? "2px" : "25px"} // Separacion de las opciones principales
           flexGrow={1}
         >
           {navbarOptions.map((option, index) => (
