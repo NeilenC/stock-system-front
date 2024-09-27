@@ -1,42 +1,28 @@
 import React, { useState } from "react";
 import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
 import PrincipalIcon from "../../public/timeline-icon.png";
-import SecondaryIcon from "../../public/navbar/info-icon.png";
 import iconButton from "../../public/plus-icon.png";
 import infoIcon from "../../public/info-icon-black.png";
 import { Box } from "@mui/material";
 import CustomButton from "../../commons/buttons-commons/CustomButton";
 import DrawerBooking from "../../commons/activities-commons/DrawerBooking/DrawerBooking";
-import { Stack } from "@mui/material";
-import { SelectPicker } from "rsuite";
 import useWindowSize from "../../hooks/useWindowSize";
 import SectorsInTimeLine from "../../commons/timeline-commons/SectorsInTimeLine";
-import CalendarComponent from "../../commons/timeline-commons/dates-calendar/CalendarComponent";
-import InfiniteScrollCalendar from "../../commons/timeline-commons/dates-calendar/CalendarComponent";
-// const data = ['Eugenia', 'Bryan', 'Linda', 'Nancy', 'Lloyd', 'Alice', 'Julia', 'Albert'].map(
-//   item => ({ label: item, value: item })
-// );
+import CalendarComponent from "../../commons/timeline-commons/dates-calendar/gantt/CalendarComponent";
+import MainFiltersBar from "../../commons/timeline-commons/filters-bar/MainFiltersBar";
+import EventGantt from "../../commons/timeline-commons/dates-calendar/gantt/EventGantt";
 
-const data: any = [
-  { label: "Sector 1", value: "sector1" },
-  { label: "Sector 2", value: "sector2" },
-  { label: "Sector 3", value: "sector3" },
-];
 const TimeLineComponent = () => {
-  // Estado para controlar la apertura del Drawer
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { width, height } = useWindowSize();
-  // Función para manejar la apertura del Drawer
+
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true);
   };
 
-  // Función para manejar el cierre del Drawer
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
   };
-
-  console.log("width, height ", width, height);
 
   return (
     <Box>
@@ -58,10 +44,29 @@ const TimeLineComponent = () => {
         isOpen={isDrawerOpen}
         setIsOpen={setIsDrawerOpen} // Pasar la función para cerrar el Drawer
       />
+      <MainFiltersBar />
+      <Box
+        sx={{
+          paddingInline: "16px",
+          paddingBottom: "16px",
+        }}
+      >
+        <EventGantt year={2024} month={9}/>
 
-      <Box sx={{ display: "flex", direction: "row" }}>
-        <SectorsInTimeLine />
-        <CalendarComponent />
+        <Box
+          sx={{
+            borderRadius: "16px",
+            border: "1px solid #E2E8F0",
+            display: "flex",
+            flexDirection: "row",
+            zIndex: 1,
+            overflow: "hidden", // Asegura que el contenido se ajuste dentro del marco
+          }}
+        >
+
+          <SectorsInTimeLine children={"ACA CHILDREN"} />
+          <CalendarComponent children={"ACA CHILDREN"} />
+        </Box>
       </Box>
     </Box>
   );

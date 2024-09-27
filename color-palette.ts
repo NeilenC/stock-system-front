@@ -27,7 +27,7 @@ const colors = {
       light: '#E1E6EF',
       main: '#B0BEC5',
       dark: '#1976d2',
-      contrastText: '#fff',
+      contrastText: '#757575',
     },
     success: {
       light: '#81c784',

@@ -8,11 +8,21 @@ import {
   addMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import theme from "../../../theme";
-import { ActivityState } from "../../../enum/activities/activity.enum";
-import GantComponent from "./gantt/GantComponent";
+import theme from "../../../../theme";
+import { ActivityState } from "../../../../enum/activities/activity.enum";
+import GantComponent from "./GantComponent";
+import { ActivityUtils } from "../../../../Class-activities/ActivityUtils";
+import EventGantt from "./EventGantt";
 
-const MonthComponent = ({ year, month }: { year: number; month: number }) => {
+export const MonthComponent = ({
+  year,
+  month,
+  children,
+}: {
+  year: number;
+  month: number;
+  children?: any;
+}) => {
   const startDate = startOfMonth(new Date(year, month - 1));
   const endDate = endOfMonth(new Date(year, month - 1));
   const daysInMonth = eachDayOfInterval({ start: startDate, end: endDate });
@@ -21,18 +31,18 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
   return (
     <Box
       sx={{
-        minWidth: numberOfDays * 43.5,
+        minWidth: numberOfDays * 43.30,
         bgcolor: theme.palette.background.default,
-        paddingLeft: 1,
-        position:'relative',
+        // paddingLeft: 1,
+        position: "relative",
       }}
     >
       {/* Título del mes */}
       <Box
         sx={{
           textAlign: "center",
-        borderRadius:'16px',
-        backgroundColor: theme.palette.background.default,
+          borderRadius: "16px",
+          backgroundColor: theme.palette.background.default,
           pt: "9px",
         }}
       >
@@ -45,8 +55,8 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
       </Box>
 
       {/* Días del mes en fila */}
-      
-        <Grid container sx={{ borderLeft: "1px solid #E1E6EF" ,   zIndex: 0,}}>
+
+      <Grid container sx={{ borderLeft: "1px solid #E1E6EF", zIndex: 0 }}>
         {daysInMonth.map((day, index) => {
           const dayOfWeek = day.getDay(); // 0 = Domingo, 6 = Sábado
           const isSaturday = dayOfWeek === 6;
@@ -54,7 +64,6 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
 
           return (
             <Grid item key={index}>
-
               {/* Casillas */}
               <Box
                 sx={{
@@ -121,23 +130,23 @@ const MonthComponent = ({ year, month }: { year: number; month: number }) => {
       {/* Box transparente para ver el fondo */}
       <Box
         sx={{
-          width: numberOfDays * 42.8,
-          height: "100vh", // Ajusta la altura según sea necesario
-          backgroundColor: "rgba(255, 255, 255, 10)", // Fondo blanco con opacidad
-          backdropFilter: "blur(5px)", // Efecto de desenfoque
-          margin: "40px 0px auto", // Espaciado superior opcional
+          width: numberOfDays * 43,
+          height: "100vh",
+          backgroundColor: "rgba(255, 255, 255, 10)",
+          backdropFilter: "blur(5px)",
+          margin: "40px 0px auto",
         }}
       >
+ {/* Overlay for events */}
+ <EventGantt  year={year} month={month} />
 
-
-
-      </Box>
+    </Box>
     </Box>
   );
 };
 
 // Componente principal con funcionalidad de scroll infinito horizontal
-const InfiniteScrollCalendar = () => {
+const InfiniteScrollCalendar = ({ children }: any) => {
   const [months, setMonths] = useState<{ year: number; month: number }[]>([
     { year: 2024, month: 9 }, // Mes inicial: Septiembre 2024
   ]);
@@ -190,6 +199,7 @@ const InfiniteScrollCalendar = () => {
           key={index}
           year={monthData.year}
           month={monthData.month}
+          children={children}
         />
       ))}
     </Box>

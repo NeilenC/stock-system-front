@@ -11,7 +11,7 @@ function AuthButton({ handlerFunction, text }: AuthButtonProps) {
       variant="contained"
       // color="primary"
       onClick={handlerFunction}
-      sx= {{textTransform:'none', bgcolor:'black'}}
+      sx= {{bgcolor:'black'}}
     >
       {text}
     </Button>

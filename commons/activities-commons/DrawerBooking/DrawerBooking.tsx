@@ -258,7 +258,6 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
             color="secondary"
             fullWidth
             sx={{
-              textTransform: "none",
               color: "#F9FAFB",
               fontSize: "15px",
               fontWeight: 350,

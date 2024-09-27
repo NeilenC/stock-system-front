@@ -1,22 +1,30 @@
 export enum ActivityState {
-    ARMADO = 'armado',
-    EVENTO = 'evento',
-    DESARME = 'desarme',
-    RESERVA = 'reserva',
-    EN_PROCESO_DE_FIRMA = 'en-proceso-de-firma',
-    OCUPACION_PARCIAL_DEL_DIA = 'ocupacion-parcial-del-dia',
-    CANCELADO = 'cancelado',
+    RESERVA = 'Reserva',
+    CONFIRMADO = 'Confirmado',
+    ARMADO='Armado',
+    DESARME='Desarme',
+    EN_PROCESO_DE_FIRMA = 'En proceso de firma',
+    OCUPACION_PARCIAL_DEL_DIA = 'Ocupación parcial del dia',
+    DIA_COMPARTIDO='Día compartido',
+    PENDIENTE_DE_APROBACION='Pendiente de aprobación',
+    OBRAS_REPARACION='Obras / Reparación ',
+    ARCHIVADO= 'Archivado',
+    CANCELADO = 'Cancelado',
     NADA = 'nada'
   }
   
   export enum ActivityColor {
-    ARMADO = 'lightgreen',
-    EVENTO = 'yellow',
-    DESARME = 'red',
-    RESERVA = 'lightblue',
-    EN_PROCESO_DE_FIRMA = 'orange',
+    CONFIRMADO = '#81FFA5',
+    RESERVA = '#86CBFF',
+    PENDIENTE_DE_APROBACION='#FFEB9A',
+    ARMADO='lightgreen',
+    DESARME='lightgreen',
+    EN_PROCESO_DE_FIRMA = '#FFB873',
     OCUPACION_PARCIAL_DEL_DIA = 'pink',
-    CANCELADO = 'green',
+    DIA_COMPARTIDO='#F3A5D0',
+    OBRAS_REPARACION='#F3A5A5',
+    CANCELADO = '#8A8787',
+    ARCHIVADO='#D0D0D0',
     NADA = 'white'
   }
   

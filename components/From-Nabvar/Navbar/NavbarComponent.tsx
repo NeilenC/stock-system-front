@@ -208,6 +208,11 @@ const NavbarComponent = () => {
         backgroundColor: theme.palette.primary.dark,
         paddingInline: isMobile ? "8px" : "16px",
         paddingBlock: isMobile ? "8px" : "8px",
+        zIndex:1,
+        maxHeight: '70px',
+        maxWidth: '100vw', // Se asegura que no sobresalga el ancho de la pantalla
+        overflow: 'hidden', // Evita que el contenido sobresalga
+        boxSizing: 'border-box',
       }}
     >
       <Box
@@ -229,7 +234,7 @@ const NavbarComponent = () => {
         <Box
           display="flex"
           justifyContent={isMediumScreen ? "flex-start" : "center"}
-          gap={isMediumScreen ? "2px" : "25px"} // Separacion de las opciones principales
+          gap={isMediumScreen ? "2px" : "20px"} // Separacion de las opciones principales
           flexGrow={1}
         >
           {navbarOptions.map((option, index) => (
@@ -250,7 +255,6 @@ const NavbarComponent = () => {
                     }}
                     sx={{
                       color: theme.palette.secondary.contrastText,
-                      textTransform: "none",
                       fontSize: isMediumScreen ? "10px" : "0.8rem",
                       display: "flex",
                       alignItems: "center",
@@ -397,7 +401,6 @@ const NavbarComponent = () => {
                     onClick={() => setIsSelected(option.label)}
                     sx={{
                       color: theme.palette.secondary.contrastText,
-                      textTransform: "none",
                       fontSize: isMediumScreen ? "10px" : "0.8rem",
 
                       // display: "flex",
@@ -466,7 +469,6 @@ const NavbarComponent = () => {
               }}
               sx={{
                 color: theme.palette.secondary.contrastText,
-                textTransform: "none",
                 display: "flex",
                 alignItems: "center", // Alinea el contenido en el centro vertical
                 backgroundColor:

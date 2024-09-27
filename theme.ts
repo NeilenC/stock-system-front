@@ -59,6 +59,13 @@ const theme = createTheme({
   },
 // COMPONENTES PERSONALIZADOS
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none', // Aplicar textTransform: none a todos los botones
+        },
+      },
+    },
     MuiInputAdornment: {
       styleOverrides: {
         root: {

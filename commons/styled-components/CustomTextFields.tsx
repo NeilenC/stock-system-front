@@ -15,24 +15,25 @@ const FormLabelComponent = styled(FormLabel)(() => ({
     },
   }));
 
-  const CustomTextField = styled(TextField)(({ theme }) => ({
+  const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
+  
     '& .MuiOutlinedInput-root': {
-      height: '43px',
+      height: isFromBooking ?  '43px' : '38px',
       borderRadius: '8px',
       border: '1px solid #E1E6EF',
-      marginBottom: '24px',
-      marginTop: '12px',
+      marginBottom: isFromBooking ? '24px' : '0px',
+      marginTop:  isFromBooking ?'12px'  : '0px',
       '& input': {
-        padding: '10px 14px', 
+        padding: isFromBooking ?  '10px 14px':'8px' , 
       },
       '& fieldset': {
-        borderColor: '#E1E6EF',
+        borderColor:'#E1E6EF' ,
       },
       '&:hover fieldset': {
-        borderColor: '#B0BEC5', 
+        borderColor:  isFromBooking ? '#B0BEC5'  : theme.palette.secondary.main, 
       },
 
-    },
+    }, 
   }));
 
 
