@@ -78,22 +78,20 @@ const GantComponent: React.FC<GantProps> = ({
       {isConfirmed && (
         <Box
         sx={{
-          paddingInlineStart: assemblyDays ? `${assemblyDays }px` : null,
-          backgroundColor: "rgba(144, 238, 144, 0.3)", // Verde claro con opacidad
-          backgroundImage: `repeating-linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.5) 0px,
-            rgba(255, 255, 255, 0.5) 1px,
-            transparent 1px,
-            transparent 6px
-          )`, // Líneas diagonales
+          width: assemblyDays ? `${(assemblyDays + 1) * 43}px` : null,
+          backgroundColor: "lightgreen", // Verde claro con opacidad
+          // backgroundImage: `repeating-linear-gradient(
+          //   45deg,
+          //   rgba(255, 255, 255, 0.5) 0px,
+          //   rgba(255, 255, 255, 0.5) 1px,
+          //   transparent 1px,
+          //   transparent 6px
+          // )`, // Líneas diagonales
           backgroundSize: "10px 10px", // Ajusta el tamaño del patrón
           borderRadius: "8px", // Opcional: bordes redondeados
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
         }}>
-          <Box sx={{ color:'black', bgcolor:'white', borderRadius:'8px'}}>
+          <Box sx={{  alignItems:'flex-end' }}>
           {assemblyDays}d
 
           </Box>
@@ -141,6 +139,7 @@ const GantComponent: React.FC<GantProps> = ({
           </Box>
         )} */}
       {/* Icono de menú de tres puntos verticales */}
+
       <IconButton
         sx={{
           borderRadius: "50%",
@@ -153,6 +152,28 @@ const GantComponent: React.FC<GantProps> = ({
       >
         <MoreVertIcon />
       </IconButton>
+      {isConfirmed && (
+        <Box
+        sx={{
+          width: disassemblyDays ? `${(disassemblyDays + 1) * 43}px` : null,
+          backgroundColor: "lightgreen", // Verde claro con opacidad
+          // backgroundImage: `repeating-linear-gradient(
+          //   45deg,
+          //   rgba(255, 255, 255, 0.5) 0px,
+          //   rgba(255, 255, 255, 0.5) 1px,
+          //   transparent 1px,
+          //   transparent 6px
+          // )`, // Líneas diagonales
+          backgroundSize: "10px 10px", // Ajusta el tamaño del patrón
+          borderRadius: "8px", // Opcional: bordes redondeados
+          display: "flex",
+        }}>
+          <Box sx={{  alignItems:'flex-end' }}>
+          {disassemblyDays}d
+
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -7,7 +7,7 @@ export interface GantProps {
     endDate: string;
     openingDate?:string;
     closingDate?:string;
-    sector: string;
+    sector: number[];
     isConfirmed?: boolean,
     assemblyDays?: number,
     disassemblyDays?: number

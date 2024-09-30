@@ -11,6 +11,7 @@ import SectorsInTimeLine from "../../commons/timeline-commons/SectorsInTimeLine"
 import CalendarComponent from "../../commons/timeline-commons/dates-calendar/gantt/CalendarComponent";
 import MainFiltersBar from "../../commons/timeline-commons/filters-bar/MainFiltersBar";
 import EventGantt from "../../commons/timeline-commons/dates-calendar/gantt/EventGantt";
+import { useSectorPositions } from "../../context/SectorPositionsProvider";
 
 const TimeLineComponent = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -51,7 +52,7 @@ const TimeLineComponent = () => {
           paddingBottom: "16px",
         }}
       >
-        <EventGantt year={2024} month={9}/>
+        {/* <EventGantt year={2024} month={9}/> */}
 
         <Box
           sx={{
@@ -66,6 +67,7 @@ const TimeLineComponent = () => {
 
           <SectorsInTimeLine children={"ACA CHILDREN"} />
           <CalendarComponent children={"ACA CHILDREN"} />
+
         </Box>
       </Box>
     </Box>

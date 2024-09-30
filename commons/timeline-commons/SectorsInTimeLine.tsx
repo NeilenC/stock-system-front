@@ -1,11 +1,13 @@
 import { Box, Typography, Collapse, IconButton } from "@mui/material";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useSalas from "../../hooks/useSalas";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import theme from "../../theme";
 import IconToImage from "../styled-components/IconImages";
 import sectors from '../../public/sectorIcon.png'
+import { createContext } from "vm";
+import { useSectorPositions } from "../../context/SectorPositionsProvider";
 // Función para agrupar sectores por su campo "sector"
 export const groupSectorsByCategory = (sectors: any) => {
   return sectors.reduce((acc: any, sector: any) => {
@@ -18,27 +20,34 @@ export const groupSectorsByCategory = (sectors: any) => {
   }, {});
 };
 
-const eventos = [
-  { id: 1, sectorId: 101, nombre: "Evento 1", fechaInicio: "2024-09-10", fechaFin: "2024-09-15" },
-  { id: 2, sectorId: 102, nombre: "Evento 2", fechaInicio: "2024-09-12", fechaFin: "2024-09-18" },
-  { id: 3, sectorId: 101, nombre: "Evento 3", fechaInicio: "2024-09-20", fechaFin: "2024-09-25" },
-];
 
-
-
-const SectorsInTimeLine = ({children}: any) => {
+const SectorsInTimeLine = ({ children }: any) => {
   const { salas } = useSalas();
+  const { sectorPositions, setSectorPositions } = useSectorPositions(); 
+  const sectorRefs = useRef<{ [sectorId: number]: HTMLDivElement | null }>({});
 
   // Agrupar sectores por su campo "sector"
   const groupedSectors = groupSectorsByCategory(salas);
 
   // Estado para manejar qué categorías están abiertas
-  const [openCategories, setOpenCategories] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [openSectors, setOpenSectors] = useState<{
-    [category: string]: number[];
-  }>({});
+  const [openCategories, setOpenCategories] = useState<{ [key: string]: boolean }>({});
+  const [openSectors, setOpenSectors] = useState<{ [category: string]: number[] }>({});
+
+  // useEffect para obtener la posición de cada sector
+  useEffect(() => {
+    const positions: { [sectorId: number]: number } = {};
+    Object.keys(sectorRefs.current).forEach((sectorId: any) => {
+      const ref = sectorRefs.current[sectorId];
+      if (ref) {
+        const rect = ref.getBoundingClientRect();
+        positions[Number(sectorId)] = rect.top; // Guardar la posición Y
+      }
+    });
+    setSectorPositions(positions); // Actualiza el estado con las posiciones calculadas
+  }, [openCategories, openSectors, setSectorPositions]);
+
+  console.log("POSICIONES", sectorPositions, salas); // Verificar las posiciones
+
   // Función para alternar la categoría colapsada o expandida
   const handleToggleCategory = (category: string) => {
     setOpenCategories((prevState) => ({
@@ -53,13 +62,11 @@ const SectorsInTimeLine = ({children}: any) => {
       const isOpen = prevState[category]?.includes(sectorId);
 
       if (isOpen) {
-        // Si el sector ya está abierto, lo eliminamos del array
         return {
           ...prevState,
           [category]: prevState[category].filter((id) => id !== sectorId),
         };
       } else {
-        // Si el sector no está abierto, lo agregamos al array
         return {
           ...prevState,
           [category]: [...(prevState[category] || []), sectorId],
@@ -67,153 +74,111 @@ const SectorsInTimeLine = ({children}: any) => {
       }
     });
   };
+
   return (
     <Box>
-<Box
-  sx={{
-    height: '70px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent:'space-between',
-    paddingInline:'16px'
-  }}
->
-  <Typography variant="body2" sx={{ color:theme.palette.info.contrastText}}>
-    Espacios
-  </Typography>
-  <IconButton sx={{ color: 'white', mr: 1 }}>
-    <IconToImage icon={sectors} h={28} w={28} />
-  </IconButton>
-</Box>
-<Box sx={{ minWidth: "310px" }}>
-      {Object.keys(groupedSectors).map((category) => (
-        <Box key={category}>
-          <Box
-            sx={{
-              backgroundColor: theme.palette.primary.dark,
-              paddingBlock: "8px",
-              maxHeight: "40px",
-              paddingInline: "16px",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer", // Hacer el área clicable
-            }}
-            onClick={() => handleToggleCategory(category)} // Alterna la categoría al hacer click
-          >
-            <IconButton size="small" sx={{ color: "#fff", p: 0 }}>
-              {openCategories[category] ? (
-                <ArrowDropDownIcon />
-              ) : (
-                <ArrowRightIcon />
-              )}
-            </IconButton>
-            <Typography
-              variant="body1"
-              sx={{ color: "#fff", fontWeight: "bold", pl: "12px" }}
+      <Box sx={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingInline: '16px' }}>
+        <Typography variant="body2" sx={{ color: theme.palette.info.contrastText }}>
+          Espacios
+        </Typography>
+        <IconButton sx={{ color: 'white', mr: 1 }}>
+          <IconToImage icon={sectors} h={28} w={28} />
+        </IconButton>
+      </Box>
+      <Box sx={{ minWidth: "310px" }}>
+        {Object.keys(groupedSectors).map((category) => (
+          <Box key={category}>
+            <Box
+              sx={{
+                backgroundColor: theme.palette.primary.dark,
+                paddingBlock: "8px",
+                maxHeight: "40px",
+                paddingInline: "16px",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => handleToggleCategory(category)}
             >
-              {category}
-            </Typography>
-          </Box>
+              <IconButton size="small" sx={{ color: "#fff", p: 0 }}>
+                {openCategories[category] ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+              </IconButton>
+              <Typography variant="body1" sx={{ color: "#fff", fontWeight: "bold", pl: "12px" }}>
+                {category}
+              </Typography>
+            </Box>
 
-          {/* Collapse para mostrar u ocultar los sectores */}
-          <Collapse in={openCategories[category]} timeout="auto" unmountOnExit>
-            {groupedSectors[category].map((sector: any) => (
-              <Box key={sector.id}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "start",
-                    paddingInline: "16px",
-                    paddingBlock: "8px",
-                    borderLeft: "7px solid #E1E6EF",
-                    bgcolor: "#F5F5F5", // Fondo blanco
-                    borderBottom: "1px solid #E1E6EF",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleToggleSector(category, sector.id)} 
-                >
+            <Collapse in={openCategories[category]} timeout="auto" unmountOnExit>
+              {groupedSectors[category].map((sector: any) => (
+                <Box key={sector.id}>
                   <Box
+                    ref={(el: any) => (sectorRefs.current[sector.id] = el)} // Referencia al sector
                     sx={{
                       display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
+                      flexDirection: "column",
+                      alignItems: "start",
+                      paddingInline: "16px",
+                      paddingBlock: "8px",
+                      borderLeft: "7px solid #E1E6EF",
+                      bgcolor: "#F5F5F5",
+                      borderBottom: "1px solid #E1E6EF",
+                      cursor: "pointer",
                     }}
+                    onClick={() => handleToggleSector(category, sector.id)}
                   >
-                    <IconButton
-                      size="small"
-                      sx={{ p: 0, justifyContent: "center" }}
-                    >
-                      {openSectors[category]?.includes(sector.id) && sector.description ? ( 
-                        <ArrowDropDownIcon
-                          sx={{ color: theme.palette.primary.dark }}
-                        />
-                      ) : (
-                        <ArrowRightIcon sx={{ color: sector.description ? 'black' : "#F5F5F5" }} />
-                      )}
-                    </IconButton>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        pl: "8px",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: "bold", fontSize: "14px" }}
-                      >
-                        {sector.name}
-                      </Typography>
-                      <Typography variant="body2" sx={{ fontSize: "12px" }}>
-                        {sector.square_meters} m²
-                      </Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                      <IconButton size="small" sx={{ p: 0, justifyContent: "center" }}>
+                        {openSectors[category]?.includes(sector.id) && sector.description ? (
+                          <ArrowDropDownIcon sx={{ color: theme.palette.primary.dark }} />
+                        ) : (
+                          <ArrowRightIcon sx={{ color: sector.description ? 'black' : "#F5F5F5" }} />
+                        )}
+                      </IconButton>
+                      <Box sx={{ display: "flex", flexDirection: "column", pl: "8px" }}>
+                        <Typography variant="body2" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          {sector.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                          {sector.square_meters} m²
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
 
-                {/* Collapse interno para mostrar más información del sector */}
-
-                {/* //Los eventos se van a tener que mapear por fecha  */}
-                <Collapse
-                  in={openSectors[category]?.includes(sector.id)} // Comprobar si el sector está en el array de sectores abiertos
-                  timeout="auto"
-                  unmountOnExit
-                  sx={{ border: " 0px 1px 1px 1px solid #E1E6EF" }}
-                >
-                  <Box
-                    sx={{
-                      padding: "8px 72px 16px ",
-                      bgcolor: "#ffff",
-                      borderRadius: "4px",
-                      alignContent: "center",
-                      lineHeight: "24px",
-                    }}
+                  <Collapse
+                    in={openSectors[category]?.includes(sector.id)}
+                    timeout="auto"
+                    unmountOnExit
+                    sx={{ border: "0px 1px 1px 1px solid #E1E6EF" }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ fontSize: "16px", fontWeight: "bold" }}
+                    <Box
+                      sx={{
+                        padding: "8px 72px 16px",
+                        bgcolor: "#ffff",
+                        borderRadius: "4px",
+                        alignContent: "center",
+                        lineHeight: "24px",
+                      }}
                     >
-                      Descripción
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: "15px" }}>
-                      {sector.square_meters}
-                    </Typography>
-                  </Box>
-                </Collapse>
-              </Box>
-            ))}
-          </Collapse>
-        </Box>
-      ))}
+                      <Typography variant="body2" sx={{ fontSize: "16px", fontWeight: "bold" }}>
+                        Descripción
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontSize: "15px" }}>
+                        {sector.square_meters}
+                      </Typography>
+                    </Box>
+                  </Collapse>
+                </Box>
+              ))}
+            </Collapse>
+          </Box>
+        ))}
+      </Box>
     </Box>
-    </Box>
-
   );
 };
 
 export default SectorsInTimeLine;
-
 
 
 
