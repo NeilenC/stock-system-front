@@ -16,7 +16,7 @@ import {
 } from "../../../styled-components/CustomTextFields";
 import CustomDateTimePicker from "../../../styled-components/CustomDatePicker";
 import useEventStore from "../activity-hook/useEventStore";
-import theme from "../../../../theme";
+import theme from "../../../../themes/theme";
 // import { SelectPicker, Stack } from 'rsuite';
 import { Stack } from "@mui/material";
 import useSalas from "../../../../hooks/useSalas";

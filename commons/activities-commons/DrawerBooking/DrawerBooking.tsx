@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
-import theme from "../../../theme";
+import theme from "../../../themes/theme";
 import GeneralInfoContent from "./DrawerSections/GeneralInfo";
 import LogisticsSection from "./DrawerSections/Logisticts";
 import OperationalDetails from "./DrawerSections/OperationalDetails";

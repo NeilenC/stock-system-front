@@ -4,7 +4,6 @@ export class ActivityUtils {
       const endDateObj = new Date(end);
       // Calcula la diferencia en milisegundos y convierte a días
       const durationInMilliseconds = endDateObj.getTime() - startDateObj.getTime();
-      console.log("DIAS ----:::", Math.ceil(durationInMilliseconds / (1000 * 60 * 60 * 24)))
       return Math.ceil(durationInMilliseconds / (1000 * 60 * 60 * 24)); 
     }
 
@@ -12,7 +11,6 @@ export class ActivityUtils {
     // Funcion para obtener los días 
     static getStartDayIndex (eventStartDate: any) {
       const startDay = new Date(eventStartDate).getDate();
-      console.log("startDay --", startDay)
       return startDay; 
     };
 

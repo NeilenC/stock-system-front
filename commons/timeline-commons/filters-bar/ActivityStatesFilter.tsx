@@ -18,7 +18,7 @@ import IconToImage from "../../styled-components/IconImages";
 import { CustomSwitch } from "./CustomSwitch";
 import { CustomTextField } from "../../styled-components/CustomTextFields";
 import search from "../../../public/search.png";
-import theme from "../../../theme";
+import theme from "../../../themes/theme";
 
 const activityStates = [
   {

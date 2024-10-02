@@ -1,7 +1,7 @@
 import { Box, FormLabel, TextField, Typography } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import theme from "../../theme";
+import theme from "../../themes/theme";
 import { styled } from '@mui/material/styles';
 
 const TitleComponent = ({ text, sx, ...props }: any) => {

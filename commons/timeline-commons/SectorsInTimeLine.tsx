@@ -3,11 +3,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import useSalas from "../../hooks/useSalas";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import theme from "../../theme";
+import theme from "../../themes/theme";
 import IconToImage from "../styled-components/IconImages";
-import sectors from '../../public/sectorIcon.png'
-import { createContext } from "vm";
+import sectors from "../../public/sectorIcon.png";
 import { useSectorPositions } from "../../context/SectorPositionsProvider";
+
 // Función para agrupar sectores por su campo "sector"
 export const groupSectorsByCategory = (sectors: any) => {
   return sectors.reduce((acc: any, sector: any) => {
@@ -20,22 +20,23 @@ export const groupSectorsByCategory = (sectors: any) => {
   }, {});
 };
 
-
 const SectorsInTimeLine = ({ children }: any) => {
   const { salas } = useSalas();
-  const { sectorPositions, setSectorPositions } = useSectorPositions(); 
+  const { sectorPositions, setSectorPositions } = useSectorPositions();
   const sectorRefs = useRef<{ [sectorId: number]: HTMLDivElement | null }>({});
-
-  // Agrupar sectores por su campo "sector"
+  const prevPositionsRef = useRef<{ [sectorId: number]: number }>({});
   const groupedSectors = groupSectorsByCategory(salas);
+  const [openCategories, setOpenCategories] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [openSectors, setOpenSectors] = useState<{
+    [category: string]: number[];
+  }>({});
 
-  // Estado para manejar qué categorías están abiertas
-  const [openCategories, setOpenCategories] = useState<{ [key: string]: boolean }>({});
-  const [openSectors, setOpenSectors] = useState<{ [category: string]: number[] }>({});
-
-  // useEffect para obtener la posición de cada sector
-  useEffect(() => {
+  // Función para calcular las posiciones de los sectores
+  const calculateSectorPositions = () => {
     const positions: { [sectorId: number]: number } = {};
+
     Object.keys(sectorRefs.current).forEach((sectorId: any) => {
       const ref = sectorRefs.current[sectorId];
       if (ref) {
@@ -43,12 +44,21 @@ const SectorsInTimeLine = ({ children }: any) => {
         positions[Number(sectorId)] = rect.top; // Guardar la posición Y
       }
     });
-    setSectorPositions(positions); // Actualiza el estado con las posiciones calculadas
-  }, [openCategories, openSectors, setSectorPositions]);
 
-  console.log("POSICIONES", sectorPositions, salas); // Verificar las posiciones
+    // Compra las posiciones antes de actualizar
+    if (
+      JSON.stringify(positions) !== JSON.stringify(prevPositionsRef.current)
+    ) {
+      setSectorPositions(positions); // Actualiza el estado solo si hay cambios
+      prevPositionsRef.current = positions; // Actualiza las posiciones anteriores
+    }
+  };
 
-  // Función para alternar la categoría colapsada o expandida
+  // useEffect para obtener la posición de cada sector cuando cambian los sectores
+  useEffect(() => {
+    calculateSectorPositions();
+  }, [openSectors, groupedSectors]); // Recalcular cuando se abre/cierra un sector o cambian los sectores
+
   const handleToggleCategory = (category: string) => {
     setOpenCategories((prevState) => ({
       ...prevState,
@@ -56,36 +66,73 @@ const SectorsInTimeLine = ({ children }: any) => {
     }));
   };
 
-  // Función para alternar sectores; asegurarse de que solo un sector esté abierto a la vez
   const handleToggleSector = (category: string, sectorId: number) => {
+    const isOpen = openSectors[category]?.includes(sectorId);
+
+    // Obtener la referencia del sector actual
+    const sectorRef = sectorRefs.current[sectorId];
+
+    // Obtener el tamaño del sector
+    const sectorHeight = sectorRef
+      ? sectorRef.getBoundingClientRect().height
+      : 0;
+
+    // Ajustar las posiciones del sector
+    const updatedPositions = { ...sectorPositions };
+
+    if (!isOpen) {
+      // Si se abre, solo incrementar la posición de los sectores directamente por debajo
+      Object.keys(updatedPositions).forEach((key) => {
+        if (Number(key) > sectorId) {
+          updatedPositions[Number(key)] += sectorHeight;
+        }
+      });
+    } else {
+      // Si se cierra, solo decrementar la posición de los sectores directamente por debajo
+      Object.keys(updatedPositions).forEach((key) => {
+        if (Number(key) > sectorId) {
+          updatedPositions[Number(key)] -= sectorHeight;
+        }
+      });
+    }
+
     setOpenSectors((prevState) => {
-      const isOpen = prevState[category]?.includes(sectorId);
-
-      if (isOpen) {
-        return {
-          ...prevState,
-          [category]: prevState[category].filter((id) => id !== sectorId),
-        };
-      } else {
-        return {
-          ...prevState,
-          [category]: [...(prevState[category] || []), sectorId],
-        };
-      }
+      return {
+        ...prevState,
+        [category]: isOpen
+          ? prevState[category].filter((id) => id !== sectorId)
+          : [...(prevState[category] || []), sectorId],
+      };
     });
-  };
 
+    // Actualiza las posiciones del sector
+    setSectorPositions(updatedPositions);
+  };
   return (
     <Box>
-      <Box sx={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingInline: '16px' }}>
-        <Typography variant="body2" sx={{ color: theme.palette.info.contrastText }}>
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          height: "70px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingInline: "16px",
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{ color: theme.palette.info.contrastText }}
+        >
           Espacios
         </Typography>
-        <IconButton sx={{ color: 'white', mr: 1 }}>
+        <IconButton sx={{ color: "white", mr: 1 }}>
           <IconToImage icon={sectors} h={28} w={28} />
         </IconButton>
       </Box>
-      <Box sx={{ minWidth: "310px" }}>
+      <Box sx={{ minWidth: "310px", overflow: "auto" }}>
         {Object.keys(groupedSectors).map((category) => (
           <Box key={category}>
             <Box
@@ -101,14 +148,25 @@ const SectorsInTimeLine = ({ children }: any) => {
               onClick={() => handleToggleCategory(category)}
             >
               <IconButton size="small" sx={{ color: "#fff", p: 0 }}>
-                {openCategories[category] ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+                {openCategories[category] ? (
+                  <ArrowDropDownIcon />
+                ) : (
+                  <ArrowRightIcon />
+                )}
               </IconButton>
-              <Typography variant="body1" sx={{ color: "#fff", fontWeight: "bold", pl: "12px" }}>
+              <Typography
+                variant="body1"
+                sx={{ color: "#fff", fontWeight: "bold", pl: "12px" }}
+              >
                 {category}
               </Typography>
             </Box>
 
-            <Collapse in={openCategories[category]} timeout="auto" unmountOnExit>
+            <Collapse
+              in={openCategories[category]}
+              timeout="auto"
+              unmountOnExit
+            >
               {groupedSectors[category].map((sector: any) => (
                 <Box key={sector.id}>
                   <Box
@@ -123,19 +181,45 @@ const SectorsInTimeLine = ({ children }: any) => {
                       bgcolor: "#F5F5F5",
                       borderBottom: "1px solid #E1E6EF",
                       cursor: "pointer",
+                      minHeight: "50px", // Establece una altura mínima
                     }}
                     onClick={() => handleToggleSector(category, sector.id)}
                   >
-                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                      <IconButton size="small" sx={{ p: 0, justifyContent: "center" }}>
-                        {openSectors[category]?.includes(sector.id) && sector.description ? (
-                          <ArrowDropDownIcon sx={{ color: theme.palette.primary.dark }} />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <IconButton
+                        size="small"
+                        sx={{ p: 0, justifyContent: "center" }}
+                      >
+                        {openSectors[category]?.includes(sector.id) &&
+                        sector.description ? (
+                          <ArrowDropDownIcon
+                            sx={{ color: theme.palette.primary.dark }}
+                          />
                         ) : (
-                          <ArrowRightIcon sx={{ color: sector.description ? 'black' : "#F5F5F5" }} />
+                          <ArrowRightIcon
+                            sx={{
+                              color: sector.description ? "black" : "#F5F5F5",
+                            }}
+                          />
                         )}
                       </IconButton>
-                      <Box sx={{ display: "flex", flexDirection: "column", pl: "8px" }}>
-                        <Typography variant="body2" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          pl: "8px",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           {sector.name}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: "12px" }}>
@@ -160,11 +244,14 @@ const SectorsInTimeLine = ({ children }: any) => {
                         lineHeight: "24px",
                       }}
                     >
-                      <Typography variant="body2" sx={{ fontSize: "16px", fontWeight: "bold" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: "16px", fontWeight: "bold" }}
+                      >
                         Descripción
                       </Typography>
                       <Typography variant="body2" sx={{ fontSize: "15px" }}>
-                        {sector.square_meters}
+                        {sector.description}
                       </Typography>
                     </Box>
                   </Collapse>
@@ -179,8 +266,6 @@ const SectorsInTimeLine = ({ children }: any) => {
 };
 
 export default SectorsInTimeLine;
-
-
 
 // import { Box, Typography, Collapse, IconButton } from "@mui/material";
 // import { useState } from "react";
@@ -209,8 +294,6 @@ export default SectorsInTimeLine;
 //   { id: 2, sectorId: 102, nombre: "Evento 2", fechaInicio: "2024-09-12", fechaFin: "2024-09-18" },
 //   { id: 3, sectorId: 101, nombre: "Evento 3", fechaInicio: "2024-09-20", fechaFin: "2024-09-25" },
 // ];
-
-
 
 // const SectorsInTimeLine = ({ year, month, sectors }: any) => {
 //   const startDate = startOfMonth(new Date(year, month - 1));

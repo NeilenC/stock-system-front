@@ -9,7 +9,7 @@ import useEventStore from "../activity-hook/useEventStore";
 import email from '../../../../public/drawer/email.png'
 import phone from '../../../../public/drawer/phone.png'
 import IconToImage from "../../../styled-components/IconImages";
-import theme from "../../../../theme";
+import theme from "../../../../themes/theme";
 
 const ClientData: React.FC = () => {
   const { eventData, setClientData, setOrganizerOrResponsible,

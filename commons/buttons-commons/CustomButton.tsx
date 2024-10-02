@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Box } from "@mui/material";
 import { StaticImageData } from "next/image";
-import theme from "../../theme";
+import theme from "../../themes/theme";
 import IconToImage from "../styled-components/IconImages";
 
 interface CustomButtonProps {

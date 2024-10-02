@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
 import SectorForm from "./SectorForm";
-import theme from "../../theme";
+import theme from "../../themes/theme";
 import ModalComponent from "../../commons/modals/ModalComponent";
 
 const SectorsComponent = () => {

@@ -1,6 +1,7 @@
 import { ActivityState } from "../../../../../enum/activities/activity.enum";
 
 export interface GantProps {
+  activityId?:number;
     eventName: string;
     state: ActivityState;
     startDate: string;

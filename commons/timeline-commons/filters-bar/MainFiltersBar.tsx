@@ -16,7 +16,7 @@ import IconToImage from "../../styled-components/IconImages";
 import search from "../../../public/search.png";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-import theme from "../../../theme";
+import theme from "../../../themes/theme";
 import arrowLeft from "../../../public/filtersArrowLeft.png";
 import arrowRight from "../../../public/filtersArrowRight.png";
 

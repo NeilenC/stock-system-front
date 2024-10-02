@@ -34,7 +34,7 @@ import logout from "../../../public/navbar/logout.png";
 import ajustes from "../../../public/navbar/ajustes.png";
 import roles from "../../../public/navbar/roles.png";
 
-import theme from "../../../theme";
+import theme from "../../../themes/theme";
 import useWindowSize from "../../../hooks/useWindowSize";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";

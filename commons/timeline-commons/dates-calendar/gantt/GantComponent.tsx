@@ -5,9 +5,10 @@ import { getStateColor, getStateIcon } from "../enum/StatesEnum";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { GantProps } from "./props/GantProps";
 import { ActivityUtils } from "../../../../Class-activities/ActivityUtils";
-import { ActivityState } from "../../../../enum/activities/activity.enum";
+import { useRouter } from "next/router";
 
 const GantComponent: React.FC<GantProps> = ({
+  activityId,
   eventName,
   state,
   startDate,
@@ -19,6 +20,7 @@ const GantComponent: React.FC<GantProps> = ({
   assemblyDays,
   disassemblyDays,
 }) => {
+  const router = useRouter()
   const [activities, setActivities] = useState<any[]>([]);
   const eventDuration = ActivityUtils.calculateEventDuration(
     startDate,
@@ -69,9 +71,8 @@ const GantComponent: React.FC<GantProps> = ({
         marginBottom: "10px",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
         maxHeight: "49px",
-        position: "relative",
         bgcolor: isConfirmed ? stateColor : null,
-        zIndex: 3,
+        zIndex: 2,
         // Aplica un fondo verde si está confirmado, otro si no lo está
       }}
     >
@@ -149,6 +150,7 @@ const GantComponent: React.FC<GantProps> = ({
           justifyContent: "center",
           alignItems: "center",
         }}
+        onClick={() => router.push(`/memo/${activityId}`)}
       >
         <MoreVertIcon />
       </IconButton>

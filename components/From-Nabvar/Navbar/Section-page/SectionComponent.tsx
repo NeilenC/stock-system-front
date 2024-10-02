@@ -1,6 +1,6 @@
 import { SectionComponentProps } from "./model";
 import { Box, Grid, Typography } from "@mui/material";
-import theme from "../../../../theme";
+import theme from "../../../../themes/theme";
 import IconToImage from "../../../../commons/styled-components/IconImages";
 
 const SectionComponent: React.FC<SectionComponentProps> = ({

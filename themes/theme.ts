@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import colors from './color-palette'; // Asegúrate de usar la ruta correcta
+import colors from '../color-palette';
 
 const theme = createTheme({
   palette: {
@@ -57,36 +57,23 @@ const theme = createTheme({
       fontWeight: 400,
     },
   },
-// COMPONENTES PERSONALIZADOS
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none', // Aplicar textTransform: none a todos los botones
-        },
-      },
-    },
-    MuiInputAdornment: {
-      styleOverrides: {
-        root: {
-          marginRight: '1px', // Ajusta este valor según tus necesidades
+          textTransform: 'none',
+          width: '200px', // Ejemplo de ancho específico
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          // height: 'var(--EspaciostamaosSize-12)', // var(--EspaciostamaosSize-12)
-          // padding: 'var(--EspaciostamaosSize-2) var(--EspaciostamaosSize-3)', // var(--EspaciostamaosSize-2) var(--EspaciostamaosSize-3)
-          // gap: 'var(--EspaciostamaosSize-2) ', // var(--EspaciostamaosSize-2)
-          // borderRadius: '8px 0 0 0',
-          // border: '1px solid grey',
-          // opacity: '0',
+          width: '100%', // Aplicar un ancho dinámico para TextField
         },
       },
     },
   },
-
   breakpoints: {
     values: {
       xs: 0,
@@ -96,6 +83,7 @@ const theme = createTheme({
       xl: 1536,
     },
   },
+ 
 });
 
 export default theme;

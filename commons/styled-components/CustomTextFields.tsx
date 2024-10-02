@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Autocomplete, Box, FormLabel, ListItem, ListItemText, Select, SelectProps, TextField } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import theme from "../../theme";
+import theme from "../../themes/theme";
 import { useState } from "react";
 
 const FormLabelComponent = styled(FormLabel)(() => ({
