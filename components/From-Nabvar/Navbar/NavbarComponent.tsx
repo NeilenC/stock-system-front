@@ -96,71 +96,71 @@ const NavbarComponent = () => {
   };
 
   const navbarOptions = [
+    // {
+    //   label: "Panel De Control",
+    //   href: "/panel-de-control",
+    //   startIcon: (
+    //     <img
+    //       src={controlPanel.src}
+    //       alt="Panel De Control"
+    //       style={{ width: 24, height: 24 }}
+    //     />
+    //   ),
+    // },
     {
-      label: "Panel De Control",
-      href: "/panel-de-control",
-      startIcon: (
-        <img
-          src={controlPanel.src}
-          alt="Panel De Control"
-          style={{ width: 24, height: 24 }}
-        />
-      ),
-    },
-    {
-      label: "Plano",
-      href: "/plano",
+      label: "Espacios",
+      href: "/gestion/sectors",
       startIcon: (
         <img src={plano.src} alt="Plano" style={{ width: 24, height: 24 }} />
       ),
     },
-    {
-      label: "Gestión",
-      startIcon: (
-        <img
-          src={gestion.src}
-          alt="Gestion"
-          style={{ width: 24, height: 24 }}
-        />
-      ),
-      endIcon: openDropdowns["Gestión"] ? (
-        <ExpandLessOutlinedIcon />
-      ) : (
-        <ExpandMoreOutlinedIcon />
-      ),
-      options: [
-        {
-          label: "Línea de Tiempo",
-          href: "/gestion/timeline",
-          icon: <IconToImage icon={timeline} w={20} h={20} />, // Ejemplo de ícono
-        },
-        {
-          label: "Listados",
-          href: "/gestion/listings",
-          icon: <IconToImage icon={listados} w={20} h={20} />, // Ejemplo de ícono
-        },
-        {
-          label: "Solicitudes",
-          href: "/gestion/requests",
-          icon: <IconToImage icon={solicitudes} w={20} h={20} />, // Ejemplo de ícono
-        },
-        {
-          label: "Lista de Clientes",
-          href: "/gestion/clientslist",
-          icon: <IconToImage icon={listaclientes} w={20} h={20} />, // Ejemplo de ícono
-        },
-        {
-          label: "Proveedores",
-          href: "/gestion/suppliers",
-          icon: <IconToImage icon={proveedores} w={20} h={20} />, // Ejemplo de ícono
-        },
-        {
-          label: "Sectores",
-          href: "/gestion/sectors",
-          icon: <IconToImage icon={sectores} w={20} h={20} />, // Ejemplo de ícono
-        },
-      ],
-    },
+    // {
+    //   label: "Gestión",
+    //   startIcon: (
+    //     <img
+    //       src={gestion.src}
+    //       alt="Gestion"
+    //       style={{ width: 24, height: 24 }}
+    //     />
+    //   ),
+    //   endIcon: openDropdowns["Gestión"] ? (
+    //     <ExpandLessOutlinedIcon />
+    //   ) : (
+    //     <ExpandMoreOutlinedIcon />
+    //   ),
+    //   options: [
+    //     {
+    //       label: "Línea de Tiempo",
+    //       href: "/gestion/timeline",
+    //       icon: <IconToImage icon={timeline} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //     {
+    //       label: "Listados",
+    //       href: "/gestion/listings",
+    //       icon: <IconToImage icon={listados} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //     {
+    //       label: "Solicitudes",
+    //       href: "/gestion/requests",
+    //       icon: <IconToImage icon={solicitudes} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //     {
+    //       label: "Lista de Clientes",
+    //       href: "/gestion/clientslist",
+    //       icon: <IconToImage icon={listaclientes} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //     {
+    //       label: "Proveedores",
+    //       href: "/gestion/suppliers",
+    //       icon: <IconToImage icon={proveedores} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //     {
+    //       label: "Sectores",
+    //       href: "/gestion/sectors",
+    //       icon: <IconToImage icon={sectores} w={20} h={20} />, // Ejemplo de ícono
+    //     },
+    //   ],
+    // },
     {
       label: "Depósito",
       startIcon: (
@@ -177,29 +177,54 @@ const NavbarComponent = () => {
       ),
       options: [
         {
-          label: "Subdepósito 1",
-          href: "/deposito/subdeposito1",
+          label: "Materiales",
+          href: "/deposito/materiales",
           icon: <KeyboardArrowDownOutlinedIcon />, // Ejemplo de ícono
         },
-        {
-          label: "Subdepósito 2",
-          href: "/deposito/subdeposito2",
-          icon: <KeyboardArrowDownOutlinedIcon />, // Ejemplo de ícono
-        },
+        // {
+        //   label: "Subdepósito 2",
+        //   href: "/deposito/subdeposito2",
+        //   icon: <KeyboardArrowDownOutlinedIcon />, // Ejemplo de ícono
+        // },
       ],
     },
-    {
-      label: "Estadísticas",
-      href: "/estadisticas",
-      startIcon: (
-        <img
-          src={estadisticas.src}
-          alt="Estadisticas"
-          style={{ width: 24, height: 24 }}
-        />
-      ),
-    },
+    // {
+    //   label: "Estadísticas",
+    //   href: "/estadisticas",
+    //   startIcon: (
+    //     <img
+    //       src={estadisticas.src}
+    //       alt="Estadisticas"
+    //       style={{ width: 24, height: 24 }}
+    //     />
+    //   ),
+    // },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+  
+      // Eliminar el token del localStorage
+      localStorage.removeItem('token');
+      
+      // Redirigir al usuario a la página de login o inicio
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+  
+  
 
   return (
     <AppBar
@@ -210,8 +235,8 @@ const NavbarComponent = () => {
         paddingBlock: isMobile ? "8px" : "8px",
         zIndex:1,
         maxHeight: '70px',
-        maxWidth: '100vw', // Se asegura que no sobresalga el ancho de la pantalla
-        overflow: 'hidden', // Evita que el contenido sobresalga
+        maxWidth: '100vw', 
+        overflow: 'hidden',
         boxSizing: 'border-box',
       }}
     >
@@ -233,7 +258,7 @@ const NavbarComponent = () => {
         {/* Navbar Options */}
         <Box
           display="flex"
-          justifyContent={isMediumScreen ? "flex-start" : "center"}
+          justifyContent={isMediumScreen ? "flex-start" :'flex-end'}
           gap={isMediumScreen ? "2px" : "20px"} // Separacion de las opciones principales
           flexGrow={1}
         >
@@ -241,8 +266,8 @@ const NavbarComponent = () => {
             <Box
               key={index}
               sx={{
-                // bgcolor:"pink",
                 borderRadius: "8px",
+                // bgcolor:'red',
                 p: isMobile ? "0px" : "1px 6px",
               }}
             >
@@ -410,8 +435,8 @@ const NavbarComponent = () => {
                           ? theme.palette.secondary.main
                           : "transparent",
                       borderRadius: "8px",
-                      paddingInline: "16px",
-                      paddingBlock: "8px",
+                      // paddingInline: "5px",
+                      // paddingBlock: "8px",
                     }}
                     startIcon={option.startIcon}
                   >
@@ -430,7 +455,7 @@ const NavbarComponent = () => {
           marginLeft={isMobile ? "0px" : "2px"}
         >
           {/* Icons */}
-          <Box display="flex" alignItems="center">
+          {/* <Box display="flex" alignItems="center">
             <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
               <img
                 src={notifications.src}
@@ -448,8 +473,8 @@ const NavbarComponent = () => {
                 style={{ width: 20, height: 20 }}
               />
             </IconButton>
-          </Box>
-
+          </Box> */}
+  
           {/* User Section */}
           <Box
             sx={{
@@ -579,7 +604,7 @@ const NavbarComponent = () => {
               </MenuItem>
 
               {/* Roles y Permisos Option */}
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => handleCloseMenu(username)}
                 sx={{
                   padding: "10px 16px",
@@ -597,7 +622,7 @@ const NavbarComponent = () => {
                 >
                   Roles Y Permisos
                 </Typography>
-              </MenuItem>
+              </MenuItem> */}
 
               {/* Ajustes Option */}
               <MenuItem
@@ -622,7 +647,7 @@ const NavbarComponent = () => {
 
               {/* Cerrar Sesión Option */}
               <MenuItem
-                onClick={() => handleCloseMenu(username)}
+                onClick={() => handleLogout()}
                 sx={{
                   padding: "10px 16px",
                   borderTop: "1px solid #E0E0E0", // Divider at the top
