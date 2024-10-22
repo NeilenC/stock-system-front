@@ -3,7 +3,6 @@ import { Autocomplete, Box, FormLabel, ListItem, ListItemText, Select, SelectPro
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import theme from "../../themes/theme";
-import { useState } from "react";
 
 const FormLabelComponent = styled(FormLabel)(() => ({
     fontSize: '16px', // Tamaño de fuente
@@ -35,6 +34,8 @@ const FormLabelComponent = styled(FormLabel)(() => ({
 
     }, 
   }));
+
+
 
 
   

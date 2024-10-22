@@ -43,14 +43,55 @@ const StoragePage = () => {
     setSelectedMaterial(null);
   };
 
-  const handleSaveMaterial = (updatedMaterial: Material) => {
-    // Lógica para actualizar el material aquí
-    console.log('Material actualizado:', updatedMaterial);
+    const handleSaveMaterial = async (updatedMaterial: Material, file: File | null) => {
+      try {
+        const formData = new FormData();
+    
+        // Agregar los datos del material como JSON
+        const materialData = JSON.stringify(updatedMaterial);
+        formData.set('updateMaterialsDto', materialData);
+    
+        // Agregar la imagen si existe
+        if (file) {
+          formData.set('image', file); // El campo 'image' debe coincidir con lo que espera tu backend
+        }
+    
+        // Verifica si los datos se han agregado correctamente
+        console.log("Material Data:", materialData);
+        console.log("Archivo:", file);
+        
 
-    // Aquí puedes agregar lógica para guardar el material actualizado en el backend
-    setOpen(false);
-    setSelectedMaterial(null);
-  };
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${updatedMaterial.id}`, {
+          method: 'PATCH',
+          body: formData,
+        });
+    
+        if (!response.ok) {
+          throw new Error('Error al actualizar el material');
+        }
+    
+        const data = await response.json();
+        console.log('Material actualizado:', data);
+    
+        // Actualizar el material en las categorías después de la respuesta exitosa
+        setCategories(prevCategories => 
+          prevCategories.map(category => ({
+            ...category,
+            materials: category.materials.map(material => 
+              material.id === data.id ? data : material
+            )
+          }))
+        );
+    
+        setOpen(false);
+        setSelectedMaterial(null);
+      } catch (error) {
+        console.error('Error al actualizar el material:', error);
+      }
+    };
+  
+  
+  
 
   return (
     <div>
