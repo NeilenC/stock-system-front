@@ -44,7 +44,8 @@ const StoragePage = () => {
   };
 
   const handleSaveMaterial = async (updatedMaterial: Material, file: File | null, id: number) => {
-    try {
+        console.log('updatedMaterial enviar', updatedMaterial);
+        try {
       const formData = new FormData();
       
       // Usa keyof para obtener las claves de updatedMaterial
@@ -56,8 +57,11 @@ const StoragePage = () => {
       }
   
       if (file) {
-        formData.append('image', file); 
-      }
+        formData.append('image', file);
+        console.log('Archivo agregado al FormData:', file);
+    } else {
+        console.log('No hay archivo para enviar');
+    }
   
       // Realizar la solicitud PATCH con el id en la URL
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${id}`, {
@@ -82,9 +86,14 @@ const StoragePage = () => {
         }))
       );
   
+      if (!response.ok) {
+        const errorData = await response.text(); // Puedes obtener más información del error
+        throw new Error(`Error al actualizar el material: ${errorData}`);
+    }
       setOpen(false);
       setSelectedMaterial(null);
     } catch (error) {
+      
       console.error('Error al actualizar el material:', error);
     }
   };

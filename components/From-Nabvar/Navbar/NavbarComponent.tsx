@@ -19,14 +19,15 @@ import sectores from "../../../public/navbar/sectores.png";
 import listaclientes from "../../../public/navbar/listaclientes.png";
 import Link from "next/link";
 import controlPanel from "../../../public/navbar/control-panel.png";
-import plano from "../../../public/navbar/plano.png";
+import space from "../../../public/sector.png";
 import gestion from "../../../public/navbar/gestion.png";
-import deposito from "../../../public/navbar/deposito.png";
+import deposito from "../../../public/deposito.png";
 import logo from "../../../public/navbar/logo.png";
 import notifications from "../../../public/navbar/notifications.png";
 import iconButton from "../../../public/plus-icon.png";
 import info from "../../../public/navbar/info-icon.png";
-import account from "../../../public/navbar/account.png";
+import account from "../../../public/account2.png";
+import materials from "../../../public/materials.png";
 import estadisticas from "../../../public/navbar/estadisticas.png";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import perfil from "../../../public/navbar/profile.png";
@@ -111,7 +112,7 @@ const NavbarComponent = () => {
       label: "Espacios",
       href: "/gestion/sectors",
       startIcon: (
-        <img src={plano.src} alt="Plano" style={{ width: 24, height: 24 }} />
+        <img src={space.src} alt="Plano" style={{ width: 24, height: 24 }} />
       ),
     },
     // {
@@ -179,7 +180,7 @@ const NavbarComponent = () => {
         {
           label: "Materiales",
           href: "/deposito/materiales",
-          icon: <KeyboardArrowDownOutlinedIcon />, // Ejemplo de ícono
+          icon:  <img src={materials.src} alt="Plano" style={{ width: 20, height: 20 }} />, // Ejemplo de ícono
         },
         // {
         //   label: "Subdepósito 2",

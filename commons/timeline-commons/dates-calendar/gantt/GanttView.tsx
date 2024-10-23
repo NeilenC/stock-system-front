@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import useSalas from "../../../../hooks/useSalas";
+import useSectors from "../../../../hooks/useSectors";
 import SectorsInTimeLine, { groupSectorsByCategory } from "../../SectorsInTimeLine";
 import { Box } from "@mui/material";
 import { MonthComponent } from "./CalendarComponent";
 
 const GanttView = () => {
-    const { salas } = useSalas();
+    const { salas } = useSectors();
     // const { year, month } = useDateContext(); // Asume que tienes un contexto para manejar la fecha actual
   
     // const containerRef = useRef(null);

@@ -1,7 +1,10 @@
 export enum SectorType {
     PABELLONES = 'Pabellones',
-    BOLETERIAS = 'Boleterias',
+    BOLETERIAS = 'Boleterías',
+    OTROS_ESPACIOS = 'Otros Espacios',
+    AREASLIBRES = 'Áreas al Aire Libre',
+    RESTAURANTES= 'Restaurantes y Comedores',
     SALAS = 'Salas',
-    OTROS = 'Otros',
+    DEPOSITO = 'Depósito',
   }
   

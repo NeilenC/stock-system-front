@@ -1,12 +1,14 @@
 import { Box, Typography, Collapse, IconButton } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import useSalas from "../../hooks/useSalas";
+import useSectors from "../../hooks/useSectors";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import theme from "../../themes/theme";
 import IconToImage from "../styled-components/IconImages";
 import sectors from "../../public/sectorIcon.png";
 import { useSectorPositions } from "../../context/SectorPositionsProvider";
+import EditIcon from "@mui/icons-material/Edit"; // Asegúrate de tener esta línea
+import EditSectorModal from "../../components/sectors/SectorFormEdit";
 
 // Función para agrupar sectores por su campo "sector"
 export const groupSectorsByCategory = (sectors: any) => {
@@ -21,43 +23,29 @@ export const groupSectorsByCategory = (sectors: any) => {
 };
 
 const SectorsInTimeLine = ({ children }: any) => {
-  const { salas } = useSalas();
+  const { salas } = useSectors();
   const { sectorPositions, setSectorPositions } = useSectorPositions();
   const sectorRefs = useRef<{ [sectorId: number]: HTMLDivElement | null }>({});
   const prevPositionsRef = useRef<{ [sectorId: number]: number }>({});
   const groupedSectors = groupSectorsByCategory(salas);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingSectorId, setEditingSectorId] = useState(null);
+
+  // Inicializar todas las categorías como abiertas
   const [openCategories, setOpenCategories] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>(
+    Object.keys(groupedSectors).length > 0
+      ? Object.keys(groupedSectors).reduce((acc, category) => {
+          acc[category] = true; // Inicializa cada categoría como abierta
+          return acc;
+        }, {} as { [key: string]: boolean })
+      : {}
+  );
+
   const [openSectors, setOpenSectors] = useState<{
     [category: string]: number[];
   }>({});
-
-  // Función para calcular las posiciones de los sectores
-  const calculateSectorPositions = () => {
-    const positions: { [sectorId: number]: number } = {};
-
-    Object.keys(sectorRefs.current).forEach((sectorId: any) => {
-      const ref = sectorRefs.current[sectorId];
-      if (ref) {
-        const rect = ref.getBoundingClientRect();
-        positions[Number(sectorId)] = rect.top; // Guardar la posición Y
-      }
-    });
-
-    // Compra las posiciones antes de actualizar
-    if (
-      JSON.stringify(positions) !== JSON.stringify(prevPositionsRef.current)
-    ) {
-      setSectorPositions(positions); // Actualiza el estado solo si hay cambios
-      prevPositionsRef.current = positions; // Actualiza las posiciones anteriores
-    }
-  };
-
-  // useEffect para obtener la posición de cada sector cuando cambian los sectores
-  useEffect(() => {
-    calculateSectorPositions();
-  }, [openSectors, groupedSectors]); // Recalcular cuando se abre/cierra un sector o cambian los sectores
 
   const handleToggleCategory = (category: string) => {
     setOpenCategories((prevState) => ({
@@ -66,6 +54,11 @@ const SectorsInTimeLine = ({ children }: any) => {
     }));
   };
 
+  const handleEditSector = (sectorId: any) => {
+    setEditingSectorId(sectorId); // Guarda el ID del sector que se va a editar
+    setIsEditModalOpen(true); // Abre el modal
+  };
+  
   const handleToggleSector = (category: string, sectorId: number) => {
     const isOpen = openSectors[category]?.includes(sectorId);
 
@@ -96,23 +89,22 @@ const SectorsInTimeLine = ({ children }: any) => {
       });
     }
 
-    setOpenSectors((prevState) => {
-      return {
-        ...prevState,
-        [category]: isOpen
-          ? prevState[category].filter((id) => id !== sectorId)
-          : [...(prevState[category] || []), sectorId],
-      };
-    });
+    setOpenSectors((prevState) => ({
+      ...prevState,
+      [category]: isOpen
+        ? prevState[category].filter((id) => id !== sectorId)
+        : [...(prevState[category] || []), sectorId],
+    }));
 
     // Actualiza las posiciones del sector
     setSectorPositions(updatedPositions);
   };
+
   return (
     <Box>
       <Box
         sx={{
-          position: 'sticky',
+          position: "sticky",
           top: 0,
           zIndex: 1,
           height: "70px",
@@ -122,16 +114,9 @@ const SectorsInTimeLine = ({ children }: any) => {
           paddingInline: "16px",
         }}
       >
-        <Typography
-          variant="body2"
-          sx={{ color: theme.palette.info.contrastText }}
-        >
-          Espacios
-        </Typography>
-        <IconButton sx={{ color: "white", mr: 1 }}>
-          <IconToImage icon={sectors} h={28} w={28} />
-        </IconButton>
+        {/* Espacios */}
       </Box>
+
       <Box sx={{ minWidth: "310px", overflow: "auto" }}>
         {Object.keys(groupedSectors).map((category) => (
           <Box key={category}>
@@ -179,7 +164,7 @@ const SectorsInTimeLine = ({ children }: any) => {
                       paddingBlock: "8px",
                       borderLeft: "7px solid #E1E6EF",
                       bgcolor: "#F5F5F5",
-                      borderBottom: "1px solid #E1E6EF",
+                      borderBottom: "1px solid #E1E6E0",
                       cursor: "pointer",
                       minHeight: "50px", // Establece una altura mínima
                     }}
@@ -190,42 +175,64 @@ const SectorsInTimeLine = ({ children }: any) => {
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
                       }}
                     >
-                      <IconButton
-                        size="small"
-                        sx={{ p: 0, justifyContent: "center" }}
-                      >
-                        {openSectors[category]?.includes(sector.id) &&
-                        sector.description ? (
-                          <ArrowDropDownIcon
-                            sx={{ color: theme.palette.primary.dark }}
-                          />
-                        ) : (
-                          <ArrowRightIcon
-                            sx={{
-                              color: sector.description ? "black" : "#F5F5F5",
-                            }}
-                          />
-                        )}
-                      </IconButton>
                       <Box
                         sx={{
                           display: "flex",
-                          flexDirection: "column",
-                          pl: "8px",
+                          flexDirection: "row",
+                          alignItems: "center",
                         }}
                       >
-                        <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        <IconButton
+                          size="small"
+                          sx={{ p: 0, justifyContent: "center" }}
                         >
-                          {sector.name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontSize: "12px" }}>
-                          {sector.square_meters} m²
-                        </Typography>
+                          {openSectors[category]?.includes(sector.id) &&
+                          sector.description ? (
+                            <ArrowDropDownIcon
+                              sx={{ color: theme.palette.primary.dark }}
+                            />
+                          ) : (
+                            <ArrowRightIcon
+                              sx={{
+                                color: sector.description ? "black" : "#F5F5F5",
+                              }}
+                            />
+                          )}
+                        </IconButton>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            pl: "8px",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: "bold", fontSize: "14px" }}
+                          >
+                            {sector.name}
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                            {sector.square_meters} m²
+                          </Typography>
+                        </Box>
                       </Box>
+
+                      {/* Botón de editar */}
+                      <IconButton
+                        size="small"
+                        sx={{ ml: 2 }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Evitar que se active el evento onClick del sector
+                          handleEditSector(true); // Función para manejar la edición
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </Box>
                   </Box>
 
@@ -257,6 +264,16 @@ const SectorsInTimeLine = ({ children }: any) => {
                   </Collapse>
                 </Box>
               ))}
+              {isEditModalOpen && (
+                <EditSectorModal
+                sectorId={editingSectorId}
+                onClose={() => {
+                  setIsEditModalOpen(false);
+                  setEditingSectorId(null); // Limpiar el ID del sector al cerrar
+                }}
+                // Otros props que necesites
+              />
+              )}
             </Collapse>
           </Box>
         ))}
@@ -266,133 +283,3 @@ const SectorsInTimeLine = ({ children }: any) => {
 };
 
 export default SectorsInTimeLine;
-
-// import { Box, Typography, Collapse, IconButton } from "@mui/material";
-// import { useState } from "react";
-// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-// import useSalas from "../../hooks/useSalas";
-// import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-// import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-// import theme from "../../theme";
-// import { eachDayOfInterval, startOfMonth, endOfMonth, format } from "date-fns";
-
-// // Función para agrupar sectores por su campo "sector"
-// export const groupSectorsByCategory = (sectors: any) => {
-//   return sectors.reduce((acc: any, sector: any) => {
-//     const { sector: category } = sector;
-//     if (!acc[category]) {
-//       acc[category] = [];
-//     }
-//     acc[category].push(sector);
-//     return acc;
-//   }, {});
-// };
-
-// const eventos = [
-//   { id: 1, sectorId: 101, nombre: "Evento 1", fechaInicio: "2024-09-10", fechaFin: "2024-09-15" },
-//   { id: 2, sectorId: 102, nombre: "Evento 2", fechaInicio: "2024-09-12", fechaFin: "2024-09-18" },
-//   { id: 3, sectorId: 101, nombre: "Evento 3", fechaInicio: "2024-09-20", fechaFin: "2024-09-25" },
-// ];
-
-// const SectorsInTimeLine = ({ year, month, sectors }: any) => {
-//   const startDate = startOfMonth(new Date(year, month - 1));
-//   const endDate = endOfMonth(new Date(year, month - 1));
-//   const daysInMonth = eachDayOfInterval({ start: startDate, end: endDate });
-//   const numberOfDays = daysInMonth.length;
-// const {salas} = useSalas()
-//   return (
-//     <Box sx={{ display: "flex", overflowX: "auto", width: "100%" }}>
-//       {/* Casillas de sectores */}
-//       <Box sx={{ minWidth: 200, borderRight: "1px solid #E1E6EF" }}>
-//         {salas.map((sector: any) => (
-//           <Box
-//             key={sector.id}
-//             sx={{
-//               display: "flex",
-//               flexDirection: "column",
-//               borderBottom: "1px solid #E1E6EF",
-//               padding: "8px",
-//               backgroundColor: "#F5F5F5",
-//               height: "40px",
-//             }}
-//           >
-//             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-//               {sector.name}
-//             </Typography>
-//           </Box>
-//         ))}
-//       </Box>
-
-//       {/* Fechas */}
-//       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-//         {/* Casillas de los días en el mes */}
-//         <Box sx={{ display: "flex", minWidth: numberOfDays * 43.5 }}>
-//           {daysInMonth.map((day, index) => {
-//             const dayOfWeek = day.getDay(); // 0 = Domingo, 6 = Sábado
-//             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-//             return (
-//               <Box
-//                 key={index}
-//                 sx={{
-//                   width: "42px",
-//                   height: "38px",
-//                   borderRight: "1px solid #E1E6EF",
-//                   backgroundColor: isWeekend ? "#F5F5F5" : "#FFF",
-//                   textAlign: "center",
-//                 }}
-//               >
-//                 <Typography
-//                   variant="caption"
-//                   sx={{ fontSize: "12px", lineHeight: "18px" }}
-//                 >
-//                   {format(day, "EEE").charAt(0).toUpperCase()}
-//                 </Typography>
-//                 <Typography
-//                   variant="caption"
-//                   sx={{
-//                     fontWeight: "bold",
-//                     fontSize: "14px",
-//                     lineHeight: "18px",
-//                   }}
-//                 >
-//                   {format(day, "dd")}
-//                 </Typography>
-//               </Box>
-//             );
-//           })}
-//         </Box>
-
-//         {/* Grid con sectores y fechas */}
-//         <Box sx={{ display: "flex" }}>
-//           {daysInMonth.map((day, dayIndex) => (
-//             <Box
-//               key={dayIndex}
-//               sx={{
-//                 display: "flex",
-//                 flexDirection: "column",
-//                 width: "42px",
-//                 borderRight: "1px solid #E1E6EF",
-//               }}
-//             >
-//               {salas.map((sector:any, sectorIndex:any) => (
-//                 <Box
-//                   key={sectorIndex}
-//                   sx={{
-//                     height: "38px",
-//                     borderBottom: "1px solid #E1E6EF",
-//                     backgroundColor: "rgba(255, 255, 255, 0.1)",
-//                   }}
-//                 >
-//                   {/* Aquí puedes renderizar los eventos basados en el sector y fecha */}
-//                 </Box>
-//               ))}
-//             </Box>
-//           ))}
-//         </Box>
-//       </Box>
-//     </Box>
-//   );
-// };
-
-// export default SectorsInTimeLine;

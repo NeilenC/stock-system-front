@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
 
 export interface SectionComponentProps {
-  icon: StaticImageData;
+  icon?: StaticImageData;
   secondaryIcon?: StaticImageData;
   buttonIcon?: StaticImageData;
   text: string;

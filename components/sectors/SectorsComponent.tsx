@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
-import SectorForm from "./SectorForm";
+import SectorFormCreate from "./SectorFormCreate";
 import theme from "../../themes/theme";
 import ModalComponent from "../../commons/modals/ModalComponent";
+import SectorsInTimeLine from "../../commons/timeline-commons/SectorsInTimeLine";
+import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
+import space from "../../public/space.png";
+import CustomButton from "../../commons/buttons-commons/CustomButton";
+import Sectors from "./Sectors";
+import useSectors from "../../hooks/useSectors";
+
+
 
 const SectorsComponent = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [sectors, setSectors] = useState<any[]>([]);
-  const [selectedSector, setSelectedSector] = useState<any>(null); 
-  const handleOpenModal = (sector?: any) => {
-    setSelectedSector(sector || null); 
+  const [selectedSector, setSelectedSector] = useState<any>(null);
+  const handleOpenModalToCreate = (sector?: any) => {
+    setSelectedSector(sector || null);
     setModalOpen(true);
   };
 
@@ -20,20 +28,26 @@ const SectorsComponent = () => {
 
   const handleSubmitSector = async (formData: any) => {
     try {
-      const url = selectedSector
-        ? `${process.env.NEXT_PUBLIC_API_BASE}/sectors/${selectedSector.id}` // Update existing sector
+      // Extract the ID from formData
+      const sectorId = formData.id; // Assuming formData.id contains the ID of the sector
+  console.log("FORM DATA EN HANDLER", formData)
+      // Construct the URL based on whether we're updating or creating
+      const url = sectorId
+        ? `${process.env.NEXT_PUBLIC_API_BASE}/sectors/${sectorId}` // Update existing sector
         : `${process.env.NEXT_PUBLIC_API_BASE}/sectors`; // Create a new sector
-
-      const method = selectedSector ? "PATCH" : "POST"; // Use PATCH for partial update, POST for creation
-
-      // Here only the fields that have changed are included.
+  
+      // Determine the HTTP method
+      const method = sectorId ? "PATCH" : "POST"; // Use PATCH for existing sector, POST for new one
+  
+      // Prepare the request body with the fields that have changed
       const requestBody: any = {};
       if (formData.name) requestBody.name = formData.name;
       if (formData.square_meters) requestBody.square_meters = formData.square_meters;
       if (formData.number_of_bathrooms) requestBody.number_of_bathrooms = formData.number_of_bathrooms;
-      if (formData.sector) requestBody.sector = formData.sector_hall;
+      if (formData.sector) requestBody.sector = formData.sector; // Adjust based on your needs
       if (formData.description) requestBody.description = formData.description;
-
+  
+      // Make the API request
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -41,65 +55,61 @@ const SectorsComponent = () => {
         },
         body: JSON.stringify(requestBody),
       });
-
+  
+      // Handle the response
       if (response.ok) {
-        handleCloseModal();
-        fetchSectors(); 
+        handleCloseModal(); // Close the modal on success
       } else {
         const errorMessage = await response.text();
-        setError(`No se logró ${selectedSector ? 'editar' : 'crear'} el sector: ${errorMessage}`);
+        setError(`No se logró ${sectorId ? "editar" : "crear"} el sector: ${errorMessage}`);
       }
     } catch (e) {
-      setError(`No se logró ${selectedSector ? 'editar' : 'crear'} el sector`);
+      setError(`No se logró ${formData.id ? "editar" : "crear"} el sector`);
       console.error(e);
     }
   };
+  
 
-  const fetchSectors = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/sectors`, {
-        method: "GET",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setSectors(data);
-      } else {
-        setError("No se pudieron obtener los sectores");
-      }
-    } catch (e) {
-      setError("No se logró obtener la lista de sectores");
-      console.error(e);
-    }
+  const handleOpenModalToEdit = (sector: any) => {
+    setSelectedSector(sector); // Set the selected sector for editing
+    setModalOpen(true);
   };
-
-  useEffect(() => {
-    fetchSectors();
-  }, []);
 
   return (
-    <div>
-      <h1>Sectores Disponibles</h1>
-      <Box sx={{ paddingInline: '5px' }}>
-        {sectors.map((sector) => (
-          <Box key={sector.id} sx={{ paddingInline: '5px', marginBottom: '10px' }}>
-            <div>{sector.name}</div>
-            <div>{sector.square_meters}</div>
-            <Button  onClick={() => handleOpenModal(sector)} sx={{bgcolor: theme.palette.secondary.dark}}>Edit</Button>
-          </Box>
-        ))}
+    <Box>
+      <SectionComponent
+        children={
+          <CustomButton
+            onClick={() => handleOpenModalToCreate()}
+            text={"Crear Espacio"}
+          ></CustomButton>
+        }
+        icon={space}
+        text={"Espacios"}
+      />
+      <Box sx={{ paddingInline: "20px" }}>
+        <Box>
+          <Sectors onSubmit={handleSubmitSector} />
+        </Box>
+
+        {/* Modal to create or edit a sector */}
+        <ModalComponent
+          isOpen={isModalOpen}
+          handleClose={handleCloseModal}
+          title="Crear un nuevo Espacio"
+        >
+
+          <SectorFormCreate
+            onSubmit={handleSubmitSector}
+            error={error}
+            initialData={selectedSector}
+            handleClose={handleCloseModal}
+          />
+        </ModalComponent>
+
+        
       </Box>
-
-      <Button onClick={() => handleOpenModal()} sx={{bgcolor:'black'}}>Crear Sector</Button>
-
-      {/* Modal to create or edit a sector */}
-      <ModalComponent isOpen={isModalOpen} handleClose={handleCloseModal}>
-        <SectorForm
-          onSubmit={handleSubmitSector} 
-          error={error} 
-          initialData={selectedSector} 
-        />
-      </ModalComponent>
-    </div>
+    </Box>
   );
 };
 

@@ -19,7 +19,7 @@ import useEventStore from "../activity-hook/useEventStore";
 import theme from "../../../../themes/theme";
 // import { SelectPicker, Stack } from 'rsuite';
 import { Stack } from "@mui/material";
-import useSalas from "../../../../hooks/useSalas";
+import useSectors from "../../../../hooks/useSectors";
 
 const sectoresOptions: any = [
   { label: "Sector 1", value: "sector1" },
@@ -54,7 +54,7 @@ const LogisticsSection: React.FC = () => {
   const handleToggleLogistics = () => setOpenLogistics(!openLogistics);
   const handleToggleDesarme = () => setOpenDesarme(!openDesarme);
   const handleToggleDetalles = () => setOpenDetalles(!openDetalles);
-  const { salas } = useSalas();
+  const { salas } = useSectors();
 
   // Transforma los sectores en el formato { label, value } para el Autocomplete
   const sectorOptions = salas.map((sector: any, index: number) => ({

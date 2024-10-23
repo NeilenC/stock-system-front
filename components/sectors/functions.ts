@@ -14,4 +14,18 @@ export const fetchSectors = async (setSectors:any, setError:any) => {
       console.error(e);
     }
   };
+
+
+  // Agrupar los sectores por categorías
+export const groupSectorsByCategory = (sectors: any) => {
+  return sectors.reduce((acc: any, sector: any) => {
+    const { sector: category } = sector;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(sector);
+    return acc;
+  }, {});
+};
+
   

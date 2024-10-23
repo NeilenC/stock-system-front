@@ -17,7 +17,9 @@ import search from "../../public/search.png";
 import { CustomTextFieldMaterial } from "./StyledMaterial";
 import theme from "../../themes/theme";
 import CreateMaterialModal from "./Modal/CreateMaterialModal";
-
+import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
+import CustomButton from "../../commons/buttons-commons/CustomButton";
+import materials from '../../public/materials.png'
 const MaterialOptions = ({
   categories,
   onEdit,
@@ -80,8 +82,19 @@ const MaterialOptions = ({
   };
 
   return (
-    <Box sx={{ paddingInline: 10, pt: 10 }}>
-      <Button onClick={handleOpenModalCreate}>crear material</Button>
+    <Box>
+
+      <SectionComponent
+        children={
+          <CustomButton
+          onClick={handleOpenModalCreate}
+            text={"Crear Material"}
+          ></CustomButton>
+        }
+        icon={materials}
+        text={"Materiales"}
+      />
+    <Box sx={{ paddingInline: 10, pt:5}}>
 
       {openModalCreate && <CreateMaterialModal open={openModalCreate} onClose={handleCloseModalCreate}/>}
       <Box sx={{}}>
@@ -107,10 +120,11 @@ const MaterialOptions = ({
                   <Paper
                     sx={{
                       display: "flex",
-                      padding: 1,
+                      paddingBlock: 1,
                       backgroundColor: theme.palette.background.default,
                       borderRadius: "0px",
                       boxShadow: "none",
+                      paddingInline:'16px'
                     }}
                   >
                     <Typography sx={{ flex: 1, fontWeight: "bold" }}>
@@ -137,7 +151,7 @@ const MaterialOptions = ({
                     <Typography sx={{ flex: 2, fontWeight: "bold" }}>
                       Observaciones
                     </Typography>
-                    <Typography sx={{ flex: 0.5, fontWeight: "bold" }}>
+                    <Typography sx={{ flex: 0, fontWeight: "bold" }}>
                       Editar
                     </Typography>
                   </Paper>
@@ -263,6 +277,7 @@ const MaterialOptions = ({
           <Typography>Cargando categorías...</Typography>
         )}
       </Box>
+    </Box>
     </Box>
   );
 };
