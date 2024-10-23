@@ -8,7 +8,6 @@ const FormLabelComponent = styled(FormLabel)(() => ({
     fontSize: '16px', // Tamaño de fuente
     fontWeight: 'bold', // Peso de fuente
     color: theme.palette.primary.contrastText,
-    marginBottom: 10,
     '&.Mui-focused': {
       color: theme.palette.primary.contrastText, // Color del label cuando está enfocado
     },
@@ -42,7 +41,7 @@ const FormLabelComponent = styled(FormLabel)(() => ({
   const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
   border: 1px solid ${theme.palette.info.light};  
   border-radius: 8px;        
-  height: 40px;     
+  height: 35px;     
   &:hover {
     border-color: ${theme.palette.info.light};  
   },

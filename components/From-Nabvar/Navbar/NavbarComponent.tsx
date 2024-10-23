@@ -420,28 +420,33 @@ const NavbarComponent = () => {
                   </Box>
                 </>
               ) : (
-                <Link href={option.href} passHref>
+                <Link href={option.href} passHref style={{ textDecoration: "none" }}>
                   {/* Opción sin submenú */}
                   <Button
-                    onClick={() => setIsSelected(option.label)}
-                    sx={{
-                      color: theme.palette.secondary.contrastText,
-                      fontSize: isMediumScreen ? "10px" : "0.8rem",
-
-                      // display: "flex",
-                      // alignItems: "center",
-                      backgroundColor:
-                        isSelected === option.label
-                          ? theme.palette.secondary.main
-                          : "transparent",
-                      borderRadius: "8px",
-                      // paddingInline: "5px",
-                      // paddingBlock: "8px",
-                    }}
-                    startIcon={option.startIcon}
-                  >
-                    {option.label}
-                  </Button>
+    onClick={() => setIsSelected(option.label)}
+    sx={{
+      color: theme.palette.secondary.contrastText,
+      fontSize: isMediumScreen ? "10px" : "0.8rem",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between", // Alineación igual a la de los botones con submenú
+      width: "100%", // Mantén el mismo ancho
+      backgroundColor:
+        isSelected === option.label
+          ? theme.palette.secondary.main
+          : "transparent",
+      borderRadius: "8px",
+      paddingInline: "16px", // Igual que los botones con submenú
+      paddingBlock: "8px", // Igual que los botones con submenú
+      boxShadow:
+        isSelected === option.label
+          ? "0px 4px 12px rgba(0, 0, 0, 0.1)" // Sombra opcional cuando está activo
+          : "none",
+    }}
+    startIcon={option.startIcon} // Mantén el icono de inicio si está presente
+  >
+    {option.label}
+  </Button>
                 </Link>
               )}
             </Box>

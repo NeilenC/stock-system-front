@@ -33,19 +33,18 @@ const MaterialOptions = ({
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const [categoriesReload, setCategories] = useState<Category[]>([]);
 
-  // Función para cargar categorías (incluyendo materiales)
-  const loadCategories = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials-category`); // Ajusta la URL según tu API
-    const data = await response.json();
-    setCategories(data);
-  };
+  // const loadCategories = async () => {
+  //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials-category`);
+  //   const data = await response.json();
+  //   setCategories(data);
+  // };
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
   };
 
   const handleCloseModalCreate = async () => {
     setOpenModalCreate(false);
-    await loadCategories(); // Recargar categorías después de crear el material
+    // await loadCategories(); // Recargar categorías después de crear el material
   };
   
 

@@ -11,7 +11,7 @@ const ModalMaterial = ({ open, handleClose, material, onSave }: any) => {
   const [price, setPrice] = useState("");
   const [observations, setObservations] = useState("");
   const [file, setFile] = useState<File | null>(null);
-console.log("SILE ---", file)
+  console.log("SILE ---", file)
   // Efecto para actualizar los campos cuando se abre el modal
   useEffect(() => {
     if (material) {
@@ -27,22 +27,24 @@ console.log("SILE ---", file)
 
   // Función para manejar el guardado (sin PATCH)
   const handleSave = () => {
+    const { id, ...rest } = material; // Desestructura para excluir el id
     const updatedMaterial = {
-      ...material, // Incluye las propiedades originales
+      ...rest, // Incluye solo las propiedades restantes
       name,
       code,
       color,
-      width: dimensions.split("x")[0].trim().replace("m", ""), // Eliminar la "m"
-      depth: dimensions.split("x")[1].trim().replace("m", ""), // Eliminar la "m"
+      width: dimensions.split("x")[0].trim().replace("m", ""),
+      depth: dimensions.split("x")[1].trim().replace("m", ""),
       actual_stock: actualStock,
       price,
       observations,
     };
   
     // Enviamos el archivo solo si existe
-    onSave(updatedMaterial, file);
+    onSave(updatedMaterial, file, id); // Envía el id como tercer argumento
     handleClose(); // Cierra el modal
   };
+  
   
   
   return (

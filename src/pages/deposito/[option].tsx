@@ -43,52 +43,52 @@ const StoragePage = () => {
     setSelectedMaterial(null);
   };
 
-    const handleSaveMaterial = async (updatedMaterial: Material, file: File | null) => {
-      try {
-        const formData = new FormData();
-    
-        // Agregar los datos del material como JSON
-        const materialData = JSON.stringify(updatedMaterial);
-        formData.set('updateMaterialsDto', materialData);
-    
-        // Agregar la imagen si existe
-        if (file) {
-          formData.set('image', file); // El campo 'image' debe coincidir con lo que espera tu backend
+  const handleSaveMaterial = async (updatedMaterial: Material, file: File | null, id: number) => {
+    try {
+      const formData = new FormData();
+      
+      // Usa keyof para obtener las claves de updatedMaterial
+      for (const key in updatedMaterial) {
+        if (updatedMaterial.hasOwnProperty(key)) {
+          const value = updatedMaterial[key as keyof Material];
+          formData.append(key, value !== undefined ? String(value) : '');
         }
-    
-        // Verifica si los datos se han agregado correctamente
-        console.log("Material Data:", materialData);
-        console.log("Archivo:", file);
-        
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${updatedMaterial.id}`, {
-          method: 'PATCH',
-          body: formData,
-        });
-    
-        if (!response.ok) {
-          throw new Error('Error al actualizar el material');
-        }
-    
-        const data = await response.json();
-        console.log('Material actualizado:', data);
-    
-        // Actualizar el material en las categorías después de la respuesta exitosa
-        setCategories(prevCategories => 
-          prevCategories.map(category => ({
-            ...category,
-            materials: category.materials.map(material => 
-              material.id === data.id ? data : material
-            )
-          }))
-        );
-    
-        setOpen(false);
-        setSelectedMaterial(null);
-      } catch (error) {
-        console.error('Error al actualizar el material:', error);
       }
-    };
+  
+      if (file) {
+        formData.append('image', file); 
+      }
+  
+      // Realizar la solicitud PATCH con el id en la URL
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${id}`, {
+        method: 'PATCH',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al actualizar el material');
+      }
+  
+      const data = await response.json();
+      console.log('Material actualizado:', data);
+  
+      // Aquí actualiza tu estado como lo estabas haciendo antes
+      setCategories(prevCategories => 
+        prevCategories.map(category => ({
+          ...category,
+          materials: category.materials.map(material => 
+            material.id === data.id ? data : material
+          )
+        }))
+      );
+  
+      setOpen(false);
+      setSelectedMaterial(null);
+    } catch (error) {
+      console.error('Error al actualizar el material:', error);
+    }
+  };
+  
   
   
   
