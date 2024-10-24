@@ -9,14 +9,29 @@ import { MaterialProps } from "../materialsProps";
 const MaterialsTable = ({ materials }: any) => {
   const [filteredMaterials, setFilteredMaterials] =
     useState<MaterialProps[]>(materials);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMaterial, setSelectedMaterial] = useState<MaterialProps | null>(null);
+  
+    const indexOfLastMaterial = currentPage * itemsPerPage;
+    const indexOfFirstMaterial = indexOfLastMaterial - itemsPerPage;
+    const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
+  
+    // Cambiar la página
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
 
   // Implement filter logic in a separate function
   const handleFilter = (filters: {
     code: string;
+    category: string;
     stock: string;
     color: string;
     width: string;
     height: string;
+    weight:number;
     depth: string;
     price: string;
     observations: string;
@@ -25,8 +40,10 @@ const MaterialsTable = ({ materials }: any) => {
     const {
       code,
       stock,
+      category,
       color,
       width,
+      weight,
       height,
       depth,
       price,
@@ -35,9 +52,17 @@ const MaterialsTable = ({ materials }: any) => {
     } = filters;
     let filtered = materials;
 
+    if (category) {
+      filtered = filtered.filter((material: MaterialProps) =>
+        material.category.category_name.toLowerCase().includes(category.toLowerCase())
+      );
+    }
+
+    
+
     if (description) {
       filtered = filtered.filter((material: MaterialProps) =>
-        material.name.toLowerCase().includes(description.toLowerCase())
+        material.description.toLowerCase().includes(description.toLowerCase())
       );
     }
 
@@ -71,6 +96,18 @@ const MaterialsTable = ({ materials }: any) => {
       );
     }
 
+    if (weight) {
+      const weightValue = parseFloat(weight);
+      const tolerance = 0.5; // Puedes ajustar este valor según lo que necesites
+      filtered = filtered.filter((material: MaterialProps) => {
+        return (
+          material.weight >= (weightValue - tolerance) &&
+          material.weight <= (weightValue + tolerance)
+        );
+      });
+    }
+    
+
     if (depth) {
       filtered = filtered.filter(
         (material: MaterialProps) => material.depth >= parseFloat(depth)
@@ -79,9 +116,10 @@ const MaterialsTable = ({ materials }: any) => {
 
     if (price) {
       filtered = filtered.filter(
-        (material: MaterialProps) => material.price <= parseFloat(price)
+        (material: MaterialProps) => material.price >= parseFloat(price)
       );
     }
+    
 
     if (observations) {
       filtered = filtered.filter((material: MaterialProps) =>
@@ -92,18 +130,55 @@ const MaterialsTable = ({ materials }: any) => {
     setFilteredMaterials(filtered);
   };
 
+
+  // Función para manejar la eliminación
+  const handleDelete = (materialId: number) => {
+    console.log(`Eliminando material con ID: ${materialId}`);
+    // Lógica adicional para eliminar un material
+  };
+
+  const handleEdit = (materialId: number) => {
+    const materialToEdit = materials.find((material: MaterialProps) => material.id === materialId);
+    setSelectedMaterial(materialToEdit);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedMaterial(null);
+  };
+  const handleSave = () => {
+    console.log("Material editado:", selectedMaterial);
+    // Lógica para guardar el material actualizado
+    setIsModalOpen(false);
+  };
+
+
+
   return (
     <>
-      <Box sx={{ pb:2 }}>
-        <Grid container >
+       <Box sx={{ pb: 2 }}>
+        <Grid container>
           <TableHeader />
           <Filters onFilter={handleFilter} />
 
-          {filteredMaterials.map((material: any) => (
-            <TableRowItem key={material.id} material={material} />
-          ))}
+          <Box sx={{ height: '460px', overflowY: 'auto', width:'100%' }}> {/* Establecer alto fijo */}
+            {currentMaterials.map((material: any, index) => (
+              <TableRowItem key={material.id} material={material} index={index}
+              onEdit={handleEdit} // Pasar la función de edición
+              onDelete={handleDelete} // Pasar la función de eliminación
+/>
+            ))}
+          </Box>
+          
         </Grid>
-        <Pagination />
+
+        <Pagination
+          page={currentPage}
+          onPageChange={handlePageChange}
+          totalItems={filteredMaterials.length}
+          itemsPerPage={itemsPerPage}
+        />
       </Box>
     </>
   );

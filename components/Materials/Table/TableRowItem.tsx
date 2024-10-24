@@ -5,7 +5,7 @@ import IconToImage from '../../../commons/styled-components/IconImages';
 import edit from '../../../public/edit.png';
 import deleteicon from '../../../public/delete.png';
 
-const TableRowItem = ({ material, onDelete, onEdit }: any) => {
+const TableRowItem = ({ material, onDelete, onEdit, index }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleDescriptionClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -17,6 +17,7 @@ const TableRowItem = ({ material, onDelete, onEdit }: any) => {
   };
 
   const handleEditClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log("EVENT", event)
     setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
   };
 
@@ -25,7 +26,7 @@ const TableRowItem = ({ material, onDelete, onEdit }: any) => {
   };
 
   return (
-    <Grid container spacing={1} sx={{ textAlign: 'center', borderBottom: '1px solid #ccc', padding: 1 }}>
+    <Grid container spacing={1} sx={{ textAlign: 'center', borderBottom: '1px solid #ccc', paddingBlock: 1.2 , bgcolor: index % 2 === 0 ? '#f5f5f5' : '#ffffff'}}>
       <Grid item xs={1}>{material.code}</Grid>
       <Grid item xs={1.5}>{material.category.category_name}</Grid>
       <TextWithPopover 
@@ -49,28 +50,30 @@ const TableRowItem = ({ material, onDelete, onEdit }: any) => {
       <Grid item xs={0.2} sx={{ cursor: 'pointer' }}>
         <IconToImage icon={deleteicon} w={20} h={20} onClick={() => onDelete(material.id)} />
       </Grid>
-      <Grid item xs={0.1} sx={{ cursor: 'pointer' }}>
-        <IconToImage 
-          w={20} 
-          h={20} 
-          icon={edit} 
-          onClick={handleEditClick} // Manejador de clics para el ícono de editar
-        />
+      <Grid item xs={0.1} sx={{ cursor: 'pointer', position: 'relative' }}>
+  <IconToImage 
+    w={20} 
+    h={20} 
+    icon={edit} 
+    onClick={handleEditClick} 
+  />
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          sx={{position:'absolute'}}
-        >
+
+<Menu
+  anchorEl={anchorEl}
+  open={Boolean(anchorEl)} // Asegúrate de que esté abierto solo si hay un elemento
+  onClose={handleMenuClose}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'left',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'left',
+  }}
+  sx={{ zIndex: 9999 }}
+>
+
           <MenuItem 
             onClick={() => { 
               onEdit(material.id); // Llama a la función de edición

@@ -5,10 +5,12 @@ import materialsicon from "../../../public/materials.png";
 import { Box } from "@mui/material";
 import { MaterialProps } from "../materialsProps";
 import MaterialsTable from "./MaterialsTable";
+import useFilters from "./Hooks/useFilters";
 
 const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const [materials, setMaterials] = useState<MaterialProps[]>([]);
+
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -28,7 +30,11 @@ const MainComponent = () => {
   return (
     <>
       <SectionComponent icon={materialsicon} text={"Materiales"}>
+        <Box display={'flex'} gap={2}>
+
         <CustomButton onClick={handleOpenModalCreate} text={"Crear Material"} />
+        {/* <CustomButton onClick={clearFilters} text={"Limpiar Filtros"} /> */}
+        </Box>
       </SectionComponent>
       <Box
         sx={{
@@ -36,7 +42,7 @@ const MainComponent = () => {
           justifyContent: 'center', // Centra horizontalmente
           alignItems: 'center', // Centra verticalmente
           paddingBlock: '16px',
-          paddingInline:'16px'
+          paddingInline:'16px',
         }}
       >
         <Box

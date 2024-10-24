@@ -3,7 +3,7 @@ import theme from '../../../themes/theme';
 
 
 const TableHeader = () => (
-  <Grid container spacing={1} sx={{ fontWeight: 'bold', textAlign: 'center', bgcolor: theme.palette.primary.main, color:theme.palette.primary.dark, paddingBlock:2 }}>
+  <Grid container spacing={1} sx={{ fontWeight: 'bold', textAlign: 'center',  color:theme.palette.primary.dark, paddingBlock:2 }}>
     <Grid item xs={1}>Código</Grid>
     <Grid item xs={1.5}>Categoría</Grid>
     <Grid item xs={1.5}>Descripción</Grid>

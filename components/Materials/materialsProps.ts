@@ -3,8 +3,10 @@ export interface MaterialProps {
     name: string;
     code: string;
     color: string;
+    category:Category;
     width: number;
     depth: number;
+    weight:number;
     description:string;
     height: number;
     actual_stock: number;

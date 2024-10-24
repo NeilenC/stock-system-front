@@ -49,12 +49,12 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Gotham Rounded, Arial, sans-serif',
+    fontFamily: "Varela Round, sans-serif",
     h6: {
-      fontWeight: 700,
+      fontWeight: 400,
     },
     body1: {
-      fontWeight: 400,
+      fontWeight: 300,
     },
   },
   components: {

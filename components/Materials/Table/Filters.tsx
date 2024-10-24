@@ -1,8 +1,10 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import FilterField from './FilterField';
 import useFilters from './Hooks/useFilters';
-
+import { IconButton } from 'rsuite';
+import IconToImage from '../../../commons/styled-components/IconImages';
+import closeIcon from '../../../public/close.png'
 const Filters = ({ onFilter }: { onFilter: (filters: any) => void }) => {
   const {
     code,
@@ -25,6 +27,7 @@ const Filters = ({ onFilter }: { onFilter: (filters: any) => void }) => {
     setStock,
     setObservations,
     setPrice,
+    clearFilters
   } = useFilters(onFilter);
 
   return (
@@ -39,7 +42,8 @@ const Filters = ({ onFilter }: { onFilter: (filters: any) => void }) => {
       <FilterField value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Cantidad" size={1} width={100} />
       <FilterField value={observations} onChange={(e) => setObservations(e.target.value)} placeholder="Observaciones" size={1.5} width={150} />
       <FilterField value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Precio" size={1} width={100} />
-      
+
+
     </Grid>
   );
 };
