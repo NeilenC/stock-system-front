@@ -17,7 +17,6 @@ const TableRowItem = ({ material, onDelete, onEdit, index }: any) => {
   };
 
   const handleEditClick = (event: React.MouseEvent<HTMLElement>) => {
-    console.log("EVENT", event)
     setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
   };
 

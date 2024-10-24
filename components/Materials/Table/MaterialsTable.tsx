@@ -1,176 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Box } from "@mui/material";
 import Filters from "./Filters";
 import TableHeader from "./TableHeader";
 import TableRowItem from "./TableRowItem";
 import Pagination from "./Pagination";
+import ModalComponent from "../../../commons/modals/ModalComponent";
+import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
+import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import { MaterialProps } from "../materialsProps";
 
-const MaterialsTable = ({ materials }: any) => {
-  const [filteredMaterials, setFilteredMaterials] =
-    useState<MaterialProps[]>(materials);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedMaterial, setSelectedMaterial] = useState<MaterialProps | null>(null);
-  
-    const indexOfLastMaterial = currentPage * itemsPerPage;
-    const indexOfFirstMaterial = indexOfLastMaterial - itemsPerPage;
-    const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
-  
-    // Cambiar la página
-    const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-    };
+const MaterialsTable = ({ materials: initialMaterials }: any) => {
+  const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials); // Estado local para los materiales
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [materialId, setMaterialId] = useState<number | null>(null);
+  const [updatedMaterial, setUpdatedMaterial] = useState<MaterialProps | null>(null);
 
-  // Implement filter logic in a separate function
-  const handleFilter = (filters: {
-    code: string;
-    category: string;
-    stock: string;
-    color: string;
-    width: string;
-    height: string;
-    weight:number;
-    depth: string;
-    price: string;
-    observations: string;
-    description: string;
-  }) => {
-    const {
-      code,
-      stock,
-      category,
-      color,
-      width,
-      weight,
-      height,
-      depth,
-      price,
-      observations,
-      description,
-    } = filters;
-    let filtered = materials;
+  const {
+    currentMaterials,
+    handlePageChange,
+    filteredMaterials,
+    handleFilter,
+    currentPage,
+    itemsPerPage,
+  } = useMaterialsFilter(materials, updatedMaterial);
 
-    if (category) {
-      filtered = filtered.filter((material: MaterialProps) =>
-        material.category.category_name.toLowerCase().includes(category.toLowerCase())
-      );
-    }
-
-    
-
-    if (description) {
-      filtered = filtered.filter((material: MaterialProps) =>
-        material.description.toLowerCase().includes(description.toLowerCase())
-      );
-    }
-
-    if (code) {
-      filtered = filtered.filter((material: MaterialProps) =>
-        material.code.toLowerCase().includes(code.toLowerCase())
-      );
-    }
-
-    if (stock) {
-      filtered = filtered.filter(
-        (material: MaterialProps) => material.actual_stock >= parseFloat(stock)
-      );
-    }
-
-    if (color) {
-      filtered = filtered.filter((material: MaterialProps) =>
-        material.color.toLowerCase().includes(color.toLowerCase())
-      );
-    }
-
-    if (width) {
-      filtered = filtered.filter(
-        (material: MaterialProps) => material.width >= parseFloat(width)
-      );
-    }
-
-    if (height) {
-      filtered = filtered.filter(
-        (material: MaterialProps) => material.height >= parseFloat(height)
-      );
-    }
-
-    if (weight) {
-      const weightValue = parseFloat(weight);
-      const tolerance = 0.5; // Puedes ajustar este valor según lo que necesites
-      filtered = filtered.filter((material: MaterialProps) => {
-        return (
-          material.weight >= (weightValue - tolerance) &&
-          material.weight <= (weightValue + tolerance)
-        );
-      });
-    }
-    
-
-    if (depth) {
-      filtered = filtered.filter(
-        (material: MaterialProps) => material.depth >= parseFloat(depth)
-      );
-    }
-
-    if (price) {
-      filtered = filtered.filter(
-        (material: MaterialProps) => material.price >= parseFloat(price)
-      );
-    }
-    
-
-    if (observations) {
-      filtered = filtered.filter((material: MaterialProps) =>
-        material.observations.toLowerCase().includes(observations.toLowerCase())
-      );
-    }
-
-    setFilteredMaterials(filtered);
-  };
-
-
-  // Función para manejar la eliminación
-  const handleDelete = (materialId: number) => {
-    console.log(`Eliminando material con ID: ${materialId}`);
-    // Lógica adicional para eliminar un material
-  };
+  // Efecto para sincronizar el estado local con las props iniciales
+  useEffect(() => {
+    setMaterials(initialMaterials);
+  }, [initialMaterials]);
 
   const handleEdit = (materialId: number) => {
-    const materialToEdit = materials.find((material: MaterialProps) => material.id === materialId);
-    setSelectedMaterial(materialToEdit);
+    setMaterialId(materialId);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedMaterial(null);
-  };
-  const handleSave = () => {
-    console.log("Material editado:", selectedMaterial);
-    // Lógica para guardar el material actualizado
-    setIsModalOpen(false);
   };
 
+const handleSave = async (formData: MaterialProps) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
+    if (!response.ok) {
+      throw new Error('Error updating material');
+    }
+
+    // Material actualizado con éxito, ahora hacemos un nuevo fetch de todos los materiales
+    const updatedMaterialsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials`);
+    const updatedMaterials = await updatedMaterialsResponse.json();
+
+    // Actualizamos el estado con los materiales obtenidos
+    setMaterials(updatedMaterials);
+
+    setIsModalOpen(false); // Cierra el modal
+  } catch (error) {
+    console.error('Failed to update material:', error);
+  }
+};
+
+
+  console.log("materias", materials)
 
   return (
     <>
-       <Box sx={{ pb: 2 }}>
+      <Box sx={{ pb: 2 }}>
         <Grid container>
           <TableHeader />
           <Filters onFilter={handleFilter} />
 
-          <Box sx={{ height: '460px', overflowY: 'auto', width:'100%' }}> {/* Establecer alto fijo */}
+          <Box sx={{ height: "460px", overflowY: "auto", width: "100%" }}>
             {currentMaterials.map((material: any, index) => (
-              <TableRowItem key={material.id} material={material} index={index}
-              onEdit={handleEdit} // Pasar la función de edición
-              onDelete={handleDelete} // Pasar la función de eliminación
-/>
+              <TableRowItem
+                key={material.id}
+                material={material}
+                index={index}
+                onEdit={handleEdit}
+              />
             ))}
           </Box>
-          
         </Grid>
 
         <Pagination
@@ -179,6 +93,16 @@ const MaterialsTable = ({ materials }: any) => {
           totalItems={filteredMaterials.length}
           itemsPerPage={itemsPerPage}
         />
+
+        {isModalOpen && (
+          <ModalComponent
+            isOpen={isModalOpen}
+            handleClose={handleModalClose}
+            title="Editar Material"
+          >
+            <MaterialEditForm materialId={materialId} onSubmit={handleSave} onCancel={handleModalClose}/>
+          </ModalComponent>
+        )}
       </Box>
     </>
   );

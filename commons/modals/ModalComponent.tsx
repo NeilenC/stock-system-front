@@ -8,7 +8,6 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   handleClose,
   title,
   children,
-  handleSave,
   width = "500px",
   height = "auto",
   hideActions = false,
