@@ -6,5 +6,6 @@ export enum SectorType {
     RESTAURANTES= 'Restaurantes y Comedores',
     SALAS = 'Salas',
     DEPOSITO = 'Depósito',
+
   }
   

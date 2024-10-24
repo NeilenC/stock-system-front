@@ -31,14 +31,13 @@ const TimeLineComponent = () => {
         icon={PrincipalIcon}
         secondaryIcon={infoIcon}
         text="Línea de Tiempo"
-        children={
-          <CustomButton
-            icon={iconButton}
-            text={"Crear Reserva"}
-            onClick={handleOpenDrawer} // Llama a la función para abrir el Drawer
-          />
-        }
-      />
+      >
+        <CustomButton
+          icon={iconButton}
+          text={"Crear Reserva"}
+          onClick={handleOpenDrawer}
+        />
+      </SectionComponent>
 
       {/* Aquí se usa el DrawerBooking */}
       <DrawerBooking
@@ -64,10 +63,8 @@ const TimeLineComponent = () => {
             overflow: "hidden", // Asegura que el contenido se ajuste dentro del marco
           }}
         >
-
-          <SectorsInTimeLine children={"ACA CHILDREN"} />
-          <CalendarComponent children={"ACA CHILDREN"} />
-
+          <SectorsInTimeLine />
+          <CalendarComponent />
         </Box>
       </Box>
     </Box>

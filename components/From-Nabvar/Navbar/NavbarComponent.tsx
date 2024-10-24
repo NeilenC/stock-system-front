@@ -41,6 +41,7 @@ import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import IconToImage from "../../../commons/styled-components/IconImages";
 import { useRouter } from "next/router";
+import Image from "next/image";
 const NavbarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownMenu, setDropdownMenu] = React.useState<string | null>(null);
@@ -111,9 +112,7 @@ const NavbarComponent = () => {
     {
       label: "Espacios",
       href: "/gestion/sectors",
-      startIcon: (
-        <img src={space.src} alt="Plano" style={{ width: 24, height: 24 }} />
-      ),
+      startIcon: <IconToImage icon={space.src} alt="Plano" w={24} h={24} />,
     },
     // {
     //   label: "Gestión",
@@ -165,11 +164,7 @@ const NavbarComponent = () => {
     {
       label: "Depósito",
       startIcon: (
-        <img
-          src={deposito.src}
-          alt="Deposito"
-          style={{ width: 24, height: 24 }}
-        />
+        <IconToImage icon={deposito.src} alt="Deposito" w={24} h={24} />
       ),
       endIcon: openDropdowns["Depósito"] ? (
         <ExpandLessOutlinedIcon />
@@ -180,7 +175,7 @@ const NavbarComponent = () => {
         {
           label: "Materiales",
           href: "/deposito/materiales",
-          icon:  <img src={materials.src} alt="Plano" style={{ width: 20, height: 20 }} />, // Ejemplo de ícono
+          icon: <IconToImage icon={materials.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
         },
         // {
         //   label: "Subdepósito 2",
@@ -204,28 +199,26 @@ const NavbarComponent = () => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem("token");
+
       if (token) {
         await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       }
-  
+
       // Eliminar el token del localStorage
-      localStorage.removeItem('token');
-      
+      localStorage.removeItem("token");
+
       // Redirigir al usuario a la página de login o inicio
-      router.push('/');
+      router.push("/");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
-  
-  
 
   return (
     <AppBar
@@ -234,11 +227,11 @@ const NavbarComponent = () => {
         backgroundColor: theme.palette.primary.dark,
         paddingInline: isMobile ? "8px" : "16px",
         paddingBlock: isMobile ? "8px" : "8px",
-        zIndex:1,
-        maxHeight: '70px',
-        maxWidth: '100vw', 
-        overflow: 'hidden',
-        boxSizing: 'border-box',
+        zIndex: 1,
+        maxHeight: "70px",
+        maxWidth: "100vw",
+        overflow: "hidden",
+        boxSizing: "border-box",
       }}
     >
       <Box
@@ -249,17 +242,18 @@ const NavbarComponent = () => {
       >
         {/* Logo Section */}
         <Box>
-          <img
-            src={logo.src}
+          <IconToImage
+            icon={logo.src}
             alt="Logo La Rural"
-            style={{ width: isMobile ? 120 : 150, height: isMobile ? 40 : 50 }}
+            w={isMobile ? 120 : 150}
+            h={isMobile ? 40 : 50}
           />
         </Box>
 
         {/* Navbar Options */}
         <Box
           display="flex"
-          justifyContent={isMediumScreen ? "flex-start" :'flex-end'}
+          justifyContent={isMediumScreen ? "flex-start" : "flex-end"}
           gap={isMediumScreen ? "2px" : "20px"} // Separacion de las opciones principales
           flexGrow={1}
         >
@@ -421,33 +415,37 @@ const NavbarComponent = () => {
                   </Box>
                 </>
               ) : (
-                <Link href={option.href} passHref style={{ textDecoration: "none" }}>
+                <Link
+                  href={option.href}
+                  passHref
+                  style={{ textDecoration: "none" }}
+                >
                   {/* Opción sin submenú */}
                   <Button
-    onClick={() => setIsSelected(option.label)}
-    sx={{
-      color: theme.palette.secondary.contrastText,
-      fontSize: isMediumScreen ? "10px" : "0.8rem",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between", // Alineación igual a la de los botones con submenú
-      width: "100%", // Mantén el mismo ancho
-      backgroundColor:
-        isSelected === option.label
-          ? theme.palette.secondary.main
-          : "transparent",
-      borderRadius: "8px",
-      paddingInline: "16px", // Igual que los botones con submenú
-      paddingBlock: "8px", // Igual que los botones con submenú
-      boxShadow:
-        isSelected === option.label
-          ? "0px 4px 12px rgba(0, 0, 0, 0.1)" // Sombra opcional cuando está activo
-          : "none",
-    }}
-    startIcon={option.startIcon} // Mantén el icono de inicio si está presente
-  >
-    {option.label}
-  </Button>
+                    onClick={() => setIsSelected(option.label)}
+                    sx={{
+                      color: theme.palette.secondary.contrastText,
+                      fontSize: isMediumScreen ? "10px" : "0.8rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between", // Alineación igual a la de los botones con submenú
+                      width: "100%", // Mantén el mismo ancho
+                      backgroundColor:
+                        isSelected === option.label
+                          ? theme.palette.secondary.main
+                          : "transparent",
+                      borderRadius: "8px",
+                      paddingInline: "16px", // Igual que los botones con submenú
+                      paddingBlock: "8px", // Igual que los botones con submenú
+                      boxShadow:
+                        isSelected === option.label
+                          ? "0px 4px 12px rgba(0, 0, 0, 0.1)" // Sombra opcional cuando está activo
+                          : "none",
+                    }}
+                    startIcon={option.startIcon} // Mantén el icono de inicio si está presente
+                  >
+                    {option.label}
+                  </Button>
                 </Link>
               )}
             </Box>
@@ -480,7 +478,7 @@ const NavbarComponent = () => {
               />
             </IconButton>
           </Box> */}
-  
+
           {/* User Section */}
           <Box
             sx={{
@@ -531,10 +529,12 @@ const NavbarComponent = () => {
                 }}
               >
                 {/* Imagen PNG */}
-                <img
-                  src={account.src}
+                <IconToImage
+                  icon={account.src}
                   alt="info"
-                  style={{ width: 34, height: 34, marginRight: "5px" }}
+                  w={34}
+                  h={34}
+                  // style={{ width: 34, height: 34, marginRight: "5px" }}
                 />
 
                 {/* Contenido del texto */}

@@ -24,6 +24,26 @@ const CustomTextFieldMaterial = styled(TextField)(() => ({
   },
 }));
 
+const CustomTextFieldComponent = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
+  
+  '& .MuiOutlinedInput-root': {
+    height: '38px',
+    borderRadius: '8px',
+    border: '1px solid #E1E6EF',
+    '& input': {
+      padding: isFromBooking ?  '10px 14px':'8px' , 
+    },
+    '& fieldset': {
+      borderColor:'#E1E6EF' ,
+    },
+    '&:hover fieldset': {
+      borderColor:  isFromBooking ? '#B0BEC5'  : theme.palette.secondary.main, 
+    },
+
+  }, 
+}));
+
+
 const CustomSelect = styled(Select)(() => ({
   width: '100%',
   "& .MuiOutlinedInput-root": {
@@ -58,4 +78,4 @@ const CustomSelectComponent = ({ placeholder, ...props }: any) => {
 };
 
 
-export { CustomTextFieldMaterial, CustomSelectComponent };
+export { CustomTextFieldMaterial, CustomSelectComponent, CustomTextFieldComponent };

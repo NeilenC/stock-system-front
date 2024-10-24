@@ -10,8 +10,6 @@ import CustomButton from "../../commons/buttons-commons/CustomButton";
 import Sectors from "./Sectors";
 import useSectors from "../../hooks/useSectors";
 
-
-
 const SectorsComponent = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState("");
@@ -30,23 +28,25 @@ const SectorsComponent = () => {
     try {
       // Extract the ID from formData
       const sectorId = formData.id; // Assuming formData.id contains the ID of the sector
-  console.log("FORM DATA EN HANDLER", formData)
+      console.log("FORM DATA EN HANDLER", formData);
       // Construct the URL based on whether we're updating or creating
       const url = sectorId
         ? `${process.env.NEXT_PUBLIC_API_BASE}/sectors/${sectorId}` // Update existing sector
         : `${process.env.NEXT_PUBLIC_API_BASE}/sectors`; // Create a new sector
-  
+
       // Determine the HTTP method
       const method = sectorId ? "PATCH" : "POST"; // Use PATCH for existing sector, POST for new one
-  
+
       // Prepare the request body with the fields that have changed
       const requestBody: any = {};
       if (formData.name) requestBody.name = formData.name;
-      if (formData.square_meters) requestBody.square_meters = formData.square_meters;
-      if (formData.number_of_bathrooms) requestBody.number_of_bathrooms = formData.number_of_bathrooms;
+      if (formData.square_meters)
+        requestBody.square_meters = formData.square_meters;
+      if (formData.number_of_bathrooms)
+        requestBody.number_of_bathrooms = formData.number_of_bathrooms;
       if (formData.sector) requestBody.sector = formData.sector; // Adjust based on your needs
       if (formData.description) requestBody.description = formData.description;
-  
+
       // Make the API request
       const response = await fetch(url, {
         method: method,
@@ -55,20 +55,23 @@ const SectorsComponent = () => {
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       // Handle the response
       if (response.ok) {
         handleCloseModal(); // Close the modal on success
       } else {
         const errorMessage = await response.text();
-        setError(`No se logró ${sectorId ? "editar" : "crear"} el sector: ${errorMessage}`);
+        setError(
+          `No se logró ${
+            sectorId ? "editar" : "crear"
+          } el sector: ${errorMessage}`
+        );
       }
     } catch (e) {
       setError(`No se logró ${formData.id ? "editar" : "crear"} el sector`);
       console.error(e);
     }
   };
-  
 
   const handleOpenModalToEdit = (sector: any) => {
     setSelectedSector(sector); // Set the selected sector for editing
@@ -77,16 +80,12 @@ const SectorsComponent = () => {
 
   return (
     <Box>
-      <SectionComponent
-        children={
-          <CustomButton
-            onClick={() => handleOpenModalToCreate()}
-            text={"Crear Espacio"}
-          ></CustomButton>
-        }
-        icon={space}
-        text={"Espacios"}
-      />
+      <SectionComponent icon={space} text={"Espacios"}>
+        <CustomButton
+          onClick={() => handleOpenModalToCreate()}
+          text={"Crear Espacio"}
+        />
+      </SectionComponent>
       <Box sx={{ paddingInline: "20px" }}>
         <Box>
           <Sectors onSubmit={handleSubmitSector} />
@@ -98,7 +97,6 @@ const SectorsComponent = () => {
           handleClose={handleCloseModal}
           title="Crear un nuevo Espacio"
         >
-
           <SectorFormCreate
             onSubmit={handleSubmitSector}
             error={error}
@@ -106,8 +104,6 @@ const SectorsComponent = () => {
             handleClose={handleCloseModal}
           />
         </ModalComponent>
-
-        
       </Box>
     </Box>
   );

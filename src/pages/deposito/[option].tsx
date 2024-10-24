@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 import MaterialsComponent from "../../../components/Materials/MaterialsComponent";
-import { Category, Material } from "../../../components/Materials/materialsProps";
+import { Category, MaterialProps } from "../../../components/Materials/materialsProps";
 import ModalMaterial from "../../../components/Materials/Modal/ModalMaterial";
+import MaterialsTable from "../../../components/Materials/Table/MaterialsTable";
+import MainComponent from "../../../components/Materials/Table/MainComponent";
 
 const StoragePage = () => {
   const router = useRouter();
   const { option } = router.query;
   const [open, setOpen] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialProps | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const StoragePage = () => {
     setSelectedMaterial(null);
   };
 
-  const handleSaveMaterial = async (updatedMaterial: Material, file: File | null, id: number) => {
+  const handleSaveMaterial = async (updatedMaterial: MaterialProps, file: File | null, id: number) => {
         console.log('updatedMaterial enviar', updatedMaterial);
         try {
       const formData = new FormData();
@@ -51,7 +53,7 @@ const StoragePage = () => {
       // Usa keyof para obtener las claves de updatedMaterial
       for (const key in updatedMaterial) {
         if (updatedMaterial.hasOwnProperty(key)) {
-          const value = updatedMaterial[key as keyof Material];
+          const value = updatedMaterial[key as keyof MaterialProps];
           formData.append(key, value !== undefined ? String(value) : '');
         }
       }
@@ -99,14 +101,13 @@ const StoragePage = () => {
   };
   
   
-  
-  
+
 
   return (
     <div>
       {option === 'materiales' && (
         <>
-          <MaterialsComponent categories={categories} onEdit={handleEditMaterial} />
+          {/* <MaterialsComponent categories={categories} onEdit={handleEditMaterial} />
           {selectedMaterial && (
             <ModalMaterial
               open={open}
@@ -115,7 +116,8 @@ const StoragePage = () => {
               onSave={handleSaveMaterial}
             />
           )}
-        </>
+        </> */}
+      <MainComponent/> </>
       )}
       {/* {option === 'subdeposito2' && <p>This is Subdepósito 2</p>} */}
     </div>
