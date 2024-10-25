@@ -14,6 +14,7 @@ const MaterialsTable = ({ materials: initialMaterials }: any) => {
   const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials); // Estado local para los materiales
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const { material } = useMaterialStore();
   const {
     currentMaterials,
@@ -37,6 +38,10 @@ const MaterialsTable = ({ materials: initialMaterials }: any) => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
+  const handleOpenModal = () => {
+    setOpenDeleteModal(true)
+  }
 
   const handleSave = async () => {
     try {
@@ -95,6 +100,7 @@ const MaterialsTable = ({ materials: initialMaterials }: any) => {
                 material={material}
                 index={index}
                 onEdit={handleEdit}
+                openDeleteModal={handleOpenModal}
               />
             ))}
           </Box>

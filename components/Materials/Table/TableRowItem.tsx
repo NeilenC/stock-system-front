@@ -5,7 +5,7 @@ import IconToImage from '../../../commons/styled-components/IconImages';
 import edit from '../../../public/edit.png';
 import deleteicon from '../../../public/delete.png';
 
-const TableRowItem = ({ material, onDelete, onEdit, index }: any) => {
+const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleDescriptionClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -47,7 +47,7 @@ const TableRowItem = ({ material, onDelete, onEdit, index }: any) => {
 
       {/* Íconos de Editar y Eliminar */}
       <Grid item xs={0.2} sx={{ cursor: 'pointer' }}>
-        <IconToImage icon={deleteicon} w={20} h={20} onClick={() => onDelete(material.id)} />
+        <IconToImage icon={deleteicon} w={20} h={20} onClick={openDeleteModal} />
       </Grid>
       <Grid item xs={0.1} sx={{ cursor: 'pointer', position: 'relative' }}>
   <IconToImage 
