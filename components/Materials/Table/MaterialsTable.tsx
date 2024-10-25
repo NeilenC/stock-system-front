@@ -8,13 +8,13 @@ import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
 import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import { MaterialProps } from "../materialsProps";
+import { useMaterialStore } from "../../../zustand/materialStore";
 
 const MaterialsTable = ({ materials: initialMaterials }: any) => {
   const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials); // Estado local para los materiales
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
-  const [updatedMaterial, setUpdatedMaterial] = useState<MaterialProps | null>(null);
-
+  const { material } = useMaterialStore();
   const {
     currentMaterials,
     handlePageChange,
@@ -22,7 +22,7 @@ const MaterialsTable = ({ materials: initialMaterials }: any) => {
     handleFilter,
     currentPage,
     itemsPerPage,
-  } = useMaterialsFilter(materials, updatedMaterial);
+  } = useMaterialsFilter(materials);
 
   // Efecto para sincronizar el estado local con las props iniciales
   useEffect(() => {
@@ -38,35 +38,48 @@ const MaterialsTable = ({ materials: initialMaterials }: any) => {
     setIsModalOpen(false);
   };
 
-const handleSave = async (formData: MaterialProps) => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+  const handleSave = async () => {
+    try {
+      // Asegúrate de que el material esté disponible antes de intentar actualizarlo
+      if (!material || !materialId) {
+        console.error("Material or Material ID is missing");
+        return;
+      }
+      const { category, ...rest } = material; // Desestructuramos el material
+      const updatedMaterial = {
+        ...rest,
+        category: category?.id, // Asumiendo que el campo en el servidor se llama categoryId
+      };
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedMaterial), // Convertimos el objeto material a JSON
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error('Error updating material');
+      if (!response.ok) {
+        throw new Error("Error updating material");
+      }
+
+      // Material actualizado con éxito, ahora hacemos un nuevo fetch de todos los materiales
+      const updatedMaterialsResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials`
+      );
+      const updatedMaterials = await updatedMaterialsResponse.json();
+
+      // Actualizamos el estado con los materiales obtenidos
+      setMaterials(updatedMaterials);
+      setIsModalOpen(false); // Cierra el modal
+    } catch (error) {
+      console.error("Failed to update material:", error);
     }
+  };
 
-    // Material actualizado con éxito, ahora hacemos un nuevo fetch de todos los materiales
-    const updatedMaterialsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials`);
-    const updatedMaterials = await updatedMaterialsResponse.json();
-
-    // Actualizamos el estado con los materiales obtenidos
-    setMaterials(updatedMaterials);
-
-    setIsModalOpen(false); // Cierra el modal
-  } catch (error) {
-    console.error('Failed to update material:', error);
-  }
-};
-
-
-  console.log("materias", materials)
+  console.log("materias", materials);
 
   return (
     <>
@@ -99,8 +112,11 @@ const handleSave = async (formData: MaterialProps) => {
             isOpen={isModalOpen}
             handleClose={handleModalClose}
             title="Editar Material"
+            onSubmit={handleSave}
           >
-            <MaterialEditForm materialId={materialId} onSubmit={handleSave} onCancel={handleModalClose}/>
+            <MaterialEditForm
+              materialId={materialId}
+            />
           </ModalComponent>
         )}
       </Box>

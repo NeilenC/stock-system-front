@@ -5,245 +5,211 @@ import {
   MenuItem,
   FormHelperText,
   Box,
-  InputLabel,
   Select,
   SelectChangeEvent,
+  Grid,
 } from "@mui/material";
 import { Category, MaterialProps } from "../../materialsProps";
 import CustomButton from "../../../../commons/buttons-commons/CustomButton";
 import { useMaterialStore } from "../../../../zustand/materialStore";
+import { FormLabelComponent } from "../../../../commons/styled-components/CustomTextFields";
+import { CustomTextFieldMaterial } from "../../StyledMaterial";
 
-const MaterialEditForm = ({
-    onSubmit,
-    materialId,
-    onCancel,
-  }: {
-    onSubmit?: (formData: any) => void;
-    materialId: number | null;
-    onCancel?: () => void;
-  }) => {
-    const { material, categories, setMaterial, fetchMaterialData, fetchCategories } = useMaterialStore();
-  
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      
-      const numericFields = ['width', 'depth', 'weight', 'height', 'actual_stock', 'price'];
-      const processedValue = numericFields.includes(name) ? (value === '' ? 0 : parseFloat(value)) : value;
-    
-      setMaterial({ ...material, [name]: processedValue });
-    };
-  
-    const handleCategoryChange = (e: SelectChangeEvent<number>) => {
-      const selectedCategoryId = Number(e.target.value);
-      setMaterial({
-        ...material,
-        category: { id: selectedCategoryId, category_name: "" },
-      });
-    };
-  
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (material.category) {
-        const finalFormData = {
-          ...material,
-          category: material.category.id, // Envía solo el ID de la categoría
-        };
-        onSubmit && onSubmit(finalFormData);
-      } else {
-        console.error("La categoría no está definida.");
-      }
-    };
-  
-    useEffect(() => {
-      if (materialId) fetchMaterialData(materialId);
-      fetchCategories();
-    }, [materialId]);
-  
+const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
+  const {
+    material,
+    categories,
+    setMaterial,
+    fetchMaterialData,
+    fetchCategories,
+  } = useMaterialStore();
 
-    const handleCancel = () => {
-        if (onCancel) {
-          onCancel();
-        }
-      };
-      
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    const numericFields = [
+      "width",
+      "depth",
+      "weight",
+      "height",
+      "actual_stock",
+      "price",
+    ];
+    const processedValue = numericFields.includes(name)
+      ? value === ""
+        ? 0
+        : parseFloat(value)
+      : value;
+
+    setMaterial({ ...material, [name]: processedValue });
+  };
+
+  const handleCategoryChange = (e: SelectChangeEvent<number>) => {
+    const selectedCategoryId = e.target.value as number; // Ensure the value is treated as a number
+    setMaterial({
+      ...material,
+      category: { id: selectedCategoryId, category_name: "" },
+    });
+  };
+
+  useEffect(() => {
+    if (materialId) fetchMaterialData(materialId);
+    fetchCategories();
+  }, [materialId]);
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 2,
-        }}
-      >
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="name"
-            label="Nombre"
-            value={material.name}
-            onChange={handleInputChange}
-          />
-          {/* {errors.name && <FormHelperText error>{errors.name}</FormHelperText>} */}
-        </FormControl>
+    <form>
+        <Grid container spacing={2}>
+          {/** Nombre */}
+          <Grid item xs={12} sm={6}>
+            <FormLabelComponent>Nombre</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="name"
+              value={material.name}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="code"
-            label="Código"
-            value={material.code}
-            onChange={handleInputChange}
-          />
-          {/* {errors.code && <FormHelperText error>{errors.code}</FormHelperText>} */}
-        </FormControl>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="color"
-            label="Color"
-            value={material.color}
-            onChange={handleInputChange}
-          />
-          {/* {errors.color && (
-            <FormHelperText error>{errors.color}</FormHelperText>
-          )} */}
-        </FormControl>
 
-        <FormControl fullWidth margin="normal">
-          <TextField
-            name="width"
-            label="Ancho"
-            type="number"
-            value={material.width}
-            onChange={handleInputChange}
-          />
-          {/* {errors.width && (
-            <FormHelperText error>{errors.width}</FormHelperText>
-          )} */}
-        </FormControl>
 
-        <FormControl fullWidth margin="normal">
-          <TextField
-            name="depth"
-            label="Profundidad"
-            type="number"
-            value={material.depth}
-            onChange={handleInputChange}
-          />
-          {/* {errors.depth && (
-            <FormHelperText error>{errors.depth}</FormHelperText>
-          )} */}
-        </FormControl>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="weight"
-            label="Peso"
-            type="number"
-            value={material.weight}
-            onChange={handleInputChange}
-          />
-          {/* {errors.weight && (
-            <FormHelperText error>{errors.weight}</FormHelperText>
-          )} */}
-        </FormControl>
+          <Grid item xs={12} sm={6}>
+            <FormLabelComponent id="category-label">
+              Categoría
+            </FormLabelComponent>
+            <CustomTextFieldMaterial
+              fullWidth
+            margin="dense"
+              name="category"
+              value={material.category?.id}
+              onChange={handleCategoryChange} 
+              select
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.category_name}
+                </MenuItem>
+              ))}
+            </CustomTextFieldMaterial>
+          </Grid>
 
-        <FormControl fullWidth margin="normal">
-          <TextField
-            name="height"
-            label="Altura"
-            type="number"
-            value={material.height}
-            onChange={handleInputChange}
-          />
-          {/* {errors.height && (
-            <FormHelperText error>{errors.height}</FormHelperText>
-          )} */}
-        </FormControl>
+          {/** Descripción */}
+          <Grid item xs={12}>
+            <FormLabelComponent>Descripción</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="description"
+              value={material.description}
+              onChange={handleInputChange}
+            />
+          </Grid>
+          {/** Código */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Código</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="code"
+              value={material.code}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="actual_stock"
-            label="Stock Actual"
-            type="number"
-            value={material.actual_stock}
-            onChange={handleInputChange}
-          />
-          {/* {errors.actual_stock && (
-            <FormHelperText error>{errors.actual_stock}</FormHelperText>
-          )} */}
-        </FormControl>
+          {/** Stock Actual */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Stock Actual</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="actual_stock"
+              type="number"
+              value={material.actual_stock}
+              onChange={handleInputChange}
+            />
+          </Grid>
+          {/** Ancho */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Ancho</FormLabelComponent>
+            <CustomTextFieldMaterial
+              name="width"
+            margin="dense"
+              type="number"
+              value={material.width}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal">
-          <TextField
-            name="price"
-            label="Precio"
-            type="number"
-            value={material.price}
-            onChange={handleInputChange}
-          />
-          {/* {errors.price && (
-            <FormHelperText error>{errors.price}</FormHelperText>
-          )} */}
-        </FormControl>
+          {/** Altura */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Altura</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="height"
+              type="number"
+              value={material.height}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="description"
-            label="Descripción"
-            value={material.description}
-            onChange={handleInputChange}
-          />
-          {/* {errors.description && (
-            <FormHelperText error>{errors.description}</FormHelperText>
-          )} */}
-        </FormControl>
+          {/** Peso */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Peso</FormLabelComponent>
+            <CustomTextFieldMaterial
+              name="weight"
+            margin="dense"
+              type="number"
+              value={material.weight}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal" >
-          <TextField
-            name="observations"
-            label="Observaciones"
-            value={material.observations}
-            onChange={handleInputChange}
-          />
-          {/* {errors.observations && (
-            <FormHelperText error>{errors.observations}</FormHelperText>
-          )} */}
-        </FormControl>
+          {/** Profundidad */}
+          <Grid item xs={12} sm={4}>
+            <FormLabelComponent>Profundidad</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="depth"
+              type="number"
+              value={material.depth}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="category-label">Categoría</InputLabel>
-          <Select
-            labelId="category-label"
-            name="category"
-            value={material.category?.id} 
-            onChange={handleCategoryChange} // Asegúrate de que sea handleCategoryChange
-          >
-            {categories.map((category) => (
-              <MenuItem key={category.id} value={category.id}>
-                {category.category_name}
-              </MenuItem>
-            ))}
-          </Select>
-          {/* {errors.category && (
-            <FormHelperText error>{errors.category}</FormHelperText>
-          )} */}
-        </FormControl>
-      </Box>
+          {/** Color */}
+          <Grid item xs={12} sm={6}>
+            <FormLabelComponent>Color</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="color"
+              value={material.color}
+              onChange={handleInputChange}
+            />
+          </Grid>
 
-      {/* Botones de Guardar y Cancelar */}
- {/* Botones de Guardar y Cancelar */}
- <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-        <CustomButton text="Cancelar" onClick={handleCancel} 
-        sx={{
-            backgroundColor: 'rgba(0, 0, 0, 0.01)', // Fondo muy claro y semitransparente
-            border: '1px solid rgba(0, 0, 0, 0.1)', // Borde gris claro
-            color: '#6e6e6e', // Color de texto gris
-            padding: '8px 16px', // Espaciado interno
-            fontSize: '16px', // Tamaño de texto
-            fontWeight: '500', // Peso del texto para que se vea similar
-            cursor: 'pointer', // Cambiar el cursor al pasar por encima
-        }}/>
-        <CustomButton text="Guardar" onClick={handleSubmit} />
-      </Box>
+          {/** Precio */}
+          <Grid item xs={12} sm={6}>
+            <FormLabelComponent>Precio</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin="dense"
+              name="price"
+              type="number"
+              value={material.price}
+              onChange={handleInputChange}
+            />
+          </Grid>
+          {/** Observaciones */}
+          <Grid item xs={12}>
+            <FormLabelComponent>Observaciones</FormLabelComponent>
+            <CustomTextFieldMaterial
+            margin='dense'
+              name="observations"
+              value={material.observations}
+              onChange={handleInputChange}
+            />
+          </Grid>
+
+          {/** Categoría */}
+        </Grid>
     </form>
   );
 };

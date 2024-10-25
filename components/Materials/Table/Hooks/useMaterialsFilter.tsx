@@ -59,19 +59,19 @@ const useMaterialsFilter = (materials: MaterialProps[], updatedMaterial?: Materi
 
     if (code) {
       filtered = filtered.filter((material: MaterialProps) =>
-        material.code.toLowerCase().includes(code.toLowerCase())
+        material?.code.toLowerCase().includes(code.toLowerCase())
       );
     }
 
     if (stock) {
       filtered = filtered.filter(
-        (material: MaterialProps) => material.actual_stock >= parseFloat(stock)
+        (material: MaterialProps) => material?.actual_stock >= parseFloat(stock)
       );
     }
 
     if (color) {
       filtered = filtered.filter((material: MaterialProps) =>
-        material.color.toLowerCase().includes(color.toLowerCase())
+        material?.color.toLowerCase().includes(color.toLowerCase())
       );
     }
 

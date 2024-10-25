@@ -5,7 +5,7 @@ export interface ModalComponentProps {
   handleClose: () => void;
   title?: string;
   children: ReactNode;
-  handleSave?: () => void;
+  onSubmit?: () => void;
   width?: string;
   height?: string;
   hideActions?: boolean;

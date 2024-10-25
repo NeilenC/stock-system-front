@@ -7,6 +7,7 @@ import theme from "../../themes/theme";
 const FormLabelComponent = styled(FormLabel)(() => ({
     fontSize: '16px', // Tamaño de fuente
     fontWeight: 'bold', // Peso de fuente
+    lineHeight:1,
     color: theme.palette.primary.contrastText,
     '&.Mui-focused': {
       color: theme.palette.primary.contrastText, // Color del label cuando está enfocado
