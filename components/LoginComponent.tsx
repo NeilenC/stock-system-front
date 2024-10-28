@@ -9,7 +9,9 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import theme from "../themes/theme";
-import { FormLabelComponent } from "../commons/styled-components/CustomTextFields";
+import { CustomTextField, FormLabelComponent } from "../commons/styled-components/CustomTextFields";
+import Image from 'next/image'; // Importa el componente de imagen
+import logo from '../public/logo-login.png'; // Asegúrate de que la ruta sea correcta
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -43,7 +45,6 @@ const Login: React.FC = () => {
       console.log("Login success:", data);
 
       if (data && data.access_token) {
-        // Guardar el token en localStorage
         localStorage.setItem("token", data.access_token);
         router.push("/home");
       } else {
@@ -60,31 +61,40 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-      }}
-    >
+    <Box sx={{
+      '.MuiContainer-root': { maxWidth:'100% !important' },
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      backgroundImage: "url('/bgimage.jpg')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }}>
+
+
       <Box
         component="form"
         onSubmit={handleLogin}
         sx={{
-          width: "40%",
-          p: 5, 
+          width: "33%",
+          paddingInline: 5, 
+          paddingBlock: 3, 
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // backgroundColor: "#fff",
           borderRadius: 3,
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Sombra suave
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+          zIndex: 10,
+          bgcolor: 'rgba(255, 255, 255, 0.5)',
         }}
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+          <Image src={logo} alt="Logo de login" width={120} height={120} />
+        
+        {/* <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
           Iniciar sesión
-        </Typography>
+        </Typography> */}
 
         {error && (
           <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
@@ -92,48 +102,41 @@ const Login: React.FC = () => {
           </Alert>
         )}
 
-        <Box sx={{ width: "100%",mb: 2 ,  }}>
-          <FormLabelComponent sx={{ display: "block"}}>
+        <Box sx={{ width: "100%" }}>
+          <FormLabelComponent sx={{ display: "block" }}>
             Email
           </FormLabelComponent>
-          <TextField
+          <CustomTextField
             margin="normal"
             required
             fullWidth
             id="email"
             name="email"
+            placeholder='Ingresar Email'
             autoComplete="email"
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              "& .MuiInputBase-input": {
-                borderRadius: 2,
-              },
-            }}
+           
           />
         </Box>
 
-        <Box sx={{ width: "100%", mb: 2 }}>
-          <FormLabelComponent sx={{ display: "block"}}>
+        <Box sx={{ width: "100%"}}>
+          <FormLabelComponent sx={{ display: "block" }}>
             Contraseña
           </FormLabelComponent>
-          <TextField
+          <CustomTextField
             margin="normal"
             required
             fullWidth
+            placeholder='Ingresar Contraseña'
             name="password"
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{
-              "& .MuiInputBase-input": {
-                borderRadius: 2, 
-                
-              },
-            }}
+           
           />
         </Box>
 
@@ -141,14 +144,13 @@ const Login: React.FC = () => {
           type="submit"
           variant="contained"
           sx={{
-            mt: 3,
-            mb: 2,
             padding: "10px 0",
-            borderRadius: 2,
+            mt:1,
+            borderRadius: 3,
             backgroundColor: theme.palette.primary.dark,
             color: theme.palette.primary.light,
-            fontSize:'16px',
-            width:1,
+            fontSize: '16px',
+            width: 1,
             "&:hover": {
               backgroundColor: theme.palette.primary.light,
               color: theme.palette.primary.dark,
@@ -159,7 +161,8 @@ const Login: React.FC = () => {
           {loading ? "Ingresando..." : "Ingresar"}
         </Button>
       </Box>
-    </Container>
+    </Box>
+
   );
 };
 

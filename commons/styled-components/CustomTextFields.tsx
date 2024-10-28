@@ -21,7 +21,7 @@ const FormLabelComponent = styled(FormLabel)(() => ({
       borderRadius: '8px',
       border: '1px solid #E1E6EF',
       marginBottom: isFromBooking ? '24px' : '0px',
-      marginTop:  isFromBooking ?'12px'  : '0px',
+
       '& input': {
         padding: isFromBooking ?  '10px 14px':'8px' , 
       },

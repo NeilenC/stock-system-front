@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { SectorType } from "../components/sectors/enum";
 
 const useSectors = () => {
-  const [salas, setSectors] = useState([]);
+  const [sectors, setSalas] = useState<SectorType[]>([]);
+
+
   const getSalas = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/sectors`, { method: 'GET' });
@@ -11,7 +14,7 @@ const useSectors = () => {
       }
 
       const data = await response.json(); // Espera a que se resuelva el JSON
-      setSectors(data); // Asigna los datos al estado
+      setSalas(data); // Asigna los datos al estado
     } catch (error) {
       console.error("Failed to fetch Salas:", error);
     }
@@ -21,7 +24,7 @@ const useSectors = () => {
     getSalas();
   }, []);
 
-  return { salas };
+  return { salas: sectors, setSalas, getSalas }; // Devuelve también la función para actualizar el estado
 };
 
 export default useSectors;

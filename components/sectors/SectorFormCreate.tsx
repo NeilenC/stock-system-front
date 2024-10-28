@@ -7,57 +7,17 @@ import {
   FormControl,
 } from "@mui/material";
 import { SectorType } from "./enum";
-import CustomButton from "../../commons/buttons-commons/CustomButton";
 import { FormLabelComponent } from "../../commons/styled-components/CustomTextFields";
+import { useSectorStore } from "../../zustand/sectorsStore";
 
-const SectorFormCreate = ({
-  onSubmit,
-  error,
-  initialData,
-  handleClose,
-}: {
-  onSubmit: (formData: any) => void;
-  error: string;
-  handleClose: () => void;
-  initialData?: {
-    name: string;
-    square_meters: number;
-    number_of_bathrooms: number;
-    description: string;
-    sector: SectorType;
-  };
-}) => {
-  const [nombre, setNombre] = useState(initialData?.name || "");
-  const [metrosCuadrados, setMetrosCuadrados] = useState(
-    initialData?.square_meters || ""
-  );
-  const [cantidadBanos, setCantidadBanos] = useState(
-    initialData?.number_of_bathrooms || ""
-  );
-  const [sector, setSector] = useState<SectorType | "">(
-    initialData?.sector || ""
-  );
-  console.log("SECTOR ACA EN FORMIULARIO", sector)
-  const [descripcion, setDescripcion] = useState(
-    initialData?.description || ""
-  );
-  const [errors, setErrors] = useState({
-    name: "",
-    square_meters: "",
-    number_of_bathrooms: "",
-    sector: "",
-  });
+const SectorFormCreate = () => {
+  const { sectorData, setSectorData, resetSectorData } = useSectorStore();
+  const { name, square_meters, number_of_bathrooms, description, sector } =
+    sectorData;
 
   useEffect(() => {
-    // When initialData changes, update the states
-    if (initialData) {
-      setNombre(initialData.name);
-      setMetrosCuadrados(initialData.square_meters.toString());
-      setCantidadBanos(initialData.number_of_bathrooms.toString());
-      setSector(initialData.sector);
-      setDescripcion(initialData.description);
-    }
-  }, [initialData]);
+    resetSectorData();
+  }, []);
 
   const handleSubmit = () => {
     let isValid = true;
@@ -68,17 +28,17 @@ const SectorFormCreate = ({
       sector: "",
     };
 
-    if (!nombre) {
+    if (!name) {
       newErrors.name = "El nombre es requerido";
       isValid = false;
     }
 
-    if (!metrosCuadrados) {
+    if (!square_meters) {
       newErrors.square_meters = "Los metros cuadrados son requeridos";
       isValid = false;
     }
 
-    if (!cantidadBanos) {
+    if (!number_of_bathrooms) {
       newErrors.number_of_bathrooms = "La cantidad de baños es requerida";
       isValid = false;
     }
@@ -87,141 +47,129 @@ const SectorFormCreate = ({
       newErrors.sector = "El sector es requerido";
       isValid = false;
     }
-    setErrors(newErrors);
 
-    if (!isValid) return;
+    if (!isValid) {
+      console.error("Validation Errors:", newErrors);
+      return; 
+    }
 
     const formData = {
-      name: nombre,
-      square_meters: Number(metrosCuadrados),
-      number_of_bathrooms: Number(cantidadBanos),
-      description: descripcion,
-      sector: sector,
+      name,
+      square_meters: Number(square_meters),
+      number_of_bathrooms: Number(number_of_bathrooms),
+      description,
+      sector,
     };
 
-    onSubmit(formData);
+    setSectorData(formData);
   };
-
-  const handleChange =
-    (
-      setter: React.Dispatch<React.SetStateAction<any>>,
-      field: keyof typeof errors
-    ) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setter(e.target.value);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [field]: "",
-      }));
-    };
-
-  const renderHelperText = (field: keyof typeof errors) => {
-    const errorText = errors[field];
-    return errorText ? (
-      <FormHelperText sx={{ lineHeight: "5px" }} error>
-        {errorText}
-      </FormHelperText>
-    ) : (
-      <div style={{ padding: "5px" }}></div>
-    );
-  };
-
   return (
-<form>
-  <FormControl fullWidth margin="normal" required error={!!errors.name}>
-    <FormLabelComponent htmlFor="nombre" >
-      Nombre
-    </FormLabelComponent>
-    <TextField
-      id="nombre"
-      placeholder="Nombre"
-      fullWidth
-      value={nombre}
-      onChange={handleChange(setNombre, "name")}
-    />
-    {errors.name && renderHelperText("name")}
-  </FormControl>
+    <form onSubmit={handleSubmit}>
+      <FormControl fullWidth margin="normal" required>
+        <FormLabelComponent htmlFor="nombre">Nombre</FormLabelComponent>
+        <TextField
+          id="nombre"
+          placeholder="Nombre"
+          fullWidth
+          value={sectorData.name}
+          onChange={(e) => setSectorData({ name: e.target.value })}
+        />
+        {!name ? (
+          <FormHelperText error>El nombre es requerido</FormHelperText>
+        ) : (
+          <></>
+        )}
+      </FormControl>
 
-  <Box sx={{ display: 'flex', gap: '16px' }}> {/* Contenedor con display flex y un espacio entre los campos */}
-  <FormControl sx={{ flex: 1 }} margin="normal" required error={!!errors.square_meters}>
-    <FormLabelComponent htmlFor="metros-cuadrados">
-      Metros cuadrados
-    </FormLabelComponent>
-    <TextField
-      id="metros-cuadrados"
-      placeholder="Metros cuadrados"
-      type="number"
-      fullWidth
-      value={metrosCuadrados}
-      onChange={handleChange(setMetrosCuadrados, "square_meters")}
-    />
-    {errors.square_meters && renderHelperText("square_meters")}
-  </FormControl>
+      <Box sx={{ display: "flex", gap: "16px" }}>
+        <FormControl
+          sx={{ flex: 1 }}
+          margin="normal"
+          required
+          error={!square_meters}
+        >
+          <FormLabelComponent htmlFor="metros-cuadrados">
+            Metros cuadrados
+          </FormLabelComponent>
+          <TextField
+            id="metros-cuadrados"
+            placeholder="Metros cuadrados"
+            type="number"
+            fullWidth
+            value={square_meters}
+            onChange={(e) =>
+              setSectorData({ square_meters: Number(e.target.value) })
+            }
+          />
+          {!square_meters && (
+            <FormHelperText error>
+              Los metros cuadrados son requeridos
+            </FormHelperText>
+          )}
+        </FormControl>
 
-  <FormControl sx={{ flex: 1 }} margin="normal" required error={!!errors.number_of_bathrooms}>
-    <FormLabelComponent htmlFor="cantidad-banos">
-      Cantidad de baños
-    </FormLabelComponent>
-    <TextField
-      id="cantidad-banos"
-      placeholder="Cantidad de baños"
-      type="number"
-      fullWidth
-      value={cantidadBanos}
-      onChange={handleChange(setCantidadBanos, "number_of_bathrooms")}
-    />
-    {errors.number_of_bathrooms && renderHelperText("number_of_bathrooms")}
-  </FormControl>
-</Box>
+        <FormControl
+          sx={{ flex: 1 }}
+          margin="normal"
+          required
+          error={!number_of_bathrooms}
+        >
+          <FormLabelComponent htmlFor="cantidad-banos">
+            Cantidad de baños
+          </FormLabelComponent>
+          <TextField
+            id="cantidad-banos"
+            placeholder="Cantidad de baños"
+            type="number"
+            fullWidth
+            value={number_of_bathrooms}
+            onChange={(e) =>
+              setSectorData({ number_of_bathrooms: Number(e.target.value) })
+            }
+          />
+          {!number_of_bathrooms && (
+            <FormHelperText error>
+              La cantidad de baños es requerida
+            </FormHelperText>
+          )}
+        </FormControl>
+      </Box>
 
+      <FormControl fullWidth margin="normal">
+        <FormLabelComponent htmlFor="sector">Categoría</FormLabelComponent>
+        <TextField
+          id="sector"
+          placeholder="Sector"
+          select
+          fullWidth
+          value={sector}
+          onChange={(e) =>
+            setSectorData({ sector: e.target.value as SectorType })
+          }
+        >
+          {Object.values(SectorType).map((option, index) => (
+            <MenuItem key={`${option}-${index}`} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+      </FormControl>
 
-  <FormControl fullWidth margin="normal">
-    <FormLabelComponent htmlFor="sector" >
-      Categoría
-    </FormLabelComponent>
-    <TextField
-      id="sector"
-      placeholder="Sector"
-      select
-      fullWidth
-      value={sector}
-      onChange={(e) => setSector(e.target.value as SectorType)}
-    >
-      {Object.values(SectorType).map((option, index) => (
-  <MenuItem key={`${option}-${index}`} value={option}>
-    {option}
-  </MenuItem>
-))}
-
-    </TextField>
-    {errors.sector && renderHelperText("sector")}
-  </FormControl>
-
-  <FormControl fullWidth margin="normal">
-    <FormLabelComponent htmlFor="descripcion" >
-      Descripción
-    </FormLabelComponent>
-    <TextField
-      id="descripcion"
-      placeholder="Descripción"
-      fullWidth
-      multiline
-      rows={3}
-      value={descripcion}
-      onChange={(e) => setDescripcion(e.target.value)}
-    />
-  </FormControl>
-
-  {/* Contenedor para los botones */}
-  <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
-    {/* Botón Cancelar */}
-    <CustomButton onClick={handleClose} text="Cancelar" sx={{ bgcolor: "#ef5350" }} />
-    
-    {/* Botón Guardar */}
-    <CustomButton onClick={handleSubmit} text="Guardar"  />
-  </Box>
-</form>
-
+      <FormControl fullWidth margin="normal">
+        <FormLabelComponent htmlFor="descripcion">
+          Descripción
+        </FormLabelComponent>
+        <TextField
+          id="descripcion"
+          placeholder="Descripción"
+          fullWidth
+          multiline
+          rows={3}
+          value={description}
+          onChange={(e) => setSectorData({ description: e.target.value })}
+        />
+      </FormControl>
+    </form>
   );
 };
 
