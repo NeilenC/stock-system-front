@@ -1,45 +1,49 @@
 import styled from "@emotion/styled";
-import { Autocomplete, Box, FormLabel, ListItem, ListItemText, Select, SelectProps, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  FormLabel,
+  ListItem,
+  ListItemText,
+  Select,
+  TextField,
+} from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import theme from "../../themes/theme";
 
 const FormLabelComponent = styled(FormLabel)(() => ({
-    fontSize: '16px', // Tamaño de fuente
-    fontWeight: 'bold', // Peso de fuente
-    lineHeight:1,
-    color: theme.palette.primary.contrastText,
-    '&.Mui-focused': {
-      color: theme.palette.primary.contrastText, // Color del label cuando está enfocado
+  fontSize: "16px", // Tamaño de fuente
+  fontWeight: "bold", // Peso de fuente
+  marginBottom:4,
+  color: theme.palette.primary.contrastText,
+  "&.Mui-focused": {
+    color: theme.palette.primary.contrastText, // Color del label cuando está enfocado
+  },
+}));
+
+const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(
+  ({ isFromBooking = true }) => ({
+    "& .MuiOutlinedInput-root": {
+      height: isFromBooking ? "43px" : "38px",
+      borderRadius: "8px",
+      border: "1px solid #E1E6EF",
+      marginBottom: isFromBooking ? "24px" : "0px",
+
+      "& input": {},
+      "& fieldset": {
+        borderColor: "#E1E6EF",
+      },
+      "&:hover fieldset": {
+        borderColor: isFromBooking ? "#B0BEC5" : theme.palette.secondary.main,
+      },
     },
-  }));
+  })
+);
 
-  const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
-  
-    '& .MuiOutlinedInput-root': {
-      height: isFromBooking ?  '43px' : '38px',
-      borderRadius: '8px',
-      border: '1px solid #E1E6EF',
-      marginBottom: isFromBooking ? '24px' : '0px',
-
-      '& input': {
-        padding: isFromBooking ?  '10px 14px':'8px' , 
-      },
-      '& fieldset': {
-        borderColor:'#E1E6EF' ,
-      },
-      '&:hover fieldset': {
-        borderColor:  isFromBooking ? '#B0BEC5'  : theme.palette.secondary.main, 
-      },
-
-    }, 
-  }));
-
-
-
-
-  
-  const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
+const StyledSelect = styled(
+  Select
+)`  // Para manejar estilos del placeholder del select
   border: 1px solid ${theme.palette.info.light};  
   border-radius: 8px;        
   height: 35px;     
@@ -51,48 +55,51 @@ const FormLabelComponent = styled(FormLabel)(() => ({
   },
 `;
 
-
-
-// Componente CustomSelect que maneja el placeholder 
+// Componente CustomSelect que maneja el placeholder
 const CustomSelect = ({ placeholder, ...props }: any) => {
   return (
-
     <StyledSelect
       displayEmpty
       renderValue={(selected) => {
-        if (selected === '') {
-          return <Box sx={{color: '#1D2433'}}>{placeholder}</Box >;
+        if (selected === "") {
+          return <Box sx={{ color: "#1D2433" }}>{placeholder}</Box>;
         }
         return selected;
       }}
-      IconComponent={props.open ? ExpandLessOutlinedIcon : ExpandMoreOutlinedIcon} 
+      IconComponent={
+        props.open ? ExpandLessOutlinedIcon : ExpandMoreOutlinedIcon
+      }
       {...props}
-      >
+    >
       {props.children}
     </StyledSelect>
-
   );
 };
 
-
 // Estilos personalizados para el Autocomplete y su TextField
 const StyledAutocomplete = styled(Autocomplete)(() => ({
-  '& .MuiOutlinedInput-root': {
+  "& .MuiOutlinedInput-root": {
     border: `1px solid ${theme.palette.info.light}`, // mismo estilo de borde
-    borderRadius: '8px',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    '&:hover': {
+    borderRadius: "8px",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    "&:hover": {
       borderColor: `${theme.palette.info.light}`, // hover como en StyledSelect
     },
-    '&.Mui-focused': {
+    "&.Mui-focused": {
       borderColor: `${theme.palette.info.light}`, // enfoque como en StyledSelect
     },
   },
 }));
 
-const CustomAutocomplete = ({ placeholder, options, value, onChange, ...props }: any) => {
+const CustomAutocomplete = ({
+  placeholder,
+  options,
+  value,
+  onChange,
+  ...props
+}: any) => {
   return (
     <StyledAutocomplete
       fullWidth
@@ -109,7 +116,7 @@ const CustomAutocomplete = ({ placeholder, options, value, onChange, ...props }:
           placeholder={value.length ? "" : placeholder} // Oculta el placeholder si hay un valor seleccionado
           InputProps={{
             ...params.InputProps,
-            sx: { textAlign: 'center' }, // Centra el texto en el input
+            sx: { textAlign: "center" }, // Centra el texto en el input
             endAdornment: (
               <Box>
                 {props.open ? (
@@ -126,15 +133,15 @@ const CustomAutocomplete = ({ placeholder, options, value, onChange, ...props }:
         <ListItem
           {...props}
           key={option.value}
-          sx={{ display: 'flex', alignItems: 'center', height: '48px' }}
+          sx={{ display: "flex", alignItems: "center", height: "48px" }}
         >
           <ListItemText primary={option.label} />
         </ListItem>
       )}
       sx={{
-        '& .MuiAutocomplete-input': {
-          display: 'flex',
-          flexWrap: 'wrap', // Permite que los elementos se envuelvan
+        "& .MuiAutocomplete-input": {
+          display: "flex",
+          flexWrap: "wrap", // Permite que los elementos se envuelvan
         },
       }}
       {...props}
@@ -142,5 +149,9 @@ const CustomAutocomplete = ({ placeholder, options, value, onChange, ...props }:
   );
 };
 
-
-  export  {FormLabelComponent, CustomTextField, CustomSelect, CustomAutocomplete }
+export {
+  FormLabelComponent,
+  CustomTextField,
+  CustomSelect,
+  CustomAutocomplete,
+};

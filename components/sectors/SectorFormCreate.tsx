@@ -9,17 +9,25 @@ import {
 import { SectorType } from "./enum";
 import { FormLabelComponent } from "../../commons/styled-components/CustomTextFields";
 import { useSectorStore } from "../../zustand/sectorsStore";
+import CustomNumberInput from "../../commons/styled-components/CustomNumberInput";
+import { CustomTextFieldMaterial } from "../Materials/StyledMaterial";
+import theme from "../../themes/theme";
 
 const SectorFormCreate = () => {
-  const { sectorData, setSectorData, resetSectorData } = useSectorStore();
+  const { sectorData, setSectorData, resetSectorData } =
+    useSectorStore();
   const { name, square_meters, number_of_bathrooms, description, sector } =
     sectorData;
+
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   useEffect(() => {
     resetSectorData();
   }, []);
 
   const handleSubmit = () => {
+    setSubmitAttempted(true);
+
     let isValid = true;
     let newErrors = {
       name: "",
@@ -50,34 +58,39 @@ const SectorFormCreate = () => {
 
     if (!isValid) {
       console.error("Validation Errors:", newErrors);
-      return; 
+      return;
     }
+
+    // setErrors(newErrors);
 
     const formData = {
       name,
-      square_meters: Number(square_meters),
-      number_of_bathrooms: Number(number_of_bathrooms),
+      square_meters,
+      number_of_bathrooms,
       description,
       sector,
     };
 
     setSectorData(formData);
   };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
       <FormControl fullWidth margin="normal" required>
-        <FormLabelComponent htmlFor="nombre">Nombre</FormLabelComponent>
-        <TextField
+        <FormLabelComponent htmlFor="nombre" >Nombre</FormLabelComponent>
+        <CustomTextFieldMaterial
           id="nombre"
-          placeholder="Nombre"
           fullWidth
           value={sectorData.name}
           onChange={(e) => setSectorData({ name: e.target.value })}
         />
-        {!name ? (
+        {submitAttempted && !name && (
           <FormHelperText error>El nombre es requerido</FormHelperText>
-        ) : (
-          <></>
         )}
       </FormControl>
 
@@ -86,22 +99,25 @@ const SectorFormCreate = () => {
           sx={{ flex: 1 }}
           margin="normal"
           required
-          error={!square_meters}
+          error={submitAttempted && !square_meters}
         >
           <FormLabelComponent htmlFor="metros-cuadrados">
             Metros cuadrados
           </FormLabelComponent>
-          <TextField
+          <CustomNumberInput
             id="metros-cuadrados"
             placeholder="Metros cuadrados"
-            type="number"
             fullWidth
             value={square_meters}
-            onChange={(e) =>
-              setSectorData({ square_meters: Number(e.target.value) })
+            onChange={(e:any) =>
+              setSectorData({
+                square_meters:
+                  e.target.value === "" ? 0 : Number(e.target.value),
+              })
             }
           />
-          {!square_meters && (
+
+          {submitAttempted && !square_meters && (
             <FormHelperText error>
               Los metros cuadrados son requeridos
             </FormHelperText>
@@ -112,22 +128,40 @@ const SectorFormCreate = () => {
           sx={{ flex: 1 }}
           margin="normal"
           required
-          error={!number_of_bathrooms}
+          error={submitAttempted && !number_of_bathrooms}
         >
           <FormLabelComponent htmlFor="cantidad-banos">
             Cantidad de baños
           </FormLabelComponent>
-          <TextField
+          <CustomNumberInput
             id="cantidad-banos"
             placeholder="Cantidad de baños"
-            type="number"
             fullWidth
             value={number_of_bathrooms}
-            onChange={(e) =>
-              setSectorData({ number_of_bathrooms: Number(e.target.value) })
+            onChange={(e: any) =>
+              setSectorData({
+                number_of_bathrooms:
+                  e.target.value === "" ? 0 : Number(e.target.value),
+              })
             }
+            InputProps={{
+              inputProps: {
+                style: { appearance: "textfield" },
+              },
+              sx: {
+                "& input[type=number]": {
+                  MozAppearance: "textfield", // Para Firefox
+                },
+                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button":
+                  {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                  },
+              },
+            }}
           />
-          {!number_of_bathrooms && (
+
+          {submitAttempted && !number_of_bathrooms && (
             <FormHelperText error>
               La cantidad de baños es requerida
             </FormHelperText>
@@ -137,7 +171,7 @@ const SectorFormCreate = () => {
 
       <FormControl fullWidth margin="normal">
         <FormLabelComponent htmlFor="sector">Categoría</FormLabelComponent>
-        <TextField
+        <CustomTextFieldMaterial
           id="sector"
           placeholder="Sector"
           select
@@ -152,7 +186,7 @@ const SectorFormCreate = () => {
               {option}
             </MenuItem>
           ))}
-        </TextField>
+        </CustomTextFieldMaterial>
       </FormControl>
 
       <FormControl fullWidth margin="normal">
@@ -160,13 +194,19 @@ const SectorFormCreate = () => {
           Descripción
         </FormLabelComponent>
         <TextField
+            margin="dense"
           id="descripcion"
-          placeholder="Descripción"
           fullWidth
           multiline
-          rows={3}
+            rows={3}
           value={description}
           onChange={(e) => setSectorData({ description: e.target.value })}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "5px",
+              border: `1px solid ${theme.palette.info.light}`,
+            },
+          }}
         />
       </FormControl>
     </form>

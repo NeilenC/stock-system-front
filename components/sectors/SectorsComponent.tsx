@@ -18,27 +18,23 @@ const SectorsComponent = () => {
 
   const [sectors, setSectors] = useState<any[]>([]);
   const [selectedSector, setSelectedSector] = useState<any>(null);
-  const handleOpenModalToCreate = (sector?: any) => {
-    setSelectedSector(sector || null);
-    setModalOpen(true);
-  };
-
+  
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-
+  
   console.log("sectoooordata", sectorData);
 
   const handleSubmitSector = async () => {
     try {
       if (sectorData) {
         console.log("sectorData en handleeer", sectorData);
-
+        
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/sectors`,
           { method: "POST", body: JSON.stringify(sectorData) }
         );
-
+        
         if (response.ok) {
           handleCloseModal();
         } else {
@@ -51,7 +47,12 @@ const SectorsComponent = () => {
       console.error(e);
     }
   };
-
+  
+  const handleOpenModalToCreate = (sector?: any) => {
+    setSelectedSector(sector || null);
+    setModalOpen(true);
+  };
+  
   const handleOpenModalToEdit = (sector: any) => {
     setSelectedSector(sector); // Set the selected sector for editing
     setModalOpen(true);
