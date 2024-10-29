@@ -18,11 +18,12 @@ const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
     }
   }
 
+  
   return (
     <Grid container justifyContent="flex-end" sx={{ pr: 2 , pt:1}}>
     <Button
       variant="contained"
-      size="small" // Tamaño pequeño para los botones
+      size="small" 
       disabled={currentPage === 1}
       onClick={() => onPageChange(currentPage - 1)}
       sx={{ mr: 1, maxWidth: '80px', height: currentPage === count ? '39px': '40px', 

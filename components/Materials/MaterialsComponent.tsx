@@ -33,13 +33,8 @@ const MaterialOptions = ({
   );
   const [searchTerms, setSearchTerms] = useState<Record<number, string>>({});
   const [openModalCreate, setOpenModalCreate] = useState(false);
-  const [categoriesReload, setCategories] = useState<Category[]>([]);
 
-  // const loadCategories = async () => {
-  //   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials-category`);
-  //   const data = await response.json();
-  //   setCategories(data);
-  // };
+
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
   };

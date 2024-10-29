@@ -30,17 +30,30 @@ const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const [materials, setMaterials] = useState<MaterialProps[]>([]);
   const [formData, setFormData] = useState(initialFormData);
+  
   useEffect(() => {
     const fetchMaterials = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/materials`
-      );
-      const data = await response.json();
-      setMaterials(data);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`
+        );
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setMaterials(data);
+      } catch (error) {
+        console.error("Failed to fetch materials:", error);
+      }
     };
-
+  
     fetchMaterials();
   }, []);
+  
+  
+  console.log("materiales", materials)
 
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
@@ -51,7 +64,6 @@ const MainComponent = () => {
   };
 
   const handleCreateMaterial = async (formData: any) => {
-    console.log("ACAAAA")
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials`,
@@ -121,7 +133,7 @@ const MainComponent = () => {
             overflow: "hidden",
           }}
         >
-          <MaterialsTable materials={materials} />
+          <MaterialsTable initialMaterials={materials} />
         </Box>
       </Box>
       {openModalCreate && (
@@ -130,6 +142,7 @@ const MainComponent = () => {
           handleClose={handleCloseModalCreate}
           title="Crear Material"
           onSubmit={() => handleCreateMaterial(formData)}
+          textButton="Guardar"
         >
           <CreateMaterialForm 
            formData={formData}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { CustomTextFieldComponent, CustomTextFieldMaterial } from '../StyledMaterial';
+import { CustomTextFieldComponent } from '../../../StyledMaterial';
 
 interface FilterFieldProps {
   value: string;

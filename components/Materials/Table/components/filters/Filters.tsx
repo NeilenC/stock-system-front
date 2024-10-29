@@ -1,10 +1,7 @@
 import React from 'react';
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import FilterField from './FilterField';
-import useFilters from './Hooks/useFilters';
-import { IconButton } from 'rsuite';
-import IconToImage from '../../../commons/styled-components/IconImages';
-import closeIcon from '../../../public/close.png'
+import useFilters from '../../Hooks/useFilters';
 const Filters = ({ onFilter }: { onFilter: (filters: any) => void }) => {
   const {
     code,

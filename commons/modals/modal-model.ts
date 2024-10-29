@@ -10,4 +10,6 @@ export interface ModalComponentProps {
   height?: string;
   hideActions?: boolean;
   error?: string;
+  fromDelete?: boolean;
+  textButton?: string
 }

@@ -8,7 +8,7 @@ import IconToImage from "../styled-components/IconImages";
 import sectors from "../../public/sectorIcon.png";
 import { useSectorPositions } from "../../context/SectorPositionsProvider";
 import EditIcon from "@mui/icons-material/Edit"; // Asegúrate de tener esta línea
-import EditSectorModal from "../../components/sectors/SectorFormEdit";
+// import EditSectorModal from "../../components/sectors/SectorFormEdit";
 
 // Función para agrupar sectores por su campo "sector"
 export const groupSectorsByCategory = (sectors: any) => {
@@ -264,7 +264,7 @@ const SectorsInTimeLine = ({ children }: any) => {
                   </Collapse>
                 </Box>
               ))}
-              {isEditModalOpen && (
+              {/* {isEditModalOpen && (
                 <EditSectorModal
                 sectorId={editingSectorId}
                 onClose={() => {
@@ -273,7 +273,7 @@ const SectorsInTimeLine = ({ children }: any) => {
                 }}
                 // Otros props que necesites
               />
-              )}
+              )} */}
             </Collapse>
           </Box>
         ))}

@@ -16,6 +16,7 @@ export interface MaterialProps {
   price: number;
   last_stock_update: string;
   observations: string;
+  is_active: boolean;
 }
 
   

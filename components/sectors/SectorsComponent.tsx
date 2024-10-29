@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
-import SectorFormCreate from "./SectorFormCreate";
-import theme from "../../themes/theme";
+import React, { useState } from "react";
+import { Box } from "@mui/material";
 import ModalComponent from "../../commons/modals/ModalComponent";
-import SectorsInTimeLine from "../../commons/timeline-commons/SectorsInTimeLine";
 import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
 import space from "../../public/space.png";
 import CustomButton from "../../commons/buttons-commons/CustomButton";
 import Sectors from "./Sectors";
-import useSectors from "../../hooks/useSectors";
 import { useSectorStore } from "../../zustand/sectorsStore";
+import SectorFormCreate from "./forms/SectorFormCreate";
 
 const SectorsComponent = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [error, setError] = useState("");
   const { sectorData } = useSectorStore();
-
-  const [sectors, setSectors] = useState<any[]>([]);
+  const [error, setError] = useState("");
   const [selectedSector, setSelectedSector] = useState<any>(null);
   
   const handleCloseModal = () => {
@@ -77,6 +72,7 @@ const SectorsComponent = () => {
           handleClose={handleCloseModal}
           title="Crear un nuevo Espacio"
           onSubmit={() => handleSubmitSector()}
+          textButton="Guardar"
         >
           <SectorFormCreate />
         </ModalComponent>

@@ -5,8 +5,8 @@ import { useSectorPositions } from "../../context/SectorPositionsProvider";
 import Category from "./Category";
 import { groupSectorsByCategory } from "./functions";
 import ModalComponent from "../../commons/modals/ModalComponent";
-import SectorEditForm from "./SectorFormEdit";
 import { useSectorStore } from "../../zustand/sectorsStore";
+import SectorEditForm from "./forms/SectorFormEdit";
 
 const Sectors = () => {
   const { salas, setSalas } = useSectors(); // Asegúrate de tener una función para setear las salas
@@ -80,6 +80,7 @@ const Sectors = () => {
           handleClose={() => setIsEditModalOpen(false)}
           title="Editar Espacio"
           onSubmit={handleUpdateSector}
+          textButton="Editar"
         >
           <SectorEditForm
             sectorId={editingSectorId}

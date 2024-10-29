@@ -6,9 +6,10 @@ import {
   Box,
   FormControl,
 } from "@mui/material";
-import { SectorType } from "./enum";
-import { FormLabelComponent } from "../../commons/styled-components/CustomTextFields";
-import { useSectorStore } from "../../zustand/sectorsStore";
+import { FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
+import { SectorType } from "../enum";
+import { useSectorStore } from "../../../zustand/sectorsStore";
+
 
 const SectorEditForm = ({
   onSubmit,

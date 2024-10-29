@@ -6,12 +6,12 @@ import {
   Box,
   FormControl,
 } from "@mui/material";
-import { SectorType } from "./enum";
-import { FormLabelComponent } from "../../commons/styled-components/CustomTextFields";
-import { useSectorStore } from "../../zustand/sectorsStore";
-import CustomNumberInput from "../../commons/styled-components/CustomNumberInput";
-import { CustomTextFieldMaterial } from "../Materials/StyledMaterial";
-import theme from "../../themes/theme";
+import { useSectorStore } from "../../../zustand/sectorsStore";
+import { FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
+import { CustomTextFieldMaterial } from "../../Materials/StyledMaterial";
+import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
+import { SectorType } from "../enum";
+import theme from "../../../themes/theme";
 
 const SectorFormCreate = () => {
   const { sectorData, setSectorData, resetSectorData } =

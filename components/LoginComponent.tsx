@@ -12,6 +12,7 @@ import theme from "../themes/theme";
 import { CustomTextField, FormLabelComponent } from "../commons/styled-components/CustomTextFields";
 import Image from 'next/image'; // Importa el componente de imagen
 import logo from '../public/logo-login.png'; // Asegúrate de que la ruta sea correcta
+import { useUserStore } from "../zustand/useAuthStore";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -19,12 +20,14 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  const setAccessToken = useUserStore((state) => state.setAccessToken);
+  const setEmailInStore = useUserStore((state) => state.setEmail);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/auth/login`,
@@ -36,17 +39,19 @@ const Login: React.FC = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Hubo un error. Por favor corrobore las credenciales.");
       }
-
+  
       const data = await response.json();
       console.log("Login success:", data);
-
+  
       if (data && data.access_token) {
         localStorage.setItem("token", data.access_token);
-        router.push("/home");
+        setAccessToken(data.access_token);
+        setEmailInStore(email); // Establecer el email
+        router.push("/deposito/materiales");
       } else {
         throw new Error("No se recibió el token de acceso.");
       }
@@ -59,6 +64,7 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Box sx={{
@@ -78,7 +84,7 @@ const Login: React.FC = () => {
         component="form"
         onSubmit={handleLogin}
         sx={{
-          width: "33%",
+          width: "30%",
           paddingInline: 5, 
           paddingBlock: 3, 
           display: "flex",
@@ -102,10 +108,8 @@ const Login: React.FC = () => {
           </Alert>
         )}
 
-        <Box sx={{ width: "100%" }}>
-          <FormLabelComponent sx={{ display: "block" }}>
+          <FormLabelComponent sx={{ display: "block" , width:1, }}>
             Email
-          </FormLabelComponent>
           <CustomTextField
             margin="normal"
             required
@@ -117,14 +121,11 @@ const Login: React.FC = () => {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-           
           />
-        </Box>
-
-        <Box sx={{ width: "100%"}}>
-          <FormLabelComponent sx={{ display: "block" }}>
-            Contraseña
           </FormLabelComponent>
+
+          <FormLabelComponent sx={{ display: "block" , width:1 }}>
+            Contraseña
           <CustomTextField
             margin="normal"
             required
@@ -136,9 +137,8 @@ const Login: React.FC = () => {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-           
           />
-        </Box>
+          </FormLabelComponent>
 
         <Button
           type="submit"

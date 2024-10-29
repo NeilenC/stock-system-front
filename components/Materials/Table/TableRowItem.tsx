@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Menu, MenuItem } from '@mui/material';
-import TextWithPopover from './TextWidthPopOver';
+import TextWithPopover from './components/TextWidthPopOver';
 import IconToImage from '../../../commons/styled-components/IconImages';
 import edit from '../../../public/edit.png';
 import deleteicon from '../../../public/delete.png';
+import AdjustStock from './AdjustStock';
 
 const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
+  const [stockAdjustmentType, setStockAdjustmentType] = useState<'add' | 'remove' | null>(null);
+
+
+  const handleStockChangeClick = (type: 'add' | 'remove') => {
+    setStockAdjustmentType(type);
+    setIsStockModalOpen(true);
+  };
+
+  const handleStockModalClose = () => {
+    setIsStockModalOpen(false);
+    setStockAdjustmentType(null);
+  };
 
   const handleDescriptionClick = (event: React.MouseEvent<HTMLElement>) => {
     // Lógica para manejar clic en descripción (puedes añadirla si necesitas más funcionalidad)
@@ -18,8 +32,9 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
   const handleEditClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
+    console.log("anchorel", anchorEl)
   };
-
+  
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -54,13 +69,13 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
     w={20} 
     h={20} 
     icon={edit} 
-    onClick={handleEditClick} 
+    onClick={handleEditClick}
   />
 
 
 <Menu
   anchorEl={anchorEl}
-  open={Boolean(anchorEl)} // Asegúrate de que esté abierto solo si hay un elemento
+  open={Boolean(anchorEl)} 
   onClose={handleMenuClose}
   anchorOrigin={{
     vertical: 'bottom',
@@ -75,19 +90,29 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
           <MenuItem 
             onClick={() => { 
-              onEdit(material.id); // Llama a la función de edición
+              onEdit(material.id); 
               handleMenuClose(); 
             }}
           >
             Editar
           </MenuItem>
-          <MenuItem onClick={() => { /* Lógica para agregar stock */ handleMenuClose(); }}>
-            Agregar Stock
-          </MenuItem>
-          <MenuItem onClick={() => { /* Lógica para remover stock */ handleMenuClose(); }}>
-            Remover Stock
-          </MenuItem>
+          <MenuItem onClick={() => { handleStockChangeClick('add'); handleMenuClose(); }}>
+              Agregar Stock
+            </MenuItem>
+            <MenuItem onClick={() => { handleStockChangeClick('remove'); handleMenuClose(); }}>
+              Remover Stock
+            </MenuItem>
         </Menu>
+
+           {/* Modal para ajustar stock */}
+      {isStockModalOpen && (
+        <AdjustStock 
+          isOpen={isStockModalOpen} 
+          handleClose={handleStockModalClose} 
+          material={material} 
+          adjustmentType={stockAdjustmentType} 
+        />
+      )}
       </Grid>
     </Grid>
   );

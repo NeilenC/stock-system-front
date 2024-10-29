@@ -26,10 +26,10 @@ const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(
   ({ isFromBooking = true }) => ({
     "& .MuiOutlinedInput-root": {
       height: isFromBooking ? "43px" : "38px",
+      p:'0px',
       borderRadius: "8px",
       border: "1px solid #E1E6EF",
       marginBottom: isFromBooking ? "24px" : "0px",
-
       "& input": {},
       "& fieldset": {
         borderColor: "#E1E6EF",

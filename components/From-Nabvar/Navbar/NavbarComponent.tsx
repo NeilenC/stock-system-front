@@ -42,6 +42,7 @@ import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import IconToImage from "../../../commons/styled-components/IconImages";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useUserStore } from "../../../zustand/useAuthStore";
 const NavbarComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dropdownMenu, setDropdownMenu] = React.useState<string | null>(null);
@@ -54,6 +55,9 @@ const NavbarComponent = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useWindowSize().width <= 1025;
   const username = "Nombre Usuario";
+  const clearAccessToken = useUserStore((state) => state.clearAccessToken);
+  const clearEmail = useUserStore((state) => state.clearEmail); // Añadido para limpiar el email
+
 
   useEffect(() => {
     // Detect route change and reset isSelected state after 2 seconds
@@ -198,9 +202,9 @@ const NavbarComponent = () => {
   ];
 
   const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
+    try {
       if (token) {
         await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
           method: "POST",
@@ -210,10 +214,14 @@ const NavbarComponent = () => {
         });
       }
 
-      // Eliminar el token del localStorage
+      // Limpiar el access token y el email en Zustand
+      clearAccessToken();
+      clearEmail();
+
+      // Limpiar el localStorage
       localStorage.removeItem("token");
 
-      // Redirigir al usuario a la página de login o inicio
+      // Redirigir al usuario a la página de login
       router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
