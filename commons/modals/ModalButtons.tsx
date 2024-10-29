@@ -3,11 +3,12 @@ import { Box } from '@mui/material';
 import CustomButton from '../buttons-commons/CustomButton';
 
 interface ModalButtonsProps {
-  onCancel: () => void; // Manejador para el botón de cancelar
-  onSave: () => void;   // Manejador para el botón de guardar
+  onCancel: () => void; 
+  onSave: () => void;  
+  text: string
 }
 
-const ModalButtons: React.FC<ModalButtonsProps> = ({ onCancel, onSave }) => {
+const ModalButtons: React.FC<ModalButtonsProps> = ({ onCancel, onSave, text }) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', p: ' 16px 24px', borderTop:'1px solid #ccc' }}>
       <CustomButton
@@ -24,8 +25,10 @@ const ModalButtons: React.FC<ModalButtonsProps> = ({ onCancel, onSave }) => {
         }}
       />
       <CustomButton
-        text="Guardar"
+        text={text}
         onClick={onSave}
+          
+          sx={{fontSize: '16px', }}
       />
     </Box>
   );

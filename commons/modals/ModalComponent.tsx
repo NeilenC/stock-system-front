@@ -10,9 +10,10 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   handleClose,
   onSubmit,
   title,
+  textButton,
   children,
   width = "500px",
-  
+  fromDelete,
   error,
 }:any) => {
   return (
@@ -61,6 +62,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
 
         {error && <Box sx={{ color: 'red', mt: 2 }}>{error}</Box>}
         <ModalButtons
+        // text="Eliminar"
+        text={textButton}
         onCancel={handleClose} 
         onSave={onSubmit} 
       />
