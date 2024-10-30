@@ -73,7 +73,7 @@ const Login: React.FC = () => {
       justifyContent: "center",
       alignItems: "center",
       minHeight: "100vh",
-      backgroundImage: "url('/bgimage.jpg')",
+      backgroundImage: "url('/warehouseblur.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
         component="form"
         onSubmit={handleLogin}
         sx={{
-          width: "30%",
+          width: "25%",
           paddingInline: 5, 
           paddingBlock: 3, 
           display: "flex",
@@ -110,7 +110,7 @@ const Login: React.FC = () => {
 
           <FormLabelComponent sx={{ display: "block" , width:1, }}>
             Email
-          <CustomTextField
+          <TextField
             margin="normal"
             required
             fullWidth
@@ -124,9 +124,9 @@ const Login: React.FC = () => {
           />
           </FormLabelComponent>
 
-          <FormLabelComponent sx={{ display: "block" , width:1 }}>
+          <FormLabelComponent sx={{ display: "block" , width:1, pt:3, pb:4 }}>
             Contraseña
-          <CustomTextField
+          <TextField
             margin="normal"
             required
             fullWidth
@@ -137,6 +137,7 @@ const Login: React.FC = () => {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            sx={{zIndex:2}}
           />
           </FormLabelComponent>
 

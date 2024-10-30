@@ -19,6 +19,7 @@ const CreateMaterialForm = ({
   const { fetchCategories, categories } = useMaterialStore();
   const [openModal, setOpenModal] = useState(false);
   console.log("category", formData);
+  
 
   useEffect(() => {
     const loadCategories = async () => {

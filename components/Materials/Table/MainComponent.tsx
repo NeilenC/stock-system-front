@@ -16,13 +16,13 @@ const initialFormData = {
   code: "",
   color: "",
   image_url: null,
-  weight: "",
-  width: "",
-  depth: "",
-  height: "",
-  actual_stock: "",
+  weight: 0,
+  width: 0,
+  depth: 0,
+  height: 0,
+  actual_stock: 0,
   observations: "",
-  price: "",
+  price: 0,
   is_active: true,
   category: 0,
 };
@@ -53,8 +53,6 @@ const MainComponent = () => {
   }, []);
   
   
-  console.log("materiales", materials)
-
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
   };
@@ -62,8 +60,15 @@ const MainComponent = () => {
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
   };
+  console.log("cleanedFormData",  formData.weight)
 
   const handleCreateMaterial = async (formData: any) => {
+    // Validar y limpiar los datos antes de enviarlos
+    const cleanedFormData = Object.entries(formData).reduce((acc, [key, value]) => {
+      acc[key] = typeof value === 'number' ? value || 0 : value || "";
+      return acc;
+    }, {} as typeof formData);
+  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials`,
@@ -73,15 +78,15 @@ const MainComponent = () => {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(cleanedFormData),
         }
       );
-
-        if (response.ok) {
-          toast.success("Material creado exitosamente");
-          setOpenModalCreate(false); // Cerrar el modal después de crear
-          setMaterials((prev) => [...prev, formData]); // Agregar el nuevo material a la lista
-          setFormData(initialFormData); // Resetear formData a su estado inicial
+  
+      if (response.ok) {
+        toast.success("Material creado exitosamente");
+        setOpenModalCreate(false);
+        setMaterials((prev) => [ ...prev,cleanedFormData]);
+        setFormData(initialFormData);
       } else {
         const errorResponse = await response.json();
         toast.error(`Error al crear el material: ${errorResponse.message}`);
@@ -91,6 +96,8 @@ const MainComponent = () => {
       toast.error("Error creando material.");
     }
   };
+  
+
 
   const handleChange = (e:any) => {
     const { name, value } = e.target;
@@ -99,6 +106,7 @@ const MainComponent = () => {
       [name]: name === "category" ? Number(value) : value,
     }));
   };
+  
 
   const handleFileChange = (e:any) => {
     if (e.target.files) {

@@ -10,8 +10,12 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
   const [stockAdjustmentType, setStockAdjustmentType] = useState<'add' | 'remove' | null>(null);
+  const [updatedMaterial, setUpdatedMaterial] = useState(material);
 
-
+  const handleStockUpdate = (newStock: number) => {
+    setUpdatedMaterial({ ...updatedMaterial, actual_stock: newStock });
+  };
+console.log("updatedmaterial", updatedMaterial.actual_stock)
   const handleStockChangeClick = (type: 'add' | 'remove') => {
     setStockAdjustmentType(type);
     setIsStockModalOpen(true);
@@ -52,7 +56,8 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
       <Grid item xs={1}>{material.color}</Grid>
       <Grid item xs={1}>{material.height || 'N/A'}</Grid>
       <Grid item xs={1}>{material.depth}</Grid>
-      <Grid item xs={1}>{material.actual_stock}</Grid>
+      {/* <Grid item xs={1}>{material.actual_stock}</Grid> */}
+      <Grid item xs={1}>{updatedMaterial.actual_stock}</Grid>
       <TextWithPopover 
         text={material.observations} 
         title="Observaciones" 
@@ -111,6 +116,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
           handleClose={handleStockModalClose} 
           material={material} 
           adjustmentType={stockAdjustmentType} 
+          onStockUpdate={handleStockUpdate}
         />
       )}
       </Grid>

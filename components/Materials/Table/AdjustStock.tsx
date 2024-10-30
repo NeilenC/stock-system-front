@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal, Box, Typography, FormLabel } from "@mui/material";
 import ModalButtons from "../../../commons/modals/ModalButtons";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
 import { FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
 import { useUserStore } from "../../../zustand/useAuthStore";
-
+import IconToImage from "../../../commons/styled-components/IconImages";
+import stock from "../../../public/stock.png";
 const modalStyle = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -25,15 +26,18 @@ const AdjustStock = ({
   handleClose,
   material,
   adjustmentType,
+  onStockUpdate, 
 }: any) => {
   const [quantity, setQuantity] = useState(0);
-  const {email} = useUserStore()
-console.log("mail", email)
+const userEmailLocalStorage = localStorage.getItem("email")
+
+
+
+
   const handleStockAdjustmentConfirm = async () => {
-    const userEmail = email; // Cambia por el email del usuario logueado
+    const userEmail = userEmailLocalStorage; 
     const amount = quantity;
 
-    // Determina URL en función del tipo de ajuste (agregar o remover)
     const url =
       adjustmentType === "add"
         ? `${process.env.NEXT_PUBLIC_API_BASE}/materials/${material.id}/increase-stock`
@@ -57,6 +61,7 @@ console.log("mail", email)
       }
 
       const updatedMaterial = await response.json();
+      onStockUpdate(updatedMaterial.actual_stock);
       handleClose(); // Cierra el modal
     } catch (error) {
       console.error("Error ajustando el stock:", error);
@@ -70,13 +75,21 @@ console.log("mail", email)
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box sx={modalStyle}>
-          <Typography variant="h6" align="center" sx={{m:1}}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ pt: 3 }}
+        >
+          <IconToImage icon={stock} w={20} h={20} />
+          <Typography sx={{ fontSize: "18px" }}>
             {adjustmentType === "add" ? "Agregar Stock" : "Remover Stock"}
           </Typography>
+        </Box>
 
-        
         <Box sx={{ paddingInline: 2 }}>
-          <FormLabelComponent>
+          <FormLabel>
             {`Ingrese la cantidad a ${
               adjustmentType === "add" ? "agregar" : "remover"
             }`}
@@ -87,22 +100,42 @@ console.log("mail", email)
               fullWidth
               margin="normal"
             />
-          </FormLabelComponent>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-  <Typography variant="body1" fontWeight={600}>Material</Typography>
-  <Typography variant="body1">{material.name}</Typography>
+          </FormLabel>
+          <Box
+  sx={{ display: "flex", justifyContent: "space-between", mt: 1.5 }}
+>
+  <Typography sx={{ fontSize: "15px" }}>Material</Typography>
+  <Typography
+    sx={{
+      fontSize: "15px",
+      textAlign: "right",  
+      whiteSpace: "pre-wrap", 
+      wordWrap: "break-word", 
+      maxWidth: "75%", 
+    }}
+  >
+    {material.name}
+  </Typography>
 </Box>
 
-<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-  <Typography variant="body1" fontWeight={600}>Stock actual</Typography>
-  <Typography variant="body1">{material.actual_stock}</Typography>
+<Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+  <Typography sx={{ fontSize: "15px" }}>Stock actual</Typography>
+  <Typography
+    sx={{
+      fontSize: "15px",
+      textAlign: "right",
+      whiteSpace: "pre-wrap",
+      wordWrap: "break-word",
+      maxWidth: "60%",
+    }}
+  >
+    {material.actual_stock}
+  </Typography>
 </Box>
 
-          </Box>
+        </Box>
 
-
-
-        <Box >
+        <Box>
           <ModalButtons
             onCancel={handleClose}
             onSave={handleStockAdjustmentConfirm}

@@ -7,20 +7,16 @@ import Pagination from "./Pagination";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
 import useMaterialsFilter from "./Hooks/useMaterialsFilter";
-import usePagination from "./Hooks/usePagination";
 import { MaterialProps } from "../materialsProps";
 import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
-import { CustomTextFieldMaterial } from "../StyledMaterial";
-import { Button } from "rsuite";
-import { useUserStore } from "../../../zustand/useAuthStore";
+
 
 const MaterialsTable = ({
   initialMaterials,
 }: {
   initialMaterials: MaterialProps[];
 }) => {
-const {email} = useUserStore()
   const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials);
   const {  currentMaterials,
   handlePageChange,
@@ -34,13 +30,10 @@ const {email} = useUserStore()
   const [materialId, setMaterialId] = useState<number | null>(null);
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null); // Estado para el material seleccionado
-  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
-  const [stockAdjustment, setStockAdjustment] = useState(0); // Para almacenar la cantidad a sumar/restar
-  const [stockAction, setStockAction] = useState('increase'); // Default action to "increase"
   
   const fetchMaterials = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`);
       const data = await response.json();
 
       setMaterials(data);
@@ -52,6 +45,7 @@ const {email} = useUserStore()
 
     fetchMaterials();
   }, []); 
+
 
 
   const handleEdit = (materialId: number) => {
@@ -133,7 +127,7 @@ console.log("materialid", materialId)
       }
 
       const updatedMaterialsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/materials`
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`
       );
       const updatedMaterials = await updatedMaterialsResponse.json();
 
@@ -163,7 +157,7 @@ console.log("materialid", materialId)
                 material={material}
                 index={index}
                 onEdit={handleEdit}
-                openDeleteModal={() => handleDelete(material)} // Pasa el material a la función de eliminación
+                openDeleteModal={() => handleDelete(material)} 
               />
             ))}
           </Box>
@@ -203,22 +197,6 @@ console.log("materialid", materialId)
           </ModalComponent>
         )}
 
-        {/* {isStockModalOpen && (
-          <ModalComponent
-            isOpen={isStockModalOpen}
-            handleClose={() => setIsStockModalOpen(false)}
-            title={`Ajustar stock para ${selectedMaterial?.name}`}
-            onSubmit={handleStockAdjustmentConfirm}
-          >
-            <CustomTextFieldMaterial
-              label="Cantidad"
-              type="number"
-              value={stockAdjustment}
-              onChange={(e) => setStockAdjustment(Number(e.target.value))} // Asegúrate de convertir a número
-              fullWidth
-            />
-          </ModalComponent>
-        )} */}
       </Box>
     </>
   );

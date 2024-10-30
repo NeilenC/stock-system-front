@@ -10,7 +10,7 @@ interface ModalButtonsProps {
 
 const ModalButtons: React.FC<ModalButtonsProps> = ({ onCancel, onSave, text }) => {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', p: ' 16px 24px', borderTop:'1px solid #ccc', gap:2 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', p:  text === "Agregar" || text === "Remover" ? '16px' :' 16px 24px', borderTop:'1px solid #ccc', gap:2 }}>
       <CustomButton
         text="Cancelar"
         onClick={onCancel}
@@ -18,7 +18,7 @@ const ModalButtons: React.FC<ModalButtonsProps> = ({ onCancel, onSave, text }) =
           backgroundColor: 'rgba(0, 0, 0, 0.01)', 
           border: '1px solid rgba(0, 0, 0, 0.1)', 
           color: '#6e6e6e', 
-          padding: '8px 16px', 
+          padding:  '8px 16px', 
           fontSize: '16px', 
           fontWeight: '500', 
           cursor: 'pointer', 
