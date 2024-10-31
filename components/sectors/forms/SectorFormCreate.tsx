@@ -16,7 +16,7 @@ import theme from "../../../themes/theme";
 const SectorFormCreate = () => {
   const { sectorData, setSectorData, resetSectorData } =
     useSectorStore();
-  const { name, square_meters, number_of_bathrooms, description, sector } =
+  const { name, square_meters, number_of_bathrooms, description, sector, is_active } =
     sectorData;
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -34,6 +34,7 @@ const SectorFormCreate = () => {
       square_meters: "",
       number_of_bathrooms: "",
       sector: "",
+
     };
 
     if (!name) {
@@ -69,6 +70,7 @@ const SectorFormCreate = () => {
       number_of_bathrooms,
       description,
       sector,
+      // is_active
     };
 
     setSectorData(formData);

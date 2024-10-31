@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import ModalComponent from "../../commons/modals/ModalComponent";
 import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
 import space from "../../public/space.png";
@@ -7,30 +7,37 @@ import CustomButton from "../../commons/buttons-commons/CustomButton";
 import Sectors from "./Sectors";
 import { useSectorStore } from "../../zustand/sectorsStore";
 import SectorFormCreate from "./forms/SectorFormCreate";
+import useSectors from "../../hooks/useSectors";
 
-const SectorsComponent = () => {
+const SectorsComponent = ({ salas, children }: any) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { sectorData } = useSectorStore();
   const [error, setError] = useState("");
+  const { getSalas } = useSectors();
   const [selectedSector, setSelectedSector] = useState<any>(null);
-  
+
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-  
-  console.log("sectoooordata", sectorData);
 
   const handleSubmitSector = async () => {
     try {
       if (sectorData) {
         console.log("sectorData en handleeer", sectorData);
-        
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/sectors`,
-          { method: "POST", body: JSON.stringify(sectorData) }
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sectorData),
+          }
         );
-        
+
         if (response.ok) {
+          await getSalas();
           handleCloseModal();
         } else {
           const errorMessage = await response.text();
@@ -42,14 +49,9 @@ const SectorsComponent = () => {
       console.error(e);
     }
   };
-  
+
   const handleOpenModalToCreate = (sector?: any) => {
     setSelectedSector(sector || null);
-    setModalOpen(true);
-  };
-  
-  const handleOpenModalToEdit = (sector: any) => {
-    setSelectedSector(sector); // Set the selected sector for editing
     setModalOpen(true);
   };
 
@@ -61,11 +63,25 @@ const SectorsComponent = () => {
           text={"Crear Espacio"}
         />
       </SectionComponent>
-      <Box sx={{ paddingInline: "20px" }}>
-        <Box>
+      <Box sx={{ paddingInline: "40px", paddingBlock:'20px' }}>
+      <Box
+      sx={{
+        borderRadius: '26px', // Borde redondeado de 26px
+        border: '1px solid #ccc', // Agrega un borde
+        display: 'flex',
+        flexDirection: 'column',
+        overflow:'auto'
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
           <Sectors />
-        </Box>
-
+        </Grid>
+      </Grid>
+    </Box>
+      </Box>
+        
+        {/* {children} */}
         {/* Modal to create or edit a sector */}
         <ModalComponent
           isOpen={isModalOpen}
@@ -76,7 +92,6 @@ const SectorsComponent = () => {
         >
           <SectorFormCreate />
         </ModalComponent>
-      </Box>
     </Box>
   );
 };

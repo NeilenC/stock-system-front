@@ -30,6 +30,7 @@ const AdjustStock = ({
 }: any) => {
   const [quantity, setQuantity] = useState(0);
 const userEmailLocalStorage = localStorage.getItem("email")
+const [updatedMaterial, setUpdatedMaterial] = useState(material);
 
 
 

@@ -11,7 +11,6 @@ import SectorEditForm from "./forms/SectorFormEdit";
 const Sectors = () => {
   const { salas, setSalas } = useSectors(); // Asegúrate de tener una función para setear las salas
   const { sectorData } = useSectorStore();
-
   const { sectorPositions, setSectorPositions } = useSectorPositions();
   const sectorRefs = useRef<{ [sectorId: number]: HTMLDivElement | null }>({});
   const groupedSectors = groupSectorsByCategory(salas);
@@ -22,7 +21,6 @@ const Sectors = () => {
     setEditingSectorId(sectorId);
     setIsEditModalOpen(true);
   };
-
   const handleUpdateSector = async () => {
     if (editingSectorId) {
       try {
@@ -59,9 +57,32 @@ const Sectors = () => {
     }
   };
 
+  const handleDeleteSector = async (sectorId: number) => {
+  try {
+    // Realiza la solicitud PATCH para actualizar el sector a inactivo
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/sectors/${sectorId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ is_active: false }), // Suponiendo que el backend maneja la eliminación lógica así
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete sector: ${response.statusText}`);
+    }
+
+    // Actualiza el estado local para reflejar la eliminación
+    setSalas((prevSalas: any) => prevSalas.filter((sector: any) => sector.id !== sectorId));
+  } catch (error) {
+    console.error("Error deleting sector:", error);
+  }
+};
+
+
   return (
     <Box>
-      <Box sx={{ minWidth: "310px", overflow: "auto" }}>
+      <Box sx={{ minWidth: "310px" }}>
         {Object.keys(groupedSectors).map((category) => (
           <Category
             key={category}
@@ -71,6 +92,7 @@ const Sectors = () => {
             sectorPositions={sectorPositions}
             setSectorPositions={setSectorPositions}
             onEditSector={handleEditSector}
+            onDelete={handleDeleteSector}
           />
         ))}
       </Box>

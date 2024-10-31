@@ -6,7 +6,7 @@ const ModalBooking: React.FC<ModalComponentProps> = ({
     handleClose,
     title,
     children,
-    handleSave,
+    onSubmit,
     width = '500px',
     height = 'auto',
     hideActions = false,

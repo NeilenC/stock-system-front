@@ -6,4 +6,5 @@ export interface SectionComponentProps {
   buttonIcon?: StaticImageData;
   text: string;
   children?: React.ReactNode;
+  hasflap?: boolean;
 }

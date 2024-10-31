@@ -8,6 +8,7 @@ interface SectorData {
   number_of_bathrooms: number;
   sector: SectorType | "";
   description: string;
+  is_active?:boolean;
 }
 
 interface SectorStore {
@@ -23,6 +24,8 @@ export const useSectorStore = create<SectorStore>((set) => ({
     number_of_bathrooms: 0,
     sector: "",
     description: "",
+  is_active:true
+
   },
   setSectorData: (data) =>
     set((state) => ({
@@ -36,6 +39,7 @@ export const useSectorStore = create<SectorStore>((set) => ({
         number_of_bathrooms: 0,
         sector: "",
         description: "",
+        is_active:true
       },
     }),
 }));

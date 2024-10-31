@@ -8,19 +8,21 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
   secondaryIcon,
   text,
   children,
+  hasflap,
 }) => {
   return (
     <Box
       style={{
         display: "flex",
-        alignItems: "center",
+        flexDirection: hasflap ? "column" : "row",
+        alignItems: hasflap ? "flex-start" : "center",
         backgroundColor: theme.palette.primary.main,
         justifyContent: "center",
         padding: "16px",
-        zIndex: -1
+        zIndex: 1,
       }}
     >
-      <Grid container alignItems="center" justifyContent="center">
+      <Grid container alignItems="center">
         {icon && (
           <Grid item>
             <IconToImage icon={icon} w={40} h={40} />
@@ -30,7 +32,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         <Grid item marginLeft="16px">
           <Typography
             variant="h5"
-            align="center"
+            align="left"
             sx={{
               fontWeight: 700,
               fontSize: "24px",
@@ -44,21 +46,19 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           {secondaryIcon && (
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center', // Center vertically
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center", // Center vertically
               }}
             >
               <IconToImage icon={secondaryIcon} w={18} h={18} />
             </Box>
           )}
         </Grid>
+      </Grid>
 
-        {children && (
-          <Grid item sx={{ marginLeft: "auto" }}>
-            {children}
-          </Grid>
-        )}
+      <Grid item sx={{ marginLeft: hasflap ? "" : "auto" }}>
+        {children}
       </Grid>
     </Box>
   );

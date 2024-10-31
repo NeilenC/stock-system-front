@@ -5,7 +5,7 @@ import theme from "../../themes/theme";
 import { useState } from "react";
 import SectorItem from "./SectorItem";
 
-const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPositions, onEditSector }: any) => {
+const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPositions, onEditSector, onDelete }: any) => {
   const [open, setOpen] = useState(true);
   const [openSectors, setOpenSectors] = useState<number[]>([]);
 
@@ -22,6 +22,8 @@ const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPos
     });
   };
 
+
+console.log(sectors)
   return (
     <Box>
       <Box
@@ -52,6 +54,7 @@ const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPos
             onToggle={() => handleToggleSector(sector.id)}
             open={openSectors.includes(sector.id)}
             onEditSector={onEditSector}
+            onDelete={onDelete}
           />
         ))}
       </Collapse>

@@ -1,7 +1,7 @@
 import { File } from "buffer";
 
 export interface MaterialProps {
-  id?: number;
+  id?: number  | null;
   name: string;
   code: string;
   color: string;
@@ -14,7 +14,7 @@ export interface MaterialProps {
   description: string;
   actual_stock: number;
   price: number;
-  last_stock_update: string;
+  last_stock_update: Date;
   observations: string;
   is_active: boolean;
 }
@@ -23,6 +23,6 @@ export interface MaterialProps {
  export interface Category {
     id: number;
     category_name: string;
-    materials: MaterialProps[];
+    materials?: MaterialProps[];
   }
   

@@ -73,6 +73,17 @@ const theme = createTheme({
         },
       },
     },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontSize: '16px', // Ajusta el tamaño de fuente aquí
+          padding:'12px',
+        },
+        head: {
+          fontWeight: 'bold', // Peso de fuente para las celdas del encabezado
+        },
+      },
+    },
   },
   breakpoints: {
     values: {

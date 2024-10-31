@@ -7,18 +7,20 @@ import theme from "../../themes/theme";
 import Layout from "../../layout/Layout";
 import { InactivityProvider } from "../../context/InactivityProvider";
 import { SectorPositionsProvider } from "../../context/SectorPositionsProvider";
+import { MaterialsProvider } from "../../MaterialsContex";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <MsalProvider instance={msalInstance}>
       <ThemeProvider theme={theme}>
         <SectorPositionsProvider>
-
+        <MaterialsProvider>
         <InactivityProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
         </InactivityProvider>
+        </MaterialsProvider>
         </SectorPositionsProvider>
       </ThemeProvider>
     </MsalProvider>

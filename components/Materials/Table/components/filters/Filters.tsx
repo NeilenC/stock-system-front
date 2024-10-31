@@ -38,7 +38,7 @@ const Filters = ({ onFilter }: { onFilter: (filters: any) => void }) => {
       <FilterField value={depth} onChange={(e) => setDepth(e.target.value)} placeholder="Profundidad" size={1} width={80} />
       <FilterField value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Cantidad" size={1} width={100} />
       <FilterField value={observations} onChange={(e) => setObservations(e.target.value)} placeholder="Observaciones" size={1.5} width={150} />
-      <FilterField value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Precio" size={1} width={100} />
+      <FilterField value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Precio" size={0.9} width={100} />
 
 
     </Grid>

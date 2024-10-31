@@ -6,7 +6,7 @@ const colors = {
       contrastText: '#282828',
     },
     secondary: {
-      light: '#ff4081',
+      light: '#EDEFF2',
       main: '#2563EB',
       dark: '#191B26',
       contrastText: '#FFFFF',

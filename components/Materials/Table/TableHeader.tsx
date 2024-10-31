@@ -12,9 +12,9 @@ const TableHeader = () => (
     <Grid item xs={1}>Altura</Grid>
     <Grid item xs={1}>Produndidad</Grid>
     <Grid item xs={1}>Cantidad</Grid>
-    <Grid item xs={1.5}>Observaciones</Grid>
+    <Grid item xs={1.4}>Observaciones</Grid>
 
-    <Grid item xs={1}>Precio</Grid>
+    <Grid item xs={0.9}>Precio</Grid>
   </Grid>
 );
 

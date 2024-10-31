@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
-import { SectorType } from "../components/sectors/enum";
+
+export interface SectorProps {
+  name: string;
+  square_meters: number;
+  number_of_bathrooms: number;
+  sector: string;
+  description: string;
+  is_active?: boolean;
+}
 
 const useSectors = () => {
-  const [sectors, setSalas] = useState<SectorType[]>([]);
+  const [sectors, setSalas] = useState<SectorProps[]>([]);
 
 
   const getSalas = async () => {
@@ -14,7 +22,8 @@ const useSectors = () => {
       }
 
       const data = await response.json(); // Espera a que se resuelva el JSON
-      setSalas(data); // Asigna los datos al estado
+      console.log("sectores actualizado", data)
+        setSalas(data); // Asigna los datos al estado
     } catch (error) {
       console.error("Failed to fetch Salas:", error);
     }

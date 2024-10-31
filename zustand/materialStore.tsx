@@ -3,14 +3,15 @@ import { Category, MaterialProps } from '../components/Materials/materialsProps'
 
 interface MaterialState {
   material: MaterialProps;
-  materials: MaterialProps[]; // Agregar un array para almacenar múltiples materiales
+  materials: MaterialProps[];
   categories: Category[];
   setMaterial: (material: MaterialProps) => void;
   setCategories: (categories: Category[]) => void;
   fetchMaterialData: (materialId: number) => Promise<void>;
-  fetchMaterials: () => Promise<void>; // Agregar la función de fetch
+  fetchMaterials: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   createMaterial: (formData: MaterialProps) => Promise<void>;
+  resetMaterial: () => void;
 }
 
 export const useMaterialStore = create<MaterialState>((set) => ({
@@ -27,8 +28,11 @@ export const useMaterialStore = create<MaterialState>((set) => ({
     actual_stock: 0,
     price: 0,
     observations: "",
+    image_url: null, // default empty string or a placeholder URL
+    last_stock_update: new Date(), // default to current date
+    is_active: true, // default to true or false as required
   },
-  materials: [], // Inicializar el array de materiales
+  materials: [],
   categories: [],
   setMaterial: (material) => set({ material }),
   setCategories: (categories) => set({ categories }),
@@ -57,7 +61,7 @@ export const useMaterialStore = create<MaterialState>((set) => ({
       const data: MaterialProps[] = await response.json();
       const activeMaterials = data.filter((material: MaterialProps) => material.is_active);
 
-      set({ materials: activeMaterials }); // Actualizar el estado con los materiales obtenidos
+      set({ materials: activeMaterials });
     } catch (error) {
       console.error("Failed to fetch materials:", error);
     }
@@ -75,17 +79,6 @@ export const useMaterialStore = create<MaterialState>((set) => ({
   
   createMaterial: async (formData: MaterialProps) => {
     try {
-      const formDataToSend = new FormData(); // Crea un nuevo FormData
-
-      // Añade todas las propiedades del objeto formData a formDataToSend
-      Object.entries(formData).forEach(([key, value]) => {
-        // Si category es un número, se puede añadir directamente
-        formDataToSend.append(key, value === null ? "" : String(value));
-      });
-
-      console.log("formDataToSend", formData.category);
-      console.log("Tipo de category:", typeof formData.category);
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials`,
         {
@@ -93,7 +86,7 @@ export const useMaterialStore = create<MaterialState>((set) => ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData), // Envía el JSON completo
+          body: JSON.stringify(formData),
         }
       );
 
@@ -107,5 +100,26 @@ export const useMaterialStore = create<MaterialState>((set) => ({
     } catch (error) {
       console.error("Error creando material:", error);
     }
-  }
+  },
+
+  resetMaterial: () =>
+    set({
+      material: {
+        name: "",
+        code: "",
+        color: "",
+        category: { id: 0, category_name: "" },
+        width: 0,
+        depth: 0,
+        weight: 0,
+        description: "",
+        height: 0,
+        actual_stock: 0,
+        price: 0,
+        observations: "",
+        image_url: null, // reset to default or empty string
+        last_stock_update: new Date(), // reset to current date
+        is_active: true, // reset as appropriate
+      },
+    }),
 }));

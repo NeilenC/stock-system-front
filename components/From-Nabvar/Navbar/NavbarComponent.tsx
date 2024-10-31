@@ -27,6 +27,7 @@ import notifications from "../../../public/navbar/notifications.png";
 import iconButton from "../../../public/plus-icon.png";
 import info from "../../../public/navbar/info-icon.png";
 import account from "../../../public/account2.png";
+import stock from "../../../public/stockcheck.png";
 import materials from "../../../public/materials.png";
 import estadisticas from "../../../public/navbar/estadisticas.png";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
@@ -54,7 +55,7 @@ const NavbarComponent = () => {
   const [isSelected, setIsSelected] = React.useState<string | null>(null);
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useWindowSize().width <= 1025;
-  const username = "Nombre Usuario";
+  const username = "Neilen Monlezun";
   const clearAccessToken = useUserStore((state) => state.clearAccessToken);
   const clearEmail = useUserStore((state) => state.clearEmail); // Añadido para limpiar el email
 
@@ -180,6 +181,11 @@ const NavbarComponent = () => {
           label: "Materiales",
           href: "/deposito/materiales",
           icon: <IconToImage icon={materials.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
+        },
+        {
+          label: "Consultas de Stock",
+          href: "/deposito/stock",
+          icon: <IconToImage icon={stock.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
         },
         // {
         //   label: "Subdepósito 2",
@@ -466,26 +472,6 @@ const NavbarComponent = () => {
           alignItems="center"
           marginLeft={isMobile ? "0px" : "2px"}
         >
-          {/* Icons */}
-          {/* <Box display="flex" alignItems="center">
-            <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
-              <img
-                src={notifications.src}
-                alt="notifications"
-                style={{
-                  width: isMobile ? 18 : 21,
-                  height: isMobile ? 18 : 21,
-                }}
-              />
-            </IconButton>
-            <IconButton sx={{ color: theme.palette.secondary.contrastText }}>
-              <img
-                src={info.src}
-                alt="info"
-                style={{ width: 20, height: 20 }}
-              />
-            </IconButton>
-          </Box> */}
 
           {/* User Section */}
           <Box
@@ -508,6 +494,7 @@ const NavbarComponent = () => {
                 color: theme.palette.secondary.contrastText,
                 display: "flex",
                 alignItems: "center", // Alinea el contenido en el centro vertical
+                fontSize:'16px',
                 backgroundColor:
                   isSelected === username
                     ? theme.palette.secondary.main
@@ -534,6 +521,7 @@ const NavbarComponent = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center", // Alinea imagen y texto en el mismo nivel
+                  
                 }}
               >
                 {/* Imagen PNG */}
@@ -543,6 +531,7 @@ const NavbarComponent = () => {
                   w={34}
                   h={34}
                   // style={{ width: 34, height: 34, marginRight: "5px" }}
+                  sx={{mr:5}}
                 />
 
                 {/* Contenido del texto */}
@@ -552,7 +541,7 @@ const NavbarComponent = () => {
                     flexDirection: "column",
                     alignItems: "flex-start",
                     // paddingLeft: '12px'
-                    p: "5px 0px",
+                    p: "8px",
                   }}
                 >
                   <Typography
