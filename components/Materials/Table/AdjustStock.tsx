@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, FormLabel } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  FormLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import ModalButtons from "../../../commons/modals/ModalButtons";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
-import { FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
+import {
+  CustomSelect,
+  FormLabelComponent,
+} from "../../../commons/styled-components/CustomTextFields";
 import { useUserStore } from "../../../zustand/useAuthStore";
 import IconToImage from "../../../commons/styled-components/IconImages";
 import stock from "../../../public/stock.png";
+import useSectors from "../../../hooks/useSectors";
+
 const modalStyle = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 300,
-  height: 400,
+  maxWidth: 300, // Establece un ancho máximo
   bgcolor: "background.paper",
   border: "1px solid #0000001A",
   borderRadius: "20px",
   display: "flex",
-  justifyContent: "space-between",
   flexDirection: "column",
+  padding: 0.5, // Agrega padding para un mejor espaciado
 };
 
 const AdjustStock = ({
@@ -26,18 +37,19 @@ const AdjustStock = ({
   handleClose,
   material,
   adjustmentType,
-  onStockUpdate, 
+  onStockUpdate,
 }: any) => {
+  const { storageSectors } = useSectors();
   const [quantity, setQuantity] = useState(0);
-const userEmailLocalStorage = localStorage.getItem("email")
-const [updatedMaterial, setUpdatedMaterial] = useState(material);
-
-
-
+  const userEmailLocalStorage = localStorage.getItem("email");
+  const [updatedMaterial, setUpdatedMaterial] = useState(material);
+  const [sectorId, setSectorId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<string>(''); // State for error messages
 
   const handleStockAdjustmentConfirm = async () => {
-    const userEmail = userEmailLocalStorage; 
+    const userEmail = userEmailLocalStorage;
     const amount = quantity;
+    const sector_id = sectorId;
 
     const url =
       adjustmentType === "add"
@@ -53,6 +65,7 @@ const [updatedMaterial, setUpdatedMaterial] = useState(material);
         body: JSON.stringify({
           amount,
           userEmail,
+          sector_id,
         }),
       });
 
@@ -63,15 +76,19 @@ const [updatedMaterial, setUpdatedMaterial] = useState(material);
 
       const updatedMaterial = await response.json();
       onStockUpdate(updatedMaterial.actual_stock);
+      setUpdatedMaterial(updatedMaterial);
       handleClose(); // Cierra el modal
+      setErrorMessage(''); // Clear any previous error messages
     } catch (error) {
-      console.error("Error ajustando el stock:", error);
+      const errorMessage = (error as Error).message || "Error desconocido";
+      setErrorMessage(errorMessage); // Set the error message
     }
   };
 
   useEffect(() => {
-    console.log(quantity);
-  }, [quantity]);
+    setUpdatedMaterial(material);
+    setErrorMessage(''); 
+  }, [material, isOpen]);
 
   return (
     <Modal open={isOpen} onClose={handleClose}>
@@ -81,59 +98,78 @@ const [updatedMaterial, setUpdatedMaterial] = useState(material);
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          sx={{ pt: 3 }}
+          sx={{ pt: 2 }}
         >
           <IconToImage icon={stock} w={20} h={20} />
-          <Typography sx={{ fontSize: "18px" }}>
+          <Typography sx={{ fontSize: "18px", pb: 1.5 }}>
             {adjustmentType === "add" ? "Agregar Stock" : "Remover Stock"}
           </Typography>
         </Box>
 
-        <Box sx={{ paddingInline: 2 }}>
-          <FormLabel>
+        <Box sx={{ paddingInline: 2, pb: 1 }}>
+          {errorMessage && ( // Display error message if it exists
+            <Typography color="error" sx={{ mb: 2 ,fontSize:'13px'}}>
+              {errorMessage}
+            </Typography>
+          )}
+          <FormLabel sx={{ mb: 1 }}>
             {`Ingrese la cantidad a ${
               adjustmentType === "add" ? "agregar" : "remover"
             }`}
-            <CustomNumberInput
-              label="Cantidad"
-              value={quantity}
-              onChange={(e: any) => setQuantity(Number(e.target.value))}
-              fullWidth
-              margin="normal"
-            />
           </FormLabel>
-          <Box
-  sx={{ display: "flex", justifyContent: "space-between", mt: 1.5 }}
->
-  <Typography sx={{ fontSize: "15px" }}>Material</Typography>
-  <Typography
-    sx={{
-      fontSize: "15px",
-      textAlign: "right",  
-      whiteSpace: "pre-wrap", 
-      wordWrap: "break-word", 
-      maxWidth: "75%", 
-    }}
-  >
-    {material.name}
-  </Typography>
-</Box>
+          <CustomNumberInput
+            label="Cantidad"
+            value={quantity}
+            onChange={(e: any) => setQuantity(Number(e.target.value))}
+            fullWidth
+            margin="normal"
+          />
 
-<Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-  <Typography sx={{ fontSize: "15px" }}>Stock actual</Typography>
-  <Typography
-    sx={{
-      fontSize: "15px",
-      textAlign: "right",
-      whiteSpace: "pre-wrap",
-      wordWrap: "break-word",
-      maxWidth: "60%",
-    }}
-  >
-    {material.actual_stock}
-  </Typography>
-</Box>
+          <FormLabel sx={{}}>
+            Seleccione un Depósito
+          </FormLabel>
+          <Select
+            fullWidth
+            value={sectorId || ''}
+            sx={{ height: "47px", mt: 1.8 }}
+            onChange={(event: any) => setSectorId(event.target.value)}
+          >
+            {storageSectors.map((sector, index) => (
+              <MenuItem key={index} value={sector.id}>
+                {sector.name}
+              </MenuItem>
+            ))}
+          </Select>
 
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Typography sx={{ fontSize: "16px" }}>Material</Typography>
+            <Typography
+              sx={{
+                fontSize: "16px",
+                textAlign: "right",
+                whiteSpace: "pre-wrap",
+                wordWrap: "break-word",
+                maxWidth: "75%",
+              }}
+            >
+              {material.name}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1,mb:1 }}>
+            <Typography sx={{ fontSize: "16px" }}>Stock actual</Typography>
+            <Typography
+              sx={{
+                fontSize: "16px",
+                textAlign: "right",
+                whiteSpace: "pre-wrap",
+                wordWrap: "break-word",
+                maxWidth: "60%",
+              }}
+            >
+              {updatedMaterial.actual_stock}
+            </Typography>
+          </Box>
         </Box>
 
         <Box>

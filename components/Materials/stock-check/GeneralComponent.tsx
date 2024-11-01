@@ -79,7 +79,7 @@ const GeneralComponent: React.FC<GeneralComponentProps> = ({
             handleSave={handleSave}
           />
         </Box>
-        <MaterialLogistics />
+        <MaterialLogistics  materialToCheck={materialToCheck}/>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", pl: 3 }}>

@@ -12,7 +12,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   title,
   textButton,
   children,
-  width = "500px",
+  width = "700px",
   fromDelete,
   error,
 }:any) => {

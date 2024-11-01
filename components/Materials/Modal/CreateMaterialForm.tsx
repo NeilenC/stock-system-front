@@ -8,8 +8,7 @@ import IconToImage from "../../../commons/styled-components/IconImages";
 import add from "../../../public/add.png";
 import CreateCategoryForm from "./ModalCategoryCreate";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
-
-
+import useSectors from "../../../hooks/useSectors";
 
 const CreateMaterialForm = ({
   formData,
@@ -18,8 +17,7 @@ const CreateMaterialForm = ({
 }: any) => {
   const { fetchCategories, categories } = useMaterialStore();
   const [openModal, setOpenModal] = useState(false);
-  console.log("category", formData);
-  
+  const { storageSectors } = useSectors();
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -114,7 +112,7 @@ const CreateMaterialForm = ({
             margin="dense"
           />
         </Grid>
-        <Grid item xs={4} sm={4}>
+        <Grid item xs={3} sm={3}>
           <FormLabelComponent>Código</FormLabelComponent>
           <CustomTextFieldMaterial
             name="code"
@@ -125,7 +123,7 @@ const CreateMaterialForm = ({
             margin="dense"
           />
         </Grid>
-        <Grid item xs={4} sm={4}>
+        <Grid item xs={3} sm={3}>
           <FormLabelComponent>Color</FormLabelComponent>
           <CustomTextFieldMaterial
             name="color"
@@ -137,16 +135,35 @@ const CreateMaterialForm = ({
           />
         </Grid>
 
-        <Grid item xs={4} sm={4}>
-          <FormLabelComponent>Stock Actual</FormLabelComponent>
+        <Grid item xs={3} sm={3}>
+          <FormLabelComponent>Stock</FormLabelComponent>
           <CustomNumberInput
-            name="actual_stock"
-            value={formData.actual_stock}
+            name="distribution_stock.storaged_stock"
+            value={formData.distribution_stock[0].storaged_stock}
             onChange={handleChange}
             fullWidth
             required
             margin="dense"
           />
+        </Grid>
+
+        {/* Nuevo campo para Selección de Sección de Depósito */}
+        <Grid item xs={4} sm={3}>
+          <FormLabelComponent>Ubicación Stock</FormLabelComponent>
+          <CustomTextFieldMaterial
+            name="distribution_stock.sector_id" // Cambia aquí el name para que coincida con el estado
+            value={formData.distribution_stock.sector_id} // Aquí accedemos al primer elemento del arreglo
+            onChange={handleChange}
+            fullWidth
+            margin="dense"
+            select
+          >
+            {storageSectors.map((sector) => (
+              <MenuItem key={sector.id} value={sector.id}>
+                {sector.name}
+              </MenuItem>
+            ))}
+          </CustomTextFieldMaterial>
         </Grid>
 
         <Grid item xs={3} sm={3}>
@@ -188,7 +205,7 @@ const CreateMaterialForm = ({
           />
         </Grid>
 
-        <Grid item xs={6} sm={6}>
+        <Grid item xs={3} sm={6}>
           <FormLabelComponent>Precio</FormLabelComponent>
           <CustomNumberInput
             name="price"

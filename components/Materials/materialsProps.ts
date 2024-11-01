@@ -1,4 +1,5 @@
 import { File } from "buffer";
+import { SectorProps } from "../../hooks/useSectors";
 
 export interface MaterialProps {
   id?: number  | null;
@@ -17,6 +18,8 @@ export interface MaterialProps {
   last_stock_update: Date;
   observations: string;
   is_active: boolean;
+  sector_id?: SectorProps | undefined; // Relación con el tipo Sector
+  storaged_stock?: number; 
 }
 
   

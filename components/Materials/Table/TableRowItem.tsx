@@ -20,7 +20,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const handleStockUpdate = (newStock: number) => {
     setUpdatedMaterial({ ...updatedMaterial, actual_stock: newStock });
   };
-  console.log("updatedmaterial", updatedMaterial.actual_stock);
+  // console.log("updatedmaterial", updatedMaterial.actual_stock);
   const handleStockChangeClick = (type: "add" | "remove") => {
     setStockAdjustmentType(type);
     setIsStockModalOpen(true);

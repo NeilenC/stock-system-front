@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 export interface SectorProps {
+  id:number;
   name: string;
   square_meters: number;
   number_of_bathrooms: number;
@@ -11,6 +12,7 @@ export interface SectorProps {
 
 const useSectors = () => {
   const [sectors, setSalas] = useState<SectorProps[]>([]);
+  const [storageSectors, setStorageSectors] = useState<SectorProps[]>([]);
 
 
   const getSalas = async () => {
@@ -21,9 +23,12 @@ const useSectors = () => {
         throw new Error('Error fetching Salas');
       }
 
-      const data = await response.json(); // Espera a que se resuelva el JSON
-      console.log("sectores actualizado", data)
-        setSalas(data); // Asigna los datos al estado
+      const data = await response.json(); 
+        setSalas(data); 
+
+        const storageSectors = data.filter((sector: SectorProps) => sector.sector === "Depósito");
+        setStorageSectors(storageSectors);
+
     } catch (error) {
       console.error("Failed to fetch Salas:", error);
     }
@@ -33,7 +38,7 @@ const useSectors = () => {
     getSalas();
   }, []);
 
-  return { salas: sectors, setSalas, getSalas }; // Devuelve también la función para actualizar el estado
+  return { salas: sectors, storageSectors, setSalas,setStorageSectors,  getSalas }; // Devuelve también la función para actualizar el estado
 };
 
 export default useSectors;

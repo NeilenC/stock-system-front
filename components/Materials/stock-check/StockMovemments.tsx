@@ -10,11 +10,13 @@ interface StockMovement {
   material: MaterialProps;
   email: string;
   id: number;
+  user: any;
+  sector: any
 }
 
 const StockMovemments = ({ materialId }: { materialId: number }) => {
   const [stockMovements, setStockMovements] = useState<StockMovement[]>([]);
-
+console.log("stockmovemeeeents ---->", stockMovements)
   const getLastActualization = async () => {
     try {
       const response = await fetch(
@@ -34,7 +36,7 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
   }, [materialId]);
 
   return (
-    <Box sx={{  bgcolor: "#f9f9f9", borderRadius: "8px" }}>
+    <Box sx={{  bgcolor: "#f9f9f9", borderRadius: "8px" ,height:1}}>
         <Box
           sx={{
             bgcolor: theme.palette.primary.dark,
@@ -46,7 +48,7 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
           }}
         >
           <Typography >
-            Movimientos de Stock 
+            Movimientos de Stock
           </Typography>
         </Box>
         <TableContainer component={Paper} sx={{ }}>
@@ -58,7 +60,8 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
               <TableCell align="center" >Fecha del Cambio</TableCell>
               <TableCell align="center">Cantidad Cambiada</TableCell>
               <TableCell align="center">Cantidad Anterior</TableCell>
-              <TableCell align="center">Realizado por</TableCell>
+              <TableCell align="center">Depósito</TableCell>
+              <TableCell align="center">Responsable</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -69,7 +72,8 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
                 <TableCell align="center">{new Date(movement.changeDate).toLocaleDateString()}</TableCell>
                 <TableCell align="center">{movement.changeAmount}</TableCell>
                 <TableCell align="center">{movement.previousStock}</TableCell>
-                <TableCell align="center">{movement.email}</TableCell>
+                <TableCell align="center">{movement.sector?.name}</TableCell>
+                <TableCell align="center">{movement.user?.username || 'N/C'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

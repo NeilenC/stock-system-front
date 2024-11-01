@@ -105,9 +105,7 @@ const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
           <CustomTextFieldMaterial
             margin="dense"
             name="actual_stock"
-            type="number"
             value={material.actual_stock}
-            onChange={handleInputChange}
           />
         </Grid>
         {/** Ancho */}

@@ -19,11 +19,16 @@ const initialFormData = {
   width: 0,
   depth: 0,
   height: 0,
-  actual_stock: 0,
   observations: "",
   price: 0,
   is_active: true,
   category: 0,
+  distribution_stock: [
+    {
+      sector_id: 0,     
+      storaged_stock: 0, 
+    },
+]
 };
 const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
@@ -40,6 +45,7 @@ const MainComponent = () => {
   };
 
   const handleCreateMaterial = async (formData: any) => {
+    console.log("formData", formData)
     // Validar y limpiar los datos antes de enviarlos
     const cleanedFormData = Object.entries(formData).reduce((acc, [key, value]) => {
       acc[key] = typeof value === 'number' ? value || 0 : value || "";
@@ -48,7 +54,7 @@ const MainComponent = () => {
   
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/materials`,
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials/create`,
         {
           method: "POST",
           headers: {
@@ -76,14 +82,38 @@ const MainComponent = () => {
   };
   
 
+console.log("formda...", formData)
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+  console.log("name, value", name, value);
 
-  const handleChange = (e:any) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+  setFormData((prev) => {
+    if (name.startsWith("distribution_stock.")) {
+      const index = 0; // Suponiendo que solo tienes un objeto en el array
+      const fieldName = name.split(".")[1]; // Obtiene el nombre del campo
+
+      return {
+        ...prev,
+        distribution_stock: prev.distribution_stock.map((item, idx) => {
+          if (idx === index) {
+            return {
+              ...item,
+              [fieldName]: fieldName === 'sector_id' ? Number(value) : value, // Actualiza solo el campo específico
+            };
+          }
+          return item; // Retorna el item sin cambios
+        }),
+      };
+    }
+
+    // Manejo del cambio de category y otros campos
+    return {
       ...prev,
       [name]: name === "category" ? Number(value) : value,
-    }));
-  };
+    };
+  });
+};
+
   
 
   const handleFileChange = (e:any) => {
