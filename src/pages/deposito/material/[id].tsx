@@ -18,7 +18,6 @@ const MaterialMovements = () => {
   const [material, setMaterial] = useState<MaterialProps | null>(null);
 
 
-  console.log("materialId", id)
   const fetchMaterialData = async (id: number) => {
     try {
       const response = await fetch(

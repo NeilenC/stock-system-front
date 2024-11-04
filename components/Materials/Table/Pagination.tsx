@@ -3,7 +3,6 @@ import { Grid, Button, Box, Typography } from '@mui/material';
 const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
   const count = Math.ceil(totalItems / itemsPerPage); // Calcular el número total de páginas
   const currentPage = page > count ? count : page; // Asegúrate de que la página actual no supere el conteo
-
   // Límite para mostrar los números de página
   const displayLimit = 5; // Puedes ajustar este límite
   const halfLimit = Math.floor(displayLimit / 2);

@@ -23,7 +23,6 @@ const SectorsComponent = ({ salas, children }: any) => {
   const handleSubmitSector = async () => {
     try {
       if (sectorData) {
-        console.log("sectorData en handleeer", sectorData);
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/sectors`,

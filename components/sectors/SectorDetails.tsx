@@ -1,7 +1,6 @@
 import { Grid, Typography } from "@mui/material"
 
 const SectorDetails = ({sector}: any) => {
-  console.log("SECTOR ACA", sector)
 return (    <Grid container spacing={4}>
     <Grid item xs={6} md={6}>
       <Typography

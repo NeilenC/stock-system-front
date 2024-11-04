@@ -17,7 +17,6 @@ interface GeneralComponentProps {
 const GeneralComponent: React.FC<GeneralComponentProps> = ({
   materialToCheck,
 }) => {
-  console.log("material", materialToCheck);
 
   const { material } = useMaterialStore();
 

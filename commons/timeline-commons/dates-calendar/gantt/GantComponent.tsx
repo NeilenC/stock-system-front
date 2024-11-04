@@ -51,9 +51,7 @@ const GantComponent: React.FC<GantProps> = ({
   }, []);
 
   const componentWidth = eventDuration * 42.5;
-  console.log("EVENTO DURA", eventDuration);
 
-  console.log(activities);
 
   const stateColor = getStateColor(state);
   const stateIcon = getStateIcon(state);

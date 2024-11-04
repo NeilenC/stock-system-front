@@ -26,7 +26,6 @@ const GeneralInfoContent: React.FC = () => {
     if (date && !isNaN(date.getTime())) { // Verificar que la fecha sea válida
       const selectedDate = date.toISOString().split("T")[0]; 
       const selectedTime = date.toTimeString().split(" ")[0].substring(0, 5); 
-      console.log("selected date", selectedDate, "time:", selectedTime);
       
       handleInputChange("dateEvent", selectedDate);
       handleInputChange("timeEvent", selectedTime);

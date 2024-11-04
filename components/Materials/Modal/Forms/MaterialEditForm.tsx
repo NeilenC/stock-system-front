@@ -15,7 +15,7 @@ const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log("materialid en form", material);
+
     const numericFields = [
       "width",
       "depth",

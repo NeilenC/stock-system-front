@@ -7,8 +7,6 @@ import theme from '../../../themes/theme';
 
 function TabComponent({ selectedTab, setSelectedTab }:any) {
   const handleChange = (event: React.SyntheticEvent,  newValue:number) => {
-    console.log("event", event);
-    console.log("newValue", newValue);
     setSelectedTab(newValue);
   };
 

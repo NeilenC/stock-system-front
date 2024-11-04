@@ -47,7 +47,6 @@ const LastActualization: React.FC<LastActualizationProps> = ({
   useEffect(() => {
     getLastActualization();
   }, [materialId]);
-  console.log("lastStockUpdate", lastStockUpdate)
 
   return (
     <Box sx={{ display: "flex",}}>

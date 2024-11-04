@@ -1,7 +1,6 @@
 export const sendUserInfoToBackend = async (userInfo: { name: string; email: string; microsoftId: string }) => {
     try {
 
-      console.log("userinfo", userInfo)
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`, {
         method: "POST",
         headers: {
@@ -11,7 +10,6 @@ export const sendUserInfoToBackend = async (userInfo: { name: string; email: str
         body: JSON.stringify({ userInfo }),
       });
 
-      console.log("userInfo", userInfo)
       if (response.ok) {
         const result = await response.json();
         return result.isValid;

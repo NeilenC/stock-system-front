@@ -22,8 +22,6 @@ const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPos
     });
   };
 
-
-console.log(sectors)
   return (
     <Box>
       <Box

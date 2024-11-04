@@ -91,7 +91,6 @@ export const useMaterialStore = create<MaterialState>((set) => ({
       );
 
       if (response.ok) {
-        console.log("Material creado exitosamente");
       } else {
         const errorResponse = await response.json();
         console.error("Error al crear el material:", errorResponse);

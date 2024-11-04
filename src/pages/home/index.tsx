@@ -12,7 +12,6 @@ const Home = () => {
   //   instance
   //     .logoutPopup()
   //     .then(() => {
-  //       console.log("Logout successful");
   //       router.push("/");
   //     })
   //     .catch((e) => {

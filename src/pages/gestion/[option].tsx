@@ -10,7 +10,6 @@ const Management = () => {
   const { option } = router.query;
   const { salas } = useSectors();
 
-  console.log("opcion", option);
 
   return (
     <div>

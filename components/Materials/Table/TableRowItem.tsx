@@ -20,7 +20,6 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const handleStockUpdate = (newStock: number) => {
     setUpdatedMaterial({ ...updatedMaterial, actual_stock: newStock });
   };
-  // console.log("updatedmaterial", updatedMaterial.actual_stock);
   const handleStockChangeClick = (type: "add" | "remove") => {
     setStockAdjustmentType(type);
     setIsStockModalOpen(true);
@@ -41,7 +40,6 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
   const handleEditClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
-    console.log("anchorel", anchorEl);
   };
 
   const handleMenuClose = () => {

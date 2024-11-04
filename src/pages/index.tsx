@@ -21,7 +21,6 @@ export default function Home() {
   // useEffect(() => {
   //   getHelloWorld();
   // }, []);
-console.log("ACA")
   return (
     <>
       {/* <TimeLine/> */}

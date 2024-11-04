@@ -10,8 +10,6 @@ import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import { MaterialProps } from "../materialsProps";
 import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
-import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
-import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import CreateMaterialForm from "../Modal/CreateMaterialForm";
 import { useMaterials } from "../../../MaterialsContex";
 import { toast } from "react-toastify";
@@ -47,11 +45,14 @@ const MaterialsTable = ({
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials);
-  const {  currentMaterials,
+  const {
+    currentMaterials,
     handlePageChange,
-    filteredMaterials,
-    currentPage,handleFilter,
-    itemsPerPage } = useMaterialsFilter(materials);
+    handleFilter,
+    currentPage,
+    itemsPerPage,
+    totalItems
+  } = useMaterialsFilter(materials);
   const {addMaterial } = useMaterials();
     
     const { material } = useMaterialStore();
@@ -116,7 +117,7 @@ const MaterialsTable = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ is_active: false }), // Cambiar is_active a false
+          body: JSON.stringify({ is_active: false }), // Cambia is_active a false
         }
       );
 
@@ -136,7 +137,6 @@ const MaterialsTable = ({
   const handleSave = async () => {
     try {
       if (!selectedMaterial || !materialId) {
-        console.error("Material or Material ID is missing");
         return;
       }
 
@@ -153,7 +153,7 @@ const MaterialsTable = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedMaterial), // Convertimos el objeto material a JSON
+          body: JSON.stringify(updatedMaterial), 
         }
       );
 
@@ -195,7 +195,6 @@ const MaterialsTable = ({
         toast.success("Material creado exitosamente");
         setOpenModalCreate(false);
         addMaterial(formData);
-        // setNewMaterial()
         setFormData(initialFormData);
          await fetchMaterials()
       } else {
@@ -209,10 +208,8 @@ const MaterialsTable = ({
   };
   
 
-console.log("formda...", formData)
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   const { name, value } = e.target;
-  console.log("name, value", name, value);
 
   setFormData((prev) => {
     if (name.startsWith("distribution_stock.")) {
@@ -225,15 +222,15 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
           if (idx === index) {
             return {
               ...item,
-              [fieldName]: fieldName === 'sector_id' ? Number(value) : value, // Actualiza solo el campo específico
+              [fieldName]: fieldName === 'sector_id' ? Number(value) : value, 
             };
           }
-          return item; // Retorna el item sin cambios
+          return item; 
         }),
       };
     }
 
-    // Manejo del cambio de category y otros campos
+    // Manejo del cambio de category 
     return {
       ...prev,
       [name]: name === "category" ? Number(value) : value,
@@ -270,12 +267,15 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
           </Box>
         </Grid>
 
-        <Pagination
-          page={currentPage}
-          onPageChange={handlePageChange}
-          totalItems={filteredMaterials.length}
-          itemsPerPage={itemsPerPage}
-        />
+      <Pagination
+        page={currentPage}
+        onPageChange={(newPage:any) => {
+          console.log('Page change triggered:', newPage);
+          handlePageChange(newPage);
+        }}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+      />
 
         {isEditModalOpen && (
           <ModalComponent

@@ -72,7 +72,6 @@ const MaterialLogistics = ({
   //   }, [materialToCheck]);
   
 
-console.log("lastagualization", lastStockUpdate)
 
   return (
     <Box sx={{ display: "flex", height: 400 }}>

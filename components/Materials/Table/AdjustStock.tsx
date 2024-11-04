@@ -90,7 +90,6 @@ const AdjustStock = ({
     // setUpdatedMaterial(material);
     setErrorMessage(''); 
   }, [material, isOpen]);
-console.log("material", material)
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box sx={modalStyle}>

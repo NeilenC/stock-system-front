@@ -16,7 +16,6 @@ interface StockMovement {
 
 const StockMovemments = ({ materialId }: { materialId: number }) => {
   const [stockMovements, setStockMovements] = useState<StockMovement[]>([]);
-console.log("stockmovemeeeents ---->", stockMovements)
   const getLastActualization = async () => {
     try {
       const response = await fetch(
