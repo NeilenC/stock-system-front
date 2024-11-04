@@ -48,7 +48,10 @@ const MainComponent = () => {
     console.log("formData", formData)
     // Validar y limpiar los datos antes de enviarlos
     const cleanedFormData = Object.entries(formData).reduce((acc, [key, value]) => {
-      acc[key] = typeof value === 'number' ? value || 0 : value || "";
+      // Si el valor es una cadena vacía y el campo debería ser numérico, asignarlo a 0
+      acc[key] = value === "" && ["weight", "depth", "height", "price", "width"].includes(key) 
+        ? 0 
+        : value || "";
       return acc;
     }, {} as typeof formData);
   

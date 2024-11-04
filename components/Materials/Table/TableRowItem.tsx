@@ -48,6 +48,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
     setAnchorEl(null);
   };
 
+
   return (
     <Grid
       container
@@ -164,6 +165,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
             isOpen={isStockModalOpen}
             handleClose={handleStockModalClose}
             material={material}
+            updatedMaterial={updatedMaterial}
             adjustmentType={stockAdjustmentType}
             onStockUpdate={handleStockUpdate}
           />

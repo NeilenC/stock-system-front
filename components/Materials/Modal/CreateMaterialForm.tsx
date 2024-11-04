@@ -33,6 +33,8 @@ const CreateMaterialForm = ({
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  console.log("formdata ", formData)
   return (
     <form>
       <Grid container spacing={1}>

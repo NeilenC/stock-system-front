@@ -156,12 +156,26 @@ const ModalCategoryCreate = ({
           </form>
 
           <Divider />
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 2 , display:'flex', direction:'row', gap:2 }}>
+          <CustomButton
+          text="Cancelar"
+          onClick={onClose}
+          sx={{
+            backgroundColor: "rgba(0, 0, 0, 0.01)",
+            border: "1px solid rgba(0, 0, 0, 0.1)",
+            color: "#6e6e6e",
+            padding: "8px 8px",
+            fontSize: "16px",
+            fontWeight: "500",
+            cursor: "pointer",
+          }}
+        />
             <CustomButton
               text="Crear"
               onClick={handleCreateCategory}
-              sx={{ width: "100%" }} // Asegúrate de que el botón ocupe el ancho completo
+              sx={{ }} // Asegúrate de que el botón ocupe el ancho completo
             />
+            
           </Box>
       <Snackbar
         open={openSnackbar}

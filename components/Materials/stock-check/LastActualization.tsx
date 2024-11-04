@@ -14,6 +14,9 @@ interface LastStockUpdate {
     email: string;
     username: string;
   };
+  sector: {
+    name: string;
+  }
 }
 
 interface LastActualizationProps {
@@ -44,6 +47,7 @@ const LastActualization: React.FC<LastActualizationProps> = ({
   useEffect(() => {
     getLastActualization();
   }, [materialId]);
+  console.log("lastStockUpdate", lastStockUpdate)
 
   return (
     <Box sx={{ display: "flex",}}>
@@ -89,6 +93,12 @@ const LastActualization: React.FC<LastActualizationProps> = ({
                 Cantidad Anterior
                 <Typography sx={{ p: 1 }}>
                   {lastStockUpdate.previousStock}
+                </Typography>
+              </FormLabelComponent>
+              <FormLabelComponent>
+                Depósito Afectado
+                <Typography sx={{ p: 1 }}>
+                  {lastStockUpdate.sector?.name}
                 </Typography>
               </FormLabelComponent>
               <FormLabelComponent>

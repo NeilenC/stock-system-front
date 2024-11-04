@@ -51,26 +51,25 @@ const MaterialLogistics = ({
     }
   }, [materialToCheck]);
 
-
-  const [stockMovements, setStockMovements] = useState<any[]>([]);
-  console.log("stockmovemeeeents ---->", stockMovements)
-    const getLastActualization = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialToCheck?.id}`
-        );
-        const data = await response.json();
-        if (response.ok && data.length > 0) {
-          setStockMovements(data); // Almacena todos los movimientos
-        }
-      } catch (e) {
-        console.error("Error fetching data:", e);
-      }
-    };
+  // const [stockMovements, setStockMovements] = useState<any[]>([]);
+  // console.log("stockmovemeeeents ---->", stockMovements)
+  //   const getLastActualization = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialToCheck?.id}`
+  //       );
+  //       const data = await response.json();
+  //       if (response.ok && data.length > 0) {
+  //         setStockMovements(data); // Almacena todos los movimientos
+  //       }
+  //     } catch (e) {
+  //       console.error("Error fetching data:", e);
+  //     }
+  //   };
   
-    useEffect(() => {
-      getLastActualization();
-    }, [materialToCheck]);
+  //   useEffect(() => {
+  //     getLastActualization();
+  //   }, [materialToCheck]);
   
 
 console.log("lastagualization", lastStockUpdate)
@@ -102,7 +101,11 @@ console.log("lastagualization", lastStockUpdate)
 
         {/* Content Section */}
 
-       
+        <Box sx={{ bgcolor: theme.palette.secondary.light, p: "7px 24px" }}>
+          <Typography sx={{ fontSize: "18px" }}>
+           Stock total actual {materialToCheck?.actual_stock}
+          </Typography>
+        </Box>
         <Box sx={{}}>
    
           {storedMaterials && storedMaterials.length > 0 ? (
@@ -111,21 +114,21 @@ console.log("lastagualization", lastStockUpdate)
                 key={material?.id}
                 sx={{  }}
               >
-                <Box sx={{ bgcolor: index % 2 === 1 ? "#ffffff" : "#f0f0f0" }}>
-                  <Box sx={{p:2, display:'flex', justifyContent:'space-between'}}>
+                <Box sx={{ bgcolor: index % 2 === 1 ?"#f0f0f0" :  "#ffffff" }}>
+                  <Box sx={{p:3, display:'flex', justifyContent:'space-between'}}>
                   <Typography variant="body1">
                  
-                    {material?.storaged_stock} {material.material_id?.name}
+                    {material?.storaged_stock} {material.material?.name}
                   </Typography>
                   <Typography variant="body1">
-                    {material?.sector_id?.name}
+                    {material?.sector?.name}
                   </Typography>
                 </Box></Box>
               </Box>
             ))
           ) : (
             <Box>
-              {stockMovements.map((movement, index) => (
+              {/* {stockMovements.map((movement, index) => (
               <Box key={movement.id}
               sx={{ bgcolor: index % 2 === 0 ? "#ffffff" : "#f0f0f0" ,display:'flex', justifyContent:'space-between',p:2}}>
                 <Box sx={{display:'flex'}}>
@@ -134,7 +137,8 @@ console.log("lastagualization", lastStockUpdate)
                 <Box >{movement.sector?.name}</Box>
               </Box>
             ))}
-                 
+                  */}
+                  Aún no hay movimientos de stock 
            </Box>
           )}{" "}
         </Box>

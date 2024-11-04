@@ -36,13 +36,14 @@ const AdjustStock = ({
   isOpen,
   handleClose,
   material,
+  updatedMaterial,
   adjustmentType,
   onStockUpdate,
 }: any) => {
   const { storageSectors } = useSectors();
   const [quantity, setQuantity] = useState(0);
   const userEmailLocalStorage = localStorage.getItem("email");
-  const [updatedMaterial, setUpdatedMaterial] = useState(material);
+  // const [updatedMaterial, setUpdatedMaterial] = useState(material);
   const [sectorId, setSectorId] = useState(null);
   const [errorMessage, setErrorMessage] = useState<string>(''); // State for error messages
 
@@ -76,7 +77,7 @@ const AdjustStock = ({
 
       const updatedMaterial = await response.json();
       onStockUpdate(updatedMaterial.actual_stock);
-      setUpdatedMaterial(updatedMaterial);
+      // setUpdatedMaterial(updatedMaterial);
       handleClose(); // Cierra el modal
       setErrorMessage(''); // Clear any previous error messages
     } catch (error) {
@@ -86,10 +87,10 @@ const AdjustStock = ({
   };
 
   useEffect(() => {
-    setUpdatedMaterial(material);
+    // setUpdatedMaterial(material);
     setErrorMessage(''); 
   }, [material, isOpen]);
-
+console.log("material", material)
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box sx={modalStyle}>
