@@ -34,7 +34,6 @@ const CreateMaterialForm = ({
     setOpenModal(false);
   };
 
-  console.log("formdata ", formData)
   return (
     <form>
       <Grid container spacing={1}>
