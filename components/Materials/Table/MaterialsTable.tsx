@@ -11,8 +11,9 @@ import { MaterialProps } from "../materialsProps";
 import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import CreateMaterialForm from "../Modal/CreateMaterialForm";
-import { useMaterials } from "../../../MaterialsContex";
 import { toast } from "react-toastify";
+import { FiltersProvider } from "./context/FiltersContext";
+import { useMaterialsContext } from "./context/MaterialsContextProps";
 
 const initialFormData = {
   name: "",
@@ -44,19 +45,19 @@ const MaterialsTable = ({
   openModalCreate: boolean, setOpenModalCreate: any
 }) => {
   const [formData, setFormData] = useState(initialFormData);
-  const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials);
+ const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials);
+
+  const { material } = useMaterialStore();
   const {
     currentMaterials,
     handlePageChange,
     handleFilter,
     currentPage,
     itemsPerPage,
-    totalItems
-  } = useMaterialsFilter(materials);
+    totalItems,
+  } = useMaterialsContext();
   
-  const {addMaterial } = useMaterials();
-    
-    const { material } = useMaterialStore();
+  console.log("Current materials in table:", currentMaterials);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -169,6 +170,8 @@ const MaterialsTable = ({
 
       // Actualizamos el estado con los materiales obtenidos
       setMaterials(updatedMaterials);
+      await fetchMaterials();
+
       setIsEditModalOpen(false); // Cierra el modal
     } catch (error) {
       console.error("Failed to update material:", error);
@@ -195,7 +198,7 @@ const MaterialsTable = ({
       if (response.ok) {
         toast.success("Material creado exitosamente");
         setOpenModalCreate(false);
-        addMaterial(formData);
+        // addMaterial(formData);
         setFormData(initialFormData);
          await fetchMaterials()
       } else {
@@ -253,9 +256,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
       <Box sx={{ pb: 2 }}>
         <Grid container>
           <TableHeader />
-          <Filters onFilter={handleFilter} />
+      <Filters handleFilter={handleFilter}  />
+      {/* Otros componentes que necesiten acceso a los filtros */}
 
-          <Box sx={{ height: "460px", overflowY: "auto", width: "100%" }}>
+          <Box sx={{ height: "460px", overflowX: "auto", width: "100%" }}>
             {currentMaterials.map((material: MaterialProps, index) => (
               <TableRowItem
                 key={material.id}

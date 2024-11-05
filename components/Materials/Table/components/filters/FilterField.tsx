@@ -7,13 +7,14 @@ interface FilterFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   size: number;
-  width: number;
+  width?: number;
   maxLength?: number;
+  sx?: object;
 }
 
-const FilterField: React.FC<FilterFieldProps> = ({ value, onChange, placeholder, size, width, maxLength }) => {
+const FilterField: React.FC<FilterFieldProps> = ({ value, onChange, placeholder, size, width, maxLength, sx }) => {
   return (
-    <Grid item xs={size}>
+    <Grid item xs={size}  sx={sx}>
       <CustomTextFieldComponent
         fullWidth
         size="small"

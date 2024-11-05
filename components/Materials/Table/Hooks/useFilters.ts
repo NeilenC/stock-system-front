@@ -6,6 +6,7 @@ const useFilters = (onFilter?: (filters: any) => void) => {
   const [category, setCategory] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [weight, setWeight] = useState<string>('');
+  const [width, setWidth] = useState<string>('');
   const [color, setColor] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [depth, setDepth] = useState<string>('');
@@ -15,8 +16,8 @@ const useFilters = (onFilter?: (filters: any) => void) => {
 
   useEffect(() => {
     onFilter &&
-    onFilter({ code, category, description, weight, color, height, depth, stock, observations, price });
-  }, [code, category, description, weight, color, height, depth, stock, observations, price, onFilter]);
+    onFilter({ code, category, description, weight, color, height, depth, stock, observations, price, width });
+  }, [code, category, description, weight, color, height, depth, stock, observations, price, width, onFilter]);
 
   const clearFilters = () => {
     setCode('');
@@ -29,6 +30,7 @@ const useFilters = (onFilter?: (filters: any) => void) => {
     setStock('');
     setObservations('');
     setPrice('');
+    setWidth('');
   };
 
   return {
@@ -42,6 +44,7 @@ const useFilters = (onFilter?: (filters: any) => void) => {
     stock,
     observations,
     price,
+    width,
     setCode,
     setCategory,
     setDescription,
@@ -52,6 +55,7 @@ const useFilters = (onFilter?: (filters: any) => void) => {
     setStock,
     setObservations,
     setPrice,
+    setWidth,
     clearFilters,
   };
 };

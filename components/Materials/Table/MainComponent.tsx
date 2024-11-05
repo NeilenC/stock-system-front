@@ -1,31 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
 import { Box } from "@mui/material";
 import MaterialsTable from "./MaterialsTable";
-import ModalComponent from "../../../commons/modals/ModalComponent";
-import CreateMaterialForm from "../Modal/CreateMaterialForm";
-import { toast } from "react-toastify";
-import { useMaterials } from "../../../MaterialsContex";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import materialsicon from "../../../public/materials.png";
-import useFilters from "./Hooks/useFilters";
-import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import theme from "../../../themes/theme";
-import * as XLSX from "xlsx"; // Importa la librería para Excel
-import download from '../../../public/download.png'
+import * as XLSX from "xlsx"; 
+import download from "../../../public/download.png";
+import clear from "../../../public/reset.png";
+import { useFiltersContext } from "./context/FiltersContext";
+import { useMaterialStore } from "../../../zustand/materialStore";
+import { useMaterialsContext } from "./context/MaterialsContextProps";
+
 const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
   };
 
-  const { materials } = useMaterials();
-  const { clearFilters } = useFilters();
-
+  const {currentMaterials, handleFilter } = useMaterialsContext();
+  const { clearFilters } = useFiltersContext();
+  const { materials } = useMaterialStore();
+  const clearAllFilters = () => {
+    clearFilters();
+    handleFilter({
+      code: "",
+      category: "",
+      description: "",
+      weight: "",
+      color: "",
+      height: "",
+      depth: "",
+      stock: "",
+      observations: "",
+      price: "",
+      width: "",  
+    });
+  };
+  
   // Función para exportar los materiales a Excel
   const exportToExcel = () => {
     // Define los datos y el encabezado de la tabla
-    const worksheetData = materials.map((material) => ({
+    const worksheetData = currentMaterials.map((material) => ({
       Código: material.code,
       Categoría: material.category?.category_name,
       Stock: material.actual_stock,
@@ -52,26 +68,30 @@ const MainComponent = () => {
 
   return (
     <>
-     <SectionComponent icon={materialsicon} text={"Materiales"}>
+      <SectionComponent icon={materialsicon} text={"Materiales"}>
         <Box display={"flex"} gap={2}>
-          {/* <CustomButton onClick={clearFilters} text={"Limpiar Filtros"}
-           sx={{
-            backgroundColor: "rgba(0, 0, 0, 0.01)",
-            border: "1px solid rgba(0, 0, 0, 0.1)",
-            color: theme.palette.primary.dark,
-            padding: "8px 16px",
-            fontSize: "16px",
-            fontWeight: "500",
-            cursor: "pointer",
-          }} /> */}
+
           <CustomButton
             onClick={exportToExcel}
             text={"Exportar a Excel"}
             icon={download}
-
             sx={{
               backgroundColor: theme.palette.success.main,
               color: "white",
+              padding: "8px 16px",
+              fontSize: "16px",
+              fontWeight: "500",
+              cursor: "pointer",
+            }}
+          />
+                    <CustomButton
+                    icon={clear}
+            onClick={clearAllFilters}
+            text={"Limpiar Filtros"}
+            sx={{
+              backgroundColor: "rgba(0, 0, 0, 0.01)",
+              border: "1px solid rgba(0, 0, 0, 0.1)",
+              color: theme.palette.primary.dark,
               padding: "8px 16px",
               fontSize: "16px",
               fontWeight: "500",
@@ -100,10 +120,13 @@ const MainComponent = () => {
             overflow: "hidden",
           }}
         >
-          <MaterialsTable initialMaterials={materials} openModalCreate={openModalCreate} setOpenModalCreate={setOpenModalCreate} />
+          <MaterialsTable
+            initialMaterials={materials}
+            openModalCreate={openModalCreate}
+            setOpenModalCreate={setOpenModalCreate}
+          />
         </Box>
       </Box>
-     
     </>
   );
 };

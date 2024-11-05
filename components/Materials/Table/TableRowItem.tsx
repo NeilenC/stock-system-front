@@ -49,127 +49,62 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
   return (
     <Grid
-      container
-      spacing={1}
-      sx={{
-        textAlign: "center",
-        borderBottom: "1px solid #ccc",
-        paddingBlock: 1.2,
-        bgcolor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
-      }}
-    >
-      <Grid item xs={1}>
-        {material.code}
-      </Grid>
-      <Grid item xs={1.5}>
-        {material.category.category_name}
-      </Grid>
-      <TextWithPopover
-        text={material.description}
-        title="Descripción"
-        onClick={handleDescriptionClick}
-      />
-      <Grid item xs={1}>
-        {material.weight}
-      </Grid>
-      <Grid item xs={1}>
-        {material.color}
-      </Grid>
-      <Grid item xs={1}>
-        {material.height || "N/A"}
-      </Grid>
-      <Grid item xs={1}>
-        {material.depth}
-      </Grid>
-      {/* <Grid item xs={1}>{material.actual_stock}</Grid> */}
-      <Grid item xs={1}>
-        {updatedMaterial.actual_stock}
-      </Grid>
-      <TextWithPopover
-        text={material.observations}
-        title="Observaciones"
-        onClick={handleObservationsClick}
-      />
-      <Grid item xs={0.8}>
-        ${material.price}
-      </Grid>
+    container
+    spacing={1}
+    sx={{
+      textAlign: "center",
+      borderBottom: "1px solid #ccc",
+      paddingBlock: 1.2,
+      bgcolor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
+    }}
+  >
+    <Grid item xs={2} sm={1.1}>{material.code}</Grid>
+    <Grid item xs={2} sm={1.2}>{material.category.category_name}</Grid>
+    <TextWithPopover text={material.description} title="Descripción" onClick={handleDescriptionClick} />
+    <Grid item xs={2} sm={1}>{material.weight}</Grid>
+    <Grid item xs={2} sm={1}>{material.color}</Grid>
+    <Grid item xs={2} sm={1}>{material.height || "N/A"}</Grid>
+    <Grid item xs={2} sm={0.6}>{material.depth}</Grid>
+    <Grid item xs={2} sm={1}>{updatedMaterial.actual_stock}</Grid>
+    <Grid item xs={2} sm={0.5}>{updatedMaterial.width}</Grid>
+    <TextWithPopover text={material.observations} title="Observaciones" onClick={handleObservationsClick}  />
+    <Grid item xs={2} sm={1}>${material.price}</Grid>
 
-      {/* Íconos de Editar y Eliminar */}
-      <Grid item xs={0.2} sx={{ cursor: "pointer" }}>
-        <IconToImage
-          icon={deleteicon}
-          w={20}
-          h={20}
-          onClick={openDeleteModal}
-        />
-      </Grid>
-
-      <Grid item xs={0.2} sx={{ cursor: "pointer" }}>
-        <IconToImage
-          icon={search}
-          w={20}
-          h={20}
-          onClick={() => router.push(`/deposito/material/${material.id}`)}
-        />
-      </Grid>
-
-
-      <Grid item xs={0.1} sx={{ cursor: "pointer", position: "relative" }}>
-        <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          sx={{ zIndex: 9999 }}
-        >
-          <MenuItem
-            onClick={() => {
-              onEdit(material.id);
-              handleMenuClose();
-            }}
-          >
-            Editar
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleStockChangeClick("add");
-              handleMenuClose();
-            }}
-          >
-            Agregar Stock
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleStockChangeClick("remove");
-              handleMenuClose();
-            }}
-          >
-            Remover Stock
-          </MenuItem>
-        </Menu>
-
-        {/* Modal para ajustar stock */}
-        {isStockModalOpen && (
-          <AdjustStock
-            isOpen={isStockModalOpen}
-            handleClose={handleStockModalClose}
-            material={material}
-            updatedMaterial={updatedMaterial}
-            adjustmentType={stockAdjustmentType}
-            onStockUpdate={handleStockUpdate}
-          />
-        )}
-      </Grid>
+    {/* Íconos de Editar y Eliminar */}
+    <Grid item xs={1} sm={0.2} sx={{ cursor: "pointer" }}>
+      <IconToImage icon={deleteicon} w={20} h={20} onClick={openDeleteModal} />
     </Grid>
+    <Grid item xs={1} sm={0.2} sx={{ cursor: "pointer" }}>
+      <IconToImage icon={search} w={20} h={20} onClick={() => router.push(`/deposito/material/${material.id}`)} />
+    </Grid>
+    <Grid item xs={1} sm={0.1} sx={{ cursor: "pointer", position: "relative" }}>
+      <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
+      {/* Menú para editar */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        sx={{ zIndex: 9999 }}
+      >
+        <MenuItem onClick={() => { onEdit(material.id); handleMenuClose(); }}>Editar</MenuItem>
+        <MenuItem onClick={() => { handleStockChangeClick("add"); handleMenuClose(); }}>Agregar Stock</MenuItem>
+        <MenuItem onClick={() => { handleStockChangeClick("remove"); handleMenuClose(); }}>Remover Stock</MenuItem>
+      </Menu>
+      {/* Modal para ajustar stock */}
+      {isStockModalOpen && (
+        <AdjustStock
+          isOpen={isStockModalOpen}
+          handleClose={handleStockModalClose}
+          material={material}
+          updatedMaterial={updatedMaterial}
+          adjustmentType={stockAdjustmentType}
+          onStockUpdate={handleStockUpdate}
+        />
+      )}
+    </Grid>
+  </Grid>
   );
 };
 

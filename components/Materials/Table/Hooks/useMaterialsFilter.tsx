@@ -8,11 +8,11 @@ const initialFilters = {
   color: '',
   width: '',
   height: '',
-  weight: 0,
+  weight: '',
   depth: '',
   price: '',
   observations: '',
-  description: ''
+  description: '',
 };
 
 const useMaterialsFilter = (materials: MaterialProps[]) => {
@@ -65,6 +65,7 @@ const useMaterialsFilter = (materials: MaterialProps[]) => {
         material.weight && String(material.weight).includes(String(filters.weight))
       );
     }
+    
     if (filters.depth) {
       filtered = filtered.filter((material) =>
         material.depth && String(material.depth).includes(filters.depth)
