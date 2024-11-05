@@ -13,7 +13,7 @@ const colors = {
     },
     error: {
       light: '#e57373',
-      main: '#f44336',
+      main: '#B3261E',
       dark: '#d32f2f',
       contrastText: '#fff',
     },
@@ -30,7 +30,7 @@ const colors = {
       contrastText: '#757575',
     },
     success: {
-      light: '#81c784',
+      light: '#E0FFE9',
       main: '#4caf50',
       dark: '#388e3c',
       contrastText: '#fff',

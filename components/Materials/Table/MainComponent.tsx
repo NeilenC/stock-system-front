@@ -1,17 +1,27 @@
 import { useState } from "react";
 import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
-import { Box } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import MaterialsTable from "./MaterialsTable";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import materialsicon from "../../../public/materials.png";
 import theme from "../../../themes/theme";
-import * as XLSX from "xlsx"; 
+import * as XLSX from "xlsx";
 import download from "../../../public/download.png";
 import clear from "../../../public/reset.png";
 import print from "../../../public/print.png";
 import { useFiltersContext } from "./context/FiltersContext";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import { useMaterialsContext } from "./context/MaterialsContextProps";
+import Toast from "../../../commons/Toast";
+import { printTable } from "../../../commons/template/printTable";
+import { exportToExcel } from "../../../commons/template/exportExcel";
 
 const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
@@ -19,7 +29,7 @@ const MainComponent = () => {
     setOpenModalCreate(true);
   };
 
-  const {currentMaterials, handleFilter } = useMaterialsContext();
+  const { currentMaterials, handleFilter } = useMaterialsContext();
   const { clearFilters } = useFiltersContext();
   const { materials } = useMaterialStore();
   const clearAllFilters = () => {
@@ -35,124 +45,48 @@ const MainComponent = () => {
       stock: "",
       observations: "",
       price: "",
-      width: "",  
+      width: "",
     });
   };
+  const { itemsPerPage, updateItemsPerPage } = useMaterialsContext();
+  const handleItemsPerPageChange = (event: any) => {
+    const value = parseInt(event.target.value, 10); // Parse selected value as number
+    updateItemsPerPage(value); // Update items per page in context
+  };
+
+ const handleExportExcel = () => {
+  exportToExcel(currentMaterials)
+ }
+  const handlePrint = () => {
+    printTable(currentMaterials); // Llama a la función con los datos necesarios
+  };
   
-  // Función para exportar los materiales a Excel
-  const exportToExcel = () => {
-    // Define los datos y el encabezado de la tabla
-    const worksheetData = currentMaterials.map((material:any) => ({
-      Código: material.code,
-      Categoría: material.category?.category_name,
-      Stock: material.actual_stock,
-      Color: material.color,
-      Ancho: material.width,
-      Alto: material.height,
-      Peso: material.weight,
-      Profundidad: material.depth,
-      Precio: material.price,
-      Observaciones: material.observations,
-      Descripción: material.description,
-    }));
+  
 
-    // Crea un libro y una hoja de trabajo
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-
-    // Agrega la hoja al libro
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Materiales");
-
-    // Genera el archivo Excel y lo descarga
-    XLSX.writeFile(workbook, "Materiales.xlsx");
-  };
-
-  // Function to print the materials table
-  const printTable = () => {
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return; // Handle the case where the popup is blocked
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Imprimir Materiales</title>
-          <style>
-            body { font-family: Arial, sans-serif; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
-          </style>
-        </head>
-        <body>
-          <h1>Materiales</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Categoría</th>
-                <th>Stock</th>
-                <th>Color</th>
-                <th>Ancho</th>
-                <th>Alto</th>
-                <th>Peso</th>
-                <th>Profundidad</th>
-                <th>Precio</th>
-                <th>Observaciones</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${currentMaterials.map(material => `
-                <tr>
-                  <td>${material.code}</td>
-                  <td>${material.category?.category_name}</td>
-                  <td>${material.actual_stock}</td>
-                  <td>${material.color}</td>
-                  <td>${material.width}</td>
-                  <td>${material.height}</td>
-                  <td>${material.weight}</td>
-                  <td>${material.depth}</td>
-                  <td>${material.price}</td>
-                  <td>${material.observations}</td>
-                  <td>${material.description}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-
-    printWindow.document.close(); // Necessary for IE >= 10
-    printWindow.focus(); // Necessary for IE >= 10
-
-    printWindow.print();
-    printWindow.close(); // Optional: close the print window after printing
-  };
   return (
     <>
       <SectionComponent icon={materialsicon} text={"Materiales"}>
         <Box display={"flex"} gap={2}>
-        <CustomButton
-        icon={print}
-            onClick={printTable}
+          <CustomButton
+            icon={print}
+            onClick={() => handlePrint()}
             // text={"Imprimir"}
 
             sx={{
               backgroundColor: theme.palette.primary.light,
-              color:'grey',
+              color: "grey",
               fontSize: "16px",
               fontWeight: "500",
               cursor: "pointer",
-              width:'50px'
+              width: "50px",
             }}
           />
-        <CustomButton
-            onClick={exportToExcel}
+          <CustomButton
+            onClick={() => handleExportExcel()}
             text={"Exportar a Excel"}
             icon={download}
             sx={{
-              backgroundColor: '#1d6f42',
+              backgroundColor: "#1d6f42",
               color: "white",
               padding: "8px 16px",
               fontSize: "16px",
@@ -161,15 +95,14 @@ const MainComponent = () => {
             }}
           />
 
-
-                    <CustomButton
-                    // icon={clear}
+          <CustomButton
+            // icon={clear}
             onClick={clearAllFilters}
             text={"Limpiar Filtros"}
             sx={{
               backgroundColor: "rgba(0, 0, 0, 0.01)",
               border: "1px solid rgba(0, 0, 0, 0.1)",
-              color: theme.palette.primary.dark,
+              color: "#5f6368",
               padding: "8px 16px",
               fontSize: "16px",
               fontWeight: "500",
@@ -182,12 +115,28 @@ const MainComponent = () => {
           />
         </Box>
       </SectionComponent>
+      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex'}}>
+        <Select
+          labelId="items-per-page-label"
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          label="Items por página"
+          sx={{ height: '45px' }}
+        >
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+          <MenuItem value={30}>30</MenuItem>
+          <MenuItem value={40}>40</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+        </Select>
+        <Typography variant='body1'sx={{alignContent:'center', pl:2}}>Registros por página</Typography>
+      </Box>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center", // Centra horizontalmente
-          alignItems: "center", // Centra verticalmente
-          paddingBlock: "16px",
+          justifyContent: "center",
+          alignItems: "center", 
+          paddingBlock: "10px",
           paddingInline: "16px",
         }}
       >
@@ -205,6 +154,8 @@ const MainComponent = () => {
           />
         </Box>
       </Box>
+
+    
     </>
   );
 };

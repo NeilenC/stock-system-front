@@ -7,4 +7,5 @@ export interface SectionComponentProps {
   text: string;
   children?: React.ReactNode;
   hasflap?: boolean;
+  isId?:boolean
 }

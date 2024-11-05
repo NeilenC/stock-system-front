@@ -9,6 +9,7 @@ import MaterialCalentarComponent from "../material-check/MaterialCalendarCompone
 import LastActualization from "./LastActualization";
 import MaterialLogistics from "../material-check/MaterialLogistics";
 import MaterialEditCheck from "../material-check/MaterialEditCheck";
+import { toast, ToastContainer } from "react-toastify";
 // import MaterialCalentarComponent from "../material-check/MaterialCalendarComponent";
 
 interface GeneralComponentProps {
@@ -17,9 +18,7 @@ interface GeneralComponentProps {
 const GeneralComponent: React.FC<GeneralComponentProps> = ({
   materialToCheck,
 }) => {
-
   const { material } = useMaterialStore();
-
   const [materialState, setMaterialState] = useState<MaterialProps | null>(
     materialToCheck
   );
@@ -58,6 +57,7 @@ const GeneralComponent: React.FC<GeneralComponentProps> = ({
       if (!response.ok) {
         throw new Error("Error updating material");
       }
+
 
     } catch (error) {
       console.error("Failed to update material:", error);

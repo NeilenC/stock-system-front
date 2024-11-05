@@ -12,6 +12,7 @@ type MaterialsContextType = {
   currentPage: number;
   itemsPerPage: number;
   totalItems: number;
+  updateItemsPerPage: (items: number) => void;
 };
 
 const initialFilters = {
@@ -34,8 +35,13 @@ export const MaterialsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [materials, setMaterials] = useState<MaterialProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilters);
-  
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10); 
+
+// Add a function to update items per page
+const updateItemsPerPage = (items: number) => {
+  setItemsPerPage(items);
+};
+
 
   const fetchMaterials = async () => {
     try {
@@ -155,7 +161,8 @@ export const MaterialsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       handlePageChange,
       currentPage,
       itemsPerPage,
-      totalItems
+      totalItems,
+      updateItemsPerPage
     }}>
       {children}
     </MaterialsContext.Provider>

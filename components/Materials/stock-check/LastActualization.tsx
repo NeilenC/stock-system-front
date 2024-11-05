@@ -83,7 +83,7 @@ const LastActualization: React.FC<LastActualizationProps> = ({
           {lastStockUpdate && (
             <Box>
               <FormLabelComponent>
-                Cantidad Cambiada
+                Cantidad Actualizada
                 <Typography sx={{ p: 1 }}>
                   {lastStockUpdate.changeAmount}
                 </Typography>

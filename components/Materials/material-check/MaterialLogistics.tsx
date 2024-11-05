@@ -51,26 +51,6 @@ const MaterialLogistics = ({
     }
   }, [materialToCheck]);
 console.log("storedmaterials", storedMaterials)
-  // const [stockMovements, setStockMovements] = useState<any[]>([]);
-  // console.log("stockmovemeeeents ---->", stockMovements)
-  //   const getLastActualization = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialToCheck?.id}`
-  //       );
-  //       const data = await response.json();
-  //       if (response.ok && data.length > 0) {
-  //         setStockMovements(data); // Almacena todos los movimientos
-  //       }
-  //     } catch (e) {
-  //       console.error("Error fetching data:", e);
-  //     }
-  //   };
-  
-  //   useEffect(() => {
-  //     getLastActualization();
-  //   }, [materialToCheck]);
-  
 
 
   return (

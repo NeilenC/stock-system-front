@@ -170,7 +170,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
       />
 
       <FilterField
-        value={height}
+        value={width}
         onChange={(e) => handleFilterChange("width", e.target.value)}
         placeholder="Ancho"
         size={0.7}

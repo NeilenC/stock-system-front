@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import Filters from "./components/filters/Filters";
 import TableHeader from "./TableHeader";
 import TableRowItem from "./TableRowItem";
@@ -14,6 +14,8 @@ import CreateMaterialForm from "../Modal/CreateMaterialForm";
 import { toast } from "react-toastify";
 import { FiltersProvider } from "./context/FiltersContext";
 import { useMaterialsContext } from "./context/MaterialsContextProps";
+import Toast from "../../../commons/Toast";
+import theme from "../../../themes/theme";
 
 const initialFormData = {
   name: "",
@@ -31,22 +33,24 @@ const initialFormData = {
   category: 0,
   distribution_stock: [
     {
-      sector_id: 0,     
-      storaged_stock: 0, 
+      sector_id: 0,
+      storaged_stock: 0,
     },
-]
+  ],
 };
 
 const MaterialsTable = ({
   initialMaterials,
-  openModalCreate, setOpenModalCreate
+  openModalCreate,
+  setOpenModalCreate,
 }: {
   initialMaterials: MaterialProps[];
-  openModalCreate: boolean, setOpenModalCreate: any
+  openModalCreate: boolean;
+  setOpenModalCreate: any;
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const { material } = useMaterialStore();
-  
+
   const {
     currentMaterials,
     handlePageChange,
@@ -56,23 +60,20 @@ const MaterialsTable = ({
     totalItems,
     fetchMaterials,
   } = useMaterialsContext();
-
+  const [showToast, setShowToast] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
-  const [selectedMaterial, setSelectedMaterial] = useState<MaterialProps | null>(null);
+  const [selectedMaterial, setSelectedMaterial] =
+    useState<MaterialProps | null>(null);
 
   useEffect(() => {
     fetchMaterials();
   }, []);
 
-
-
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
   };
-  
-  
 
   const handleEdit = (materialId: number) => {
     setMaterialId(materialId);
@@ -83,8 +84,8 @@ const MaterialsTable = ({
 
   const handleDelete = (material: any) => {
     setMaterialId(material.id);
-    setSelectedMaterial(material); 
-    setIsDeleteModalOpen(true); 
+    setSelectedMaterial(material);
+    setIsDeleteModalOpen(true);
   };
 
   const handleModalClose = () => {
@@ -113,7 +114,6 @@ const MaterialsTable = ({
       if (!response.ok) {
         throw new Error("Error updating material");
       }
-
       setIsDeleteModalOpen(false);
       setSelectedMaterial(null); // Limpiar el material seleccionado al confirmar eliminación}7
       await fetchMaterials();
@@ -142,7 +142,7 @@ const MaterialsTable = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedMaterial), 
+          body: JSON.stringify(updatedMaterial),
         }
       );
 
@@ -154,6 +154,7 @@ const MaterialsTable = ({
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`
       );
       const updatedMaterials = await updatedMaterialsResponse.json();
+      setShowToast(true)
 
       // Actualizamos el estado con los materiales obtenidos
       await fetchMaterials();
@@ -164,10 +165,7 @@ const MaterialsTable = ({
     }
   };
 
-
-
   const handleCreateMaterial = async (formData: any) => {
-  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/create`,
@@ -180,13 +178,14 @@ const MaterialsTable = ({
           body: JSON.stringify(formData),
         }
       );
-  
+
       if (response.ok) {
-        toast.success("Material creado exitosamente");
+        setShowToast(true)
+
         setOpenModalCreate(false);
         // addMaterial(formData);
         setFormData(initialFormData);
-         await fetchMaterials()
+        await fetchMaterials();
       } else {
         const errorResponse = await response.json();
         toast.error(`Error al crear el material: ${errorResponse.message}`);
@@ -196,41 +195,40 @@ const MaterialsTable = ({
       toast.error("Error creando material.");
     }
   };
-  
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  const { name, value } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
 
-  setFormData((prev) => {
-    if (name.startsWith("distribution_stock.")) {
-      const index = 0; // Suponiendo que solo tienes un objeto en el array
-      const fieldName = name.split(".")[1]; // Obtiene el nombre del campo
+    setFormData((prev) => {
+      if (name.startsWith("distribution_stock.")) {
+        const index = 0; // Suponiendo que solo tienes un objeto en el array
+        const fieldName = name.split(".")[1]; // Obtiene el nombre del campo
 
+        return {
+          ...prev,
+          distribution_stock: prev.distribution_stock.map((item, idx) => {
+            if (idx === index) {
+              return {
+                ...item,
+                [fieldName]: fieldName === "sector_id" ? Number(value) : value,
+              };
+            }
+            return item;
+          }),
+        };
+      }
+
+      // Manejo del cambio de category
       return {
         ...prev,
-        distribution_stock: prev.distribution_stock.map((item, idx) => {
-          if (idx === index) {
-            return {
-              ...item,
-              [fieldName]: fieldName === 'sector_id' ? Number(value) : value, 
-            };
-          }
-          return item; 
-        }),
+        [name]: name === "category" ? Number(value) : value,
       };
-    }
+    });
+  };
 
-    // Manejo del cambio de category 
-    return {
-      ...prev,
-      [name]: name === "category" ? Number(value) : value,
-    };
-  });
-};
-
-  
-
-  const handleFileChange = (e:any) => {
+  const handleFileChange = (e: any) => {
     if (e.target.files) {
       setFormData({ ...formData, image_url: e.target.files[0] });
     }
@@ -238,35 +236,43 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
   return (
     <>
-     
-      <Box sx={{ pb: 2 }}>
+      <Box sx={{}}>
         <Grid container>
           <TableHeader />
-      <Filters handleFilter={handleFilter}  />
-      {/* Otros componentes que necesiten acceso a los filtros */}
+          <Filters handleFilter={handleFilter} />
+          {/* Otros componentes que necesiten acceso a los filtros */}
 
-          <Box sx={{ height: "460px", overflowX: "auto", width: "100%" }}>
-            {currentMaterials.map((material: MaterialProps, index: any) => (
-              <TableRowItem
-                key={material.id}
-                material={material}
-                index={index}
-                onEdit={handleEdit}
-                openDeleteModal={() => handleDelete(material)} 
-              />
-            ))}
+          <Box sx={{ maxHeight: "600px", overflowX: "auto", width: "100%" }}>
+            {currentMaterials.length ? (
+              currentMaterials.map((material: MaterialProps, index: any) => (
+                <TableRowItem
+                  key={material.id}
+                  material={material}
+                  index={index}
+                  onEdit={handleEdit}
+                  openDeleteModal={() => handleDelete(material)}
+                />
+              ))
+            ) : (
+              <Typography
+                variant="h6"
+                sx={{ p: 5, display: "flex", justifyContent: "center" }}
+              >
+                {" "}
+                No se encontraron materiales{" "}
+              </Typography>
+            )}
           </Box>
         </Grid>
 
-      <Pagination
-        page={currentPage}
-        onPageChange={(newPage:any) => {
-          console.log('Page change triggered:', newPage);
-          handlePageChange(newPage);
-        }}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-      />
+        <Pagination
+          page={currentPage}
+          onPageChange={(newPage: any) => {
+            handlePageChange(newPage);
+          }}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+        />
 
         {isEditModalOpen && (
           <ModalComponent
@@ -274,7 +280,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
             handleClose={handleModalClose}
             title="Editar Material"
             onSubmit={handleSave}
-            textButton='Editar'
+            textButton="Editar"
           >
             <MaterialEditForm materialId={materialId} />
           </ModalComponent>
@@ -295,19 +301,30 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
             )}
           </ModalComponent>
         )}
- {openModalCreate && (
-        <ModalComponent
-          isOpen={openModalCreate}
-          handleClose={handleCloseModalCreate}
-          title="Crear Material"
-          onSubmit={() => handleCreateMaterial(formData)}
-          textButton="Guardar"
-        >
-          <CreateMaterialForm 
-           formData={formData}
-           handleChange={handleChange}
-           handleFileChange={handleFileChange} />
-        </ModalComponent>
+        {openModalCreate && (
+          <ModalComponent
+            isOpen={openModalCreate}
+            handleClose={handleCloseModalCreate}
+            title="Crear Material"
+            onSubmit={() => handleCreateMaterial(formData)}
+            textButton="Guardar"
+          >
+            <CreateMaterialForm
+              formData={formData}
+              handleChange={handleChange}
+              handleFileChange={handleFileChange}
+            />
+          </ModalComponent>
+        )}
+
+{showToast && (
+        <Toast
+          messageLeft={'Error al guardar. Intente nuevamente'}
+          messageRight="Intente de nuevo"
+          bgcolor={theme.palette.success.light}
+          color={'black'}
+          onClose={() => setShowToast(false)}
+        />
       )}
       </Box>
     </>

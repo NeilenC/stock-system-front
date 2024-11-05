@@ -2,6 +2,7 @@ import { SectionComponentProps } from "./model";
 import { Box, Grid, Typography } from "@mui/material";
 import theme from "../../../../themes/theme";
 import IconToImage from "../../../../commons/styled-components/IconImages";
+import { useRouter } from "next/router";
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
   icon,
@@ -9,7 +10,14 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
   text,
   children,
   hasflap,
+  isId,
 }) => {
+  const router = useRouter()
+  const handleRedirect = () => {
+    if (isId) {
+      router.push('/deposito/materiales');
+    }
+  };
   return (
     <Box
       style={{
@@ -23,11 +31,16 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
       }}
     >
       <Grid container alignItems="center">
-        {icon && (
-          <Grid item>
-            <IconToImage icon={icon} w={40} h={40} />
-          </Grid>
-        )}
+      {icon && (
+      <Box
+        onClick={handleRedirect}
+        sx={{
+          cursor: isId ? 'pointer' : 'default',
+        }}
+      >
+        <IconToImage icon={icon} w={40} h={40} />
+      </Box>
+    )}
 
         <Grid item marginLeft="16px">
           <Typography

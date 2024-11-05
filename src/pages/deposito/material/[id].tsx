@@ -39,7 +39,9 @@ const MaterialMovements = () => {
   return (
     <>
     <Box sx={{bgcolor: theme.palette.primary.light}} >
-      <SectionComponent icon={backicon} text="Materiales" />
+
+      <SectionComponent icon={backicon} text={`${material?.name}`} isId={true} />
+   
       <Box
         sx={{
           position: "absolute", // Hace que TabComponent se superponga
