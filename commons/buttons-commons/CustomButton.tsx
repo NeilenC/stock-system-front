@@ -7,7 +7,7 @@ import IconToImage from "../styled-components/IconImages";
 interface CustomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   icon?: StaticImageData;
-  text: string;
+  text?: string;
   sx?: object; // add aditional styles
 }
 

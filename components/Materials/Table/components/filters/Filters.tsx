@@ -179,13 +179,13 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={observations}
         onChange={(e) => handleFilterChange("observations", e.target.value)}
         placeholder="Observaciones"
-        size={1.2}
+        size={1.5}
       />
       <FilterField
         value={price}
         onChange={(e) => handleFilterChange("price", e.target.value)}
         placeholder="Precio"
-        size={1.1}
+        size={0.8}
       />
     </Grid>
   );

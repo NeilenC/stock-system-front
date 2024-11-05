@@ -8,6 +8,7 @@ import theme from "../../../themes/theme";
 import * as XLSX from "xlsx"; 
 import download from "../../../public/download.png";
 import clear from "../../../public/reset.png";
+import print from "../../../public/print.png";
 import { useFiltersContext } from "./context/FiltersContext";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import { useMaterialsContext } from "./context/MaterialsContextProps";
@@ -41,7 +42,7 @@ const MainComponent = () => {
   // Función para exportar los materiales a Excel
   const exportToExcel = () => {
     // Define los datos y el encabezado de la tabla
-    const worksheetData = currentMaterials.map((material) => ({
+    const worksheetData = currentMaterials.map((material:any) => ({
       Código: material.code,
       Categoría: material.category?.category_name,
       Stock: material.actual_stock,
@@ -66,17 +67,92 @@ const MainComponent = () => {
     XLSX.writeFile(workbook, "Materiales.xlsx");
   };
 
+  // Function to print the materials table
+  const printTable = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return; // Handle the case where the popup is blocked
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Imprimir Materiales</title>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <h1>Materiales</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Color</th>
+                <th>Ancho</th>
+                <th>Alto</th>
+                <th>Peso</th>
+                <th>Profundidad</th>
+                <th>Precio</th>
+                <th>Observaciones</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${currentMaterials.map(material => `
+                <tr>
+                  <td>${material.code}</td>
+                  <td>${material.category?.category_name}</td>
+                  <td>${material.actual_stock}</td>
+                  <td>${material.color}</td>
+                  <td>${material.width}</td>
+                  <td>${material.height}</td>
+                  <td>${material.weight}</td>
+                  <td>${material.depth}</td>
+                  <td>${material.price}</td>
+                  <td>${material.observations}</td>
+                  <td>${material.description}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close(); // Necessary for IE >= 10
+    printWindow.focus(); // Necessary for IE >= 10
+
+    printWindow.print();
+    printWindow.close(); // Optional: close the print window after printing
+  };
   return (
     <>
       <SectionComponent icon={materialsicon} text={"Materiales"}>
         <Box display={"flex"} gap={2}>
+        <CustomButton
+        icon={print}
+            onClick={printTable}
+            // text={"Imprimir"}
 
-          <CustomButton
+            sx={{
+              backgroundColor: theme.palette.primary.light,
+              color:'grey',
+              fontSize: "16px",
+              fontWeight: "500",
+              cursor: "pointer",
+              width:'50px'
+            }}
+          />
+        <CustomButton
             onClick={exportToExcel}
             text={"Exportar a Excel"}
             icon={download}
             sx={{
-              backgroundColor: theme.palette.success.main,
+              backgroundColor: '#1d6f42',
               color: "white",
               padding: "8px 16px",
               fontSize: "16px",
@@ -84,8 +160,10 @@ const MainComponent = () => {
               cursor: "pointer",
             }}
           />
+
+
                     <CustomButton
-                    icon={clear}
+                    // icon={clear}
             onClick={clearAllFilters}
             text={"Limpiar Filtros"}
             sx={{

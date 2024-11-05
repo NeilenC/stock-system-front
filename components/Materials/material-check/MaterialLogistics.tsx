@@ -50,7 +50,7 @@ const MaterialLogistics = ({
       getStoredMaterials();
     }
   }, [materialToCheck]);
-
+console.log("storedmaterials", storedMaterials)
   // const [stockMovements, setStockMovements] = useState<any[]>([]);
   // console.log("stockmovemeeeents ---->", stockMovements)
   //   const getLastActualization = async () => {
@@ -120,13 +120,13 @@ const MaterialLogistics = ({
                     {material?.storaged_stock} {material.material?.name}
                   </Typography>
                   <Typography variant="body1">
-                    {material?.sector?.name}
+                    {material?.sector_id?.name}
                   </Typography>
                 </Box></Box>
               </Box>
             ))
           ) : (
-            <Box>
+            <Box sx={{p:3}}>
               {/* {stockMovements.map((movement, index) => (
               <Box key={movement.id}
               sx={{ bgcolor: index % 2 === 0 ? "#ffffff" : "#f0f0f0" ,display:'flex', justifyContent:'space-between',p:2}}>
@@ -137,7 +137,10 @@ const MaterialLogistics = ({
               </Box>
             ))}
                   */}
+                  <Typography variant="h6">
+
                   Aún no hay movimientos de stock 
+                  </Typography>
            </Box>
           )}{" "}
         </Box>

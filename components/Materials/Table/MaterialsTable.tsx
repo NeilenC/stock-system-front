@@ -6,7 +6,7 @@ import TableRowItem from "./TableRowItem";
 import Pagination from "./Pagination";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
-import useMaterialsFilter from "./Hooks/useMaterialsFilter";
+// import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import { MaterialProps } from "../materialsProps";
 import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
@@ -45,9 +45,8 @@ const MaterialsTable = ({
   openModalCreate: boolean, setOpenModalCreate: any
 }) => {
   const [formData, setFormData] = useState(initialFormData);
- const [materials, setMaterials] = useState<MaterialProps[]>(initialMaterials);
-
   const { material } = useMaterialStore();
+  
   const {
     currentMaterials,
     handlePageChange,
@@ -55,30 +54,18 @@ const MaterialsTable = ({
     currentPage,
     itemsPerPage,
     totalItems,
+    fetchMaterials,
   } = useMaterialsContext();
-  
-  console.log("Current materials in table:", currentMaterials);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
-  const [selectedMaterial, setSelectedMaterial] =
-    useState<MaterialProps | null>(null); // Estado para el material seleccionado
-  
-  const fetchMaterials = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`);
-      const data = await response.json();
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialProps | null>(null);
 
-      setMaterials(data);
-    } catch (error) {
-      console.error("Failed to fetch materials:", error);
-    }
-  };
   useEffect(() => {
-
     fetchMaterials();
-  }, []); 
+  }, []);
+
 
 
   const handleCloseModalCreate = () => {
@@ -169,7 +156,6 @@ const MaterialsTable = ({
       const updatedMaterials = await updatedMaterialsResponse.json();
 
       // Actualizamos el estado con los materiales obtenidos
-      setMaterials(updatedMaterials);
       await fetchMaterials();
 
       setIsEditModalOpen(false); // Cierra el modal
@@ -260,7 +246,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
       {/* Otros componentes que necesiten acceso a los filtros */}
 
           <Box sx={{ height: "460px", overflowX: "auto", width: "100%" }}>
-            {currentMaterials.map((material: MaterialProps, index) => (
+            {currentMaterials.map((material: MaterialProps, index: any) => (
               <TableRowItem
                 key={material.id}
                 material={material}
