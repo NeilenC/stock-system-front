@@ -53,6 +53,7 @@ const MaterialsTable = ({
     itemsPerPage,
     totalItems
   } = useMaterialsFilter(materials);
+  
   const {addMaterial } = useMaterials();
     
     const { material } = useMaterialStore();
@@ -297,6 +298,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
             title={`¿ Deseas eliminar el material ${selectedMaterial?.name} ?`}
             fromDelete={true}
             textButton="Eliminar"
+            width="550px"
           >
             {selectedMaterial && (
               <MaterialDetails material={selectedMaterial} />

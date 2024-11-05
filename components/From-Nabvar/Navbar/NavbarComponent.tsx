@@ -56,9 +56,9 @@ const NavbarComponent = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useWindowSize().width <= 1025;
   const username = "Neilen Monlezun";
-  const clearAccessToken = useUserStore((state) => state.clearAccessToken);
-  const clearEmail = useUserStore((state) => state.clearEmail); // Añadido para limpiar el email
-
+ // Añadido para limpiar el email
+  const clearUserData = useUserStore((state) => state.clearUserData);
+  // const username = useUserStore((state) => state.username);
 
   useEffect(() => {
     // Detect route change and reset isSelected state after 2 seconds
@@ -220,10 +220,7 @@ const NavbarComponent = () => {
         });
       }
 
-      // Limpiar el access token y el email en Zustand
-      clearAccessToken();
-      clearEmail();
-
+      clearUserData();
       // Limpiar el localStorage
       localStorage.removeItem("token");
 
@@ -470,7 +467,6 @@ const NavbarComponent = () => {
         <Box
           display="flex"
           alignItems="center"
-          marginLeft={isMobile ? "0px" : "2px"}
         >
 
           {/* User Section */}
@@ -521,7 +517,8 @@ const NavbarComponent = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center", // Alinea imagen y texto en el mismo nivel
-                  
+                  pt:1, 
+                
                 }}
               >
                 {/* Imagen PNG */}
@@ -539,22 +536,22 @@ const NavbarComponent = () => {
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "flex-start",
-                    // paddingLeft: '12px'
-                    p: "8px",
+                    alignItems: "flex-start", 
                   }}
                 >
                   <Typography
                     sx={{
-                      fontSize: isMediumScreen ? "10px" : "0.7rem",
+                      fontSize: "15px",
                       lineHeight: "13px",
+
+                      
                     }}
                   >
                     {username}
                   </Typography>
                   <Typography
                     sx={{
-                      fontSize: isMediumScreen ? "10px" : "0.7rem",
+                      fontSize:  "14px" ,
                       fontWeight: "regular",
                     }}
                   >
@@ -606,26 +603,6 @@ const NavbarComponent = () => {
                 </Typography>
               </MenuItem>
 
-              {/* Roles y Permisos Option */}
-              {/* <MenuItem
-                onClick={() => handleCloseMenu(username)}
-                sx={{
-                  padding: "10px 16px",
-                  "&:hover": {
-                    backgroundColor: "#F5F5F5",
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: "36px" }}>
-                  <IconToImage icon={roles} w={20} h={20} />
-                </ListItemIcon>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 500, fontSize: "14px" }}
-                >
-                  Roles Y Permisos
-                </Typography>
-              </MenuItem> */}
 
               {/* Ajustes Option */}
               <MenuItem

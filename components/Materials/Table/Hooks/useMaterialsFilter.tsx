@@ -1,30 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MaterialProps } from "../../materialsProps";
+
+const initialFilters = {
+  code: '',
+  category: '',
+  stock: '',
+  color: '',
+  width: '',
+  height: '',
+  weight: 0,
+  depth: '',
+  price: '',
+  observations: '',
+  description: ''
+};
 
 const useMaterialsFilter = (materials: MaterialProps[]) => {
   const [filteredMaterials, setFilteredMaterials] = useState<MaterialProps[]>(materials);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({
-    code: '',
-    category: '',
-    stock: '',
-    color: '',
-    width: '',
-    height: '',
-    weight: 0,
-    depth: '',
-    price: '',
-    observations: '',
-    description: ''
-  });
-  
+  const [filters, setFilters] = useState(initialFilters);
+
   const itemsPerPage = 10;
 
-  // Aplica filtros cuando cambian los valores de `filters` o `materials`
-  useEffect(() => {
+  const filteredMaterialsMemo = useMemo(() => {
     let filtered = materials;
 
-    // Aplicar todos los filtros
     if (filters.category) {
       filtered = filtered.filter((material) =>
         material.category?.category_name.toLowerCase().includes(filters.category.toLowerCase())
@@ -42,7 +42,7 @@ const useMaterialsFilter = (materials: MaterialProps[]) => {
     }
     if (filters.stock) {
       filtered = filtered.filter((material) =>
-        material?.actual_stock >= parseFloat(filters.stock)
+        String(material.actual_stock).includes(filters.stock)
       );
     }
     if (filters.color) {
@@ -51,32 +51,28 @@ const useMaterialsFilter = (materials: MaterialProps[]) => {
       );
     }
     if (filters.width) {
-      filtered = filtered.filter(
-        (material) => material.width && material.width >= parseFloat(filters.width)
+      filtered = filtered.filter((material) =>
+        material.width && String(material.width).includes(filters.width)
       );
     }
     if (filters.height) {
-      filtered = filtered.filter(
-        (material) => material.height && material.height >= parseFloat(filters.height)
+      filtered = filtered.filter((material) =>
+        material.height && String(material.height).includes(filters.height)
       );
     }
     if (filters.weight) {
-      const weightValue = parseFloat(String(filters.weight));
-      const tolerance = 0.5;
       filtered = filtered.filter((material) =>
-        material.weight &&
-        material.weight >= weightValue - tolerance &&
-        material.weight <= weightValue + tolerance
+        material.weight && String(material.weight).includes(String(filters.weight))
       );
     }
     if (filters.depth) {
-      filtered = filtered.filter(
-        (material) => material.depth && material.depth >= parseFloat(filters.depth)
+      filtered = filtered.filter((material) =>
+        material.depth && String(material.depth).includes(filters.depth)
       );
     }
     if (filters.price) {
-      filtered = filtered.filter(
-        (material) => material.price >= parseFloat(filters.price)
+      filtered = filtered.filter((material) =>
+        String(material.price).includes(filters.price)
       );
     }
     if (filters.observations) {
@@ -85,33 +81,37 @@ const useMaterialsFilter = (materials: MaterialProps[]) => {
       );
     }
 
-    // Aplica el resultado del filtrado al estado `filteredMaterials`
-    setFilteredMaterials(filtered);
-
-    // Resetea la página si el nuevo total es menor que la página actual
+    // Reset page if filtered results don't reach the current page
     if (currentPage > Math.ceil(filtered.length / itemsPerPage)) {
-      setCurrentPage(1); // Resetea a la primera página si se filtra por encima
+      setCurrentPage(1);
     }
 
-  }, [filters, materials, currentPage]);
+    return filtered;
+  }, [materials, JSON.stringify(filters)]);
 
-  // Calcula los materiales para la página actual después de aplicar los filtros
-  const currentMaterials = filteredMaterials.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  useEffect(() => {
+    setFilteredMaterials(filteredMaterialsMemo);
+  }, [filteredMaterialsMemo]);
 
-  // Cambia de página
+  const currentMaterials = useMemo(() => {
+    return filteredMaterials.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [filteredMaterials, currentPage, itemsPerPage]);
+
   const handlePageChange = (page: number) => {
-    // Solo establece la página si está dentro del rango válido
     if (page >= 1 && page <= Math.ceil(filteredMaterials.length / itemsPerPage)) {
       setCurrentPage(page);
     }
   };
 
-  // Actualiza los filtros
   const handleFilter = (newFilters: typeof filters) => {
-    setFilters(newFilters); // Actualiza solo los filtros
+    setFilters(newFilters);
+  };
+
+  const resetFilters = () => {
+    setFilters(initialFilters);
   };
 
   return {
@@ -121,6 +121,7 @@ const useMaterialsFilter = (materials: MaterialProps[]) => {
     currentPage,
     itemsPerPage,
     totalItems: filteredMaterials.length,
+    resetFilters
   };
 };
 

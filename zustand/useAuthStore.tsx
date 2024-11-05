@@ -1,55 +1,40 @@
-import { create } from 'zustand';
-import { useEffect } from 'react';
+// src/zustand/useAuthStore.ts
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface UserState {
   accessToken: string | null;
   email: string | null;
+  username: string | null;
+  phonenumber: string | null;
   setAccessToken: (token: string) => void;
-  clearAccessToken: () => void;
   setEmail: (email: string) => void;
-  clearEmail: () => void;
+  setUsername: (username: string) => void;
+  setPhoneNumber: (phonenumber: string) => void;
+  clearUserData: () => void;
 }
 
-// Estado inicial sin acceso a localStorage
-export const useUserStore = create<UserState>((set) => ({
-  accessToken: null,
-  email: null,
-  setAccessToken: (token) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("accessToken", token);
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      accessToken: null,
+      email: null,
+      username: null,
+      phonenumber: null,
+      setAccessToken: (token) => set({ accessToken: token }),
+      setEmail: (email) => set({ email }),
+      setUsername: (username) => set({ username }),
+      setPhoneNumber: (phonenumber) => set({ phonenumber }),
+      clearUserData: () => set({ accessToken: null, email: null, username: null, phonenumber: null }),
+    }),
+    {
+      name: "user-storage", // Nombre clave para localStorage
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        email: state.email,
+        username: state.username,
+        phonenumber: state.phonenumber,
+      }), // Persistir token, email, username y phonenumber
     }
-    set({ accessToken: token });
-  },
-  clearAccessToken: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem("accessToken");
-    }
-    set({ accessToken: null });
-  },
-  setEmail: (email) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("email", email);
-    }
-    set({ email });
-  },
-  clearEmail: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem("email");
-    }
-    set({ email: null });
-  },
-}));
-
-// Hook para cargar el estado desde localStorage en el cliente
-export const useInitializeUserStore = () => {
-  const setAccessToken = useUserStore((state) => state.setAccessToken);
-  const setEmail = useUserStore((state) => state.setEmail);
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const email = localStorage.getItem("email");
-
-    if (token) setAccessToken(token);
-    if (email) setEmail(email);
-  }, [setAccessToken, setEmail]);
-};
+  )
+);

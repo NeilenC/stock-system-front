@@ -195,6 +195,8 @@ const SectorItem = ({
           onSubmit={handleConfirmDelete}
           textButton="Eliminar"
           title={`Confirmar Eliminación`}
+          width="550px"
+
         >
           <SectorDetails sector={selectedSector} />
         </ModalComponent>

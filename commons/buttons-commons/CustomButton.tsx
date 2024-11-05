@@ -23,14 +23,15 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onClick, text, icon, sx }) 
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+            fontSize: "16px",
       borderRadius: "8px",
       height: "40px",
       ...sx, // Combina los estilos adicionales
     }}
   >
     {icon && (
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <IconToImage icon={icon} w={20} h={20} />
+      <Box sx={{ display: "flex", alignItems: "center",pt:1 }}>
+        <IconToImage icon={icon} w={text === 'Exportar a Excel' ? 27 : 20} h={text === 'Exportar a Excel' ? 27 : 20} />
       </Box>
     )}
     <Box sx={{ display: "flex", alignItems: "center", marginLeft: "4px" }}>
