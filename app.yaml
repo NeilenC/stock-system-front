@@ -1,0 +1,13 @@
+runtime: nodejs18 # O la versión de Node.js que estés usando
+
+env_variables:
+  NODE_ENV: 'production'
+
+handlers:
+  - url: /_next/static
+    static_dir: .next/static
+  - url: /favicon.ico
+    static_files: public/favicon.ico
+    upload: public/favicon.ico
+  - url: /.*
+    script: auto

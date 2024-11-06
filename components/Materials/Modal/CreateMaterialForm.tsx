@@ -87,6 +87,7 @@ const CreateMaterialForm = ({
             }}
           >
             <Tooltip title="Agregar categoría" arrow>
+            <span>
               <IconToImage
                 icon={add}
                 w={24}
@@ -94,6 +95,8 @@ const CreateMaterialForm = ({
                 onClick={handleOpenModal}
                 sx={{ alignItems: "center" }}
               />
+            </span>
+
             </Tooltip>
           </Grid>
         </Grid>

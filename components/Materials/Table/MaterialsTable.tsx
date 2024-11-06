@@ -16,6 +16,7 @@ import { FiltersProvider } from "./context/FiltersContext";
 import { useMaterialsContext } from "./context/MaterialsContextProps";
 import Toast from "../../../commons/Toast";
 import theme from "../../../themes/theme";
+import { useModalContext } from "./context/ModalContext";
 
 const initialFormData = {
   name: "",
@@ -41,16 +42,13 @@ const initialFormData = {
 
 const MaterialsTable = ({
   initialMaterials,
-  openModalCreate,
-  setOpenModalCreate,
 }: {
   initialMaterials: MaterialProps[];
-  openModalCreate: boolean;
-  setOpenModalCreate: any;
+
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const { material } = useMaterialStore();
-
+const {openModalCreate, setOpenModalCreate} = useModalContext()
   const {
     currentMaterials,
     handlePageChange,
@@ -65,7 +63,6 @@ const MaterialsTable = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false); // Estado de carga
-
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
     const [toastProps, setToastProps] = useState({
@@ -297,7 +294,7 @@ const MaterialsTable = ({
           <Filters handleFilter={handleFilter} />
           {/* Otros componentes que necesiten acceso a los filtros */}
 
-          <Box sx={{ height: "450px", overflowX: "auto", width: "100%" }}>
+          <Box sx={{ height: "450px", overflowX: "auto", width: "100%" , bgcolor:theme.palette.primary.main}}>
             {currentMaterials.length ? (
               currentMaterials.map((material: MaterialProps, index: any) => (
                 <TableRowItem
@@ -344,7 +341,7 @@ const MaterialsTable = ({
 
         {isDeleteModalOpen && (
           <ModalComponent
-            isOpen={isDeleteModalOpen ?? false}
+            isOpen={isDeleteModalOpen}
             handleClose={handleDeleteModalClose}
             onSubmit={handleDeleteConfirm}
             title={`¿ Deseas eliminar el material ${selectedMaterial?.name} ?`}
@@ -359,13 +356,12 @@ const MaterialsTable = ({
         )}
         {openModalCreate && (
           <ModalComponent
-            isOpen={openModalCreate ?? false}
+            isOpen={openModalCreate}
             handleClose={handleCloseModalCreate}
             title="Crear Material"
             onSubmit={() => handleCreateMaterial(formData)}
             textButton="Guardar"
-            loading={loading}
-
+            // loading={loading}
           >
             <CreateMaterialForm
               formData={formData}

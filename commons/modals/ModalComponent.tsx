@@ -57,7 +57,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         )}
 
         {/* Content Section */}
-        <Box id="modal-description" sx={{ p:3}}>
+        <Box  sx={{ p:3}}>
           {children}
         </Box>
 

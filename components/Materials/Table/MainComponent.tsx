@@ -23,9 +23,10 @@ import Toast from "../../../commons/Toast";
 import { printTable } from "../../../commons/template/printTable";
 import { exportToExcel } from "../../../commons/template/exportExcel";
 import useScreenSize from "../../../hooks/useScreenSize";
+import { useModalContext } from "./context/ModalContext";
 
 const MainComponent = () => {
-  const [openModalCreate, setOpenModalCreate] = useState(false);
+  // const [openModalCreate, setOpenModalCreate] = useState(false);
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
   };
@@ -51,18 +52,19 @@ const MainComponent = () => {
   };
   const { itemsPerPage, updateItemsPerPage } = useMaterialsContext();
   const handleItemsPerPageChange = (event: any) => {
-    const value = parseInt(event.target.value, 10); // Parse selected value as number
-    updateItemsPerPage(value); // Update items per page in context
+    const value = parseInt(event.target.value, 10); // 
+    updateItemsPerPage(value); 
   };
 
  const handleExportExcel = () => {
   exportToExcel(currentMaterials)
  }
   const handlePrint = () => {
-    printTable(currentMaterials); // Llama a la función con los datos necesarios
+    printTable(currentMaterials); 
   };
   
-  
+  const { openModalCreate, setOpenModalCreate } = useModalContext();
+
   const { isTablet } = useScreenSize();
   return (
     <>
@@ -114,7 +116,7 @@ const MainComponent = () => {
             }}
           />
           <CustomButton
-            onClick={handleOpenModalCreate}
+            onClick={() => setOpenModalCreate(true)}
             text={"Crear Material"}
            sx={ {width: isTablet ? "150px" : '200px', }}
 
@@ -155,8 +157,6 @@ const MainComponent = () => {
         >
           <MaterialsTable
             initialMaterials={materials}
-            openModalCreate={openModalCreate}
-            setOpenModalCreate={setOpenModalCreate}
           />
         </Box>
       </Box>
