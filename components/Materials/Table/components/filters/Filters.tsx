@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import FilterField from "./FilterField";
 import { useFiltersContext } from "../../context/FiltersContext";
+import useScreenSize from "../../../../../hooks/useScreenSize";
 
 const Filters = ({ handleFilter }: { handleFilter: any }) => {
+  const {  isTablet } = useScreenSize();
+
   const {
     code,
     category,
@@ -88,23 +91,6 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
     handleFilter({ ...filters, [field]: value });
   };
 
-  // Function to clear all filters
-  const clearAllFilters = () => {
-    clearFilters(); // Resetea todos los filtros
-    handleFilter({
-      code: "",
-      category: "",
-      description: "",
-      weight: "",
-      color: "",
-      height: "",
-      depth: "",
-      stock: "",
-      observations: "",
-      price: "",
-      width: "",
-    });
-  };
 
   return (
     <Grid
@@ -127,7 +113,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={category}
         onChange={(e) => handleFilterChange("category", e.target.value)}
         placeholder="Categoría"
-        size={1.2}
+        size={isTablet? 1 : 1.2}
         maxLength={15}
       />
       <FilterField
@@ -179,13 +165,13 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={observations}
         onChange={(e) => handleFilterChange("observations", e.target.value)}
         placeholder="Observaciones"
-        size={1.5}
+        size={isTablet ? 1.2 : 1.4}
       />
       <FilterField
         value={price}
         onChange={(e) => handleFilterChange("price", e.target.value)}
         placeholder="Precio"
-        size={0.8}
+        size={isTablet ? 1 :0.8}
       />
     </Grid>
   );

@@ -11,5 +11,7 @@ export interface ModalComponentProps {
   hideActions?: boolean;
   error?: string;
   fromDelete?: boolean;
-  textButton?: string
+  textButton?: string;
+  loading?: boolean;
+
 }

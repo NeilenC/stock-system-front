@@ -9,10 +9,6 @@ import {
 } from "@mui/material";
 import ModalButtons from "../../../commons/modals/ModalButtons";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
-import {
-  CustomSelect,
-  FormLabelComponent,
-} from "../../../commons/styled-components/CustomTextFields";
 import { useUserStore } from "../../../zustand/useAuthStore";
 import IconToImage from "../../../commons/styled-components/IconImages";
 import stock from "../../../public/stock.png";
@@ -23,13 +19,13 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  maxWidth: 300, // Establece un ancho máximo
+  maxWidth: 300,
   bgcolor: "background.paper",
   border: "1px solid #0000001A",
   borderRadius: "20px",
   display: "flex",
   flexDirection: "column",
-  padding: 0.5, // Agrega padding para un mejor espaciado
+  padding: 0.5,
 };
 
 const AdjustStock = ({
@@ -42,10 +38,10 @@ const AdjustStock = ({
 }: any) => {
   const { storageSectors } = useSectors();
   const [quantity, setQuantity] = useState(0);
-  const userEmailStore = useUserStore((store) => store.email)
-  // const [updatedMaterial, setUpdatedMaterial] = useState(material);
+  const userEmailStore = useUserStore((store) => store.email);
   const [sectorId, setSectorId] = useState(null);
-  const [errorMessage, setErrorMessage] = useState<string>(''); // State for error messages
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loading, setLoading] = useState(false); // Estado de carga
 
   const handleStockAdjustmentConfirm = async () => {
     const userEmail = userEmailStore;
@@ -56,6 +52,8 @@ const AdjustStock = ({
       adjustmentType === "add"
         ? `${process.env.NEXT_PUBLIC_API_BASE}/materials/${material.id}/increase-stock`
         : `${process.env.NEXT_PUBLIC_API_BASE}/materials/${material.id}/decrease-stock`;
+
+    setLoading(true); // Activamos el loading
 
     try {
       const response = await fetch(url, {
@@ -77,21 +75,22 @@ const AdjustStock = ({
 
       const updatedMaterial = await response.json();
       onStockUpdate(updatedMaterial?.actual_stock);
-      // setUpdatedMaterial(updatedMaterial);
       handleClose(); // Cierra el modal
-      setErrorMessage(''); // Clear any previous error messages
+      setErrorMessage(''); // Limpiar mensajes de error
     } catch (error) {
       const errorMessage = (error as Error).message || "Error desconocido";
-      setErrorMessage(errorMessage); // Set the error message
+      setErrorMessage(errorMessage); // Mostrar mensaje de error
+    } finally {
+      setLoading(false); // Desactivamos el loading
     }
   };
 
   useEffect(() => {
-    // setUpdatedMaterial(material);
-    setErrorMessage(''); 
+    setErrorMessage('');
   }, [material, isOpen]);
+
   return (
-    <Modal open={isOpen} onClose={handleClose}>
+    <Modal open={isOpen || false} onClose={handleClose}>
       <Box sx={modalStyle}>
         <Box
           display="flex"
@@ -107,15 +106,13 @@ const AdjustStock = ({
         </Box>
 
         <Box sx={{ paddingInline: 2, pb: 1 }}>
-          {errorMessage && ( // Display error message if it exists
-            <Typography color="error" sx={{ mb: 2 ,fontSize:'13px'}}>
+          {errorMessage && (
+            <Typography color="error" sx={{ mb: 2, fontSize: '13px' }}>
               {errorMessage}
             </Typography>
           )}
           <FormLabel sx={{ mb: 1 }}>
-            {`Ingrese la cantidad a ${
-              adjustmentType === "add" ? "agregar" : "remover"
-            }`}
+            {`Ingrese la cantidad a ${adjustmentType === "add" ? "agregar" : "remover"}`}
           </FormLabel>
           <CustomNumberInput
             label="Cantidad"
@@ -125,9 +122,7 @@ const AdjustStock = ({
             margin="normal"
           />
 
-          <FormLabel sx={{}}>
-            Seleccione un Depósito
-          </FormLabel>
+          <FormLabel sx={{}}>Seleccione un Depósito</FormLabel>
           <Select
             fullWidth
             value={sectorId || ''}
@@ -156,7 +151,7 @@ const AdjustStock = ({
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1,mb:1 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1, mb: 1 }}>
             <Typography sx={{ fontSize: "16px" }}>Stock actual</Typography>
             <Typography
               sx={{
@@ -177,8 +172,12 @@ const AdjustStock = ({
             onCancel={handleClose}
             onSave={handleStockAdjustmentConfirm}
             text={adjustmentType === "add" ? "Agregar" : "Remover"}
+            loading={loading} 
           />
         </Box>
+
+        {/* Mostrar el loader mientras está cargando */}
+       
       </Box>
     </Modal>
   );

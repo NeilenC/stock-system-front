@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
 import SectorsComponent from "../../../components/sectors/SectorsComponent";
-import TimeLineComponent from "../../../components/TimeLine/TimeLineComponent";
 import Sectors from "../../../components/sectors/Sectors";
 import useSectors from "../../../hooks/useSectors";
 
@@ -19,7 +18,6 @@ const Management = () => {
           <Sectors />
         </SectorsComponent>
       )}
-      {option === "timeline" && <TimeLineComponent />}
     </div>
   );
 };

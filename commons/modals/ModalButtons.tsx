@@ -6,12 +6,14 @@ interface ModalButtonsProps {
   onCancel?: () => void;
   onSave?: () => void;
   text: string;
+  loading?: boolean;  // Nueva propiedad loading
 }
 
 const ModalButtons: React.FC<ModalButtonsProps> = ({
   onCancel,
   onSave,
   text,
+  loading = false,  // Valor predeterminado en false
 }) => {
   return (
     <Box
@@ -29,6 +31,7 @@ const ModalButtons: React.FC<ModalButtonsProps> = ({
         <CustomButton
           text="Cancelar"
           onClick={onCancel}
+          disabled={loading}  // Deshabilitar si está en carga
           sx={{
             backgroundColor: "rgba(0, 0, 0, 0.01)",
             border: "1px solid rgba(0, 0, 0, 0.1)",
@@ -40,12 +43,12 @@ const ModalButtons: React.FC<ModalButtonsProps> = ({
           }}
         />
       )}
-     <CustomButton
-  text={text}
-  onClick={onSave}
-  sx={{ fontSize: "16px", marginLeft: "auto" }}
-/>
-
+      <CustomButton
+        text={text}
+        onClick={onSave}
+        disabled={loading}  // Deshabilitar si está en carga
+        sx={{ fontSize: "16px", marginLeft: "auto" }}
+      />
     </Box>
   );
 };

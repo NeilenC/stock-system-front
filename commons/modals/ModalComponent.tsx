@@ -14,6 +14,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   children,
   width = "700px",
   fromDelete,
+  loading,
   error,
 }:any) => {
   return (
@@ -66,6 +67,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         text={textButton}
         onCancel={handleClose} 
         onSave={onSubmit} 
+        loading={loading}
       />
       </Box>
     </Modal>

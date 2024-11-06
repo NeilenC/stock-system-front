@@ -135,7 +135,7 @@ const Sectors = () => {
       </Box>
       {isEditModalOpen && (
         <ModalComponent
-          isOpen={isEditModalOpen}
+          isOpen={isEditModalOpen ?? false}
           handleClose={() => setIsEditModalOpen(false)}
           title="Editar Espacio"
           onSubmit={handleUpdateSector}

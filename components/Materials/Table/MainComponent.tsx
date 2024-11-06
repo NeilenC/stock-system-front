@@ -22,6 +22,7 @@ import { useMaterialsContext } from "./context/MaterialsContextProps";
 import Toast from "../../../commons/Toast";
 import { printTable } from "../../../commons/template/printTable";
 import { exportToExcel } from "../../../commons/template/exportExcel";
+import useScreenSize from "../../../hooks/useScreenSize";
 
 const MainComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
@@ -62,7 +63,7 @@ const MainComponent = () => {
   };
   
   
-
+  const { isTablet } = useScreenSize();
   return (
     <>
       <SectionComponent icon={materialsicon} text={"Materiales"}>
@@ -78,12 +79,12 @@ const MainComponent = () => {
               fontSize: "16px",
               fontWeight: "500",
               cursor: "pointer",
-              width: "50px",
+              width: isTablet ? "40px" : "50px", 
             }}
           />
           <CustomButton
             onClick={() => handleExportExcel()}
-            text={"Exportar a Excel"}
+            text={isTablet ? "" : "Exportar a Excel"}
             icon={download}
             sx={{
               backgroundColor: "#1d6f42",
@@ -92,6 +93,8 @@ const MainComponent = () => {
               fontSize: "16px",
               fontWeight: "500",
               cursor: "pointer",
+              width: isTablet ? "40px" : "200px", 
+
             }}
           />
 
@@ -107,11 +110,14 @@ const MainComponent = () => {
               fontSize: "16px",
               fontWeight: "500",
               cursor: "pointer",
+              width: isTablet ? "150px" : '200px', 
             }}
           />
           <CustomButton
             onClick={handleOpenModalCreate}
             text={"Crear Material"}
+           sx={ {width: isTablet ? "150px" : '200px', }}
+
           />
         </Box>
       </SectionComponent>

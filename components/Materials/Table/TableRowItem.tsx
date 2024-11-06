@@ -7,10 +7,28 @@ import search from "../../../public/search.png";
 import deleteicon from "../../../public/delete.png";
 import AdjustStock from "./AdjustStock";
 import { useRouter } from "next/router";
-
-const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
+// interface TableRowItemProps {
+//   material: {
+//     id: string;
+//     code: string;
+//     category: { category_name: string };
+//     description: string;
+//     weight: number;
+//     color: string;
+//     height?: number;
+//     depth: number;
+//     actual_stock: number;
+//     width: number;
+//     observations: string;
+//     price: number;
+//   };
+//   openDeleteModal: () => void;
+//   onEdit: (id: string) => void;
+//   index: number;
+// }
+const TableRowItem = ({ material, openDeleteModal, onEdit, index }:any) => {
   const router = useRouter()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | Element  >(null);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
   const [stockAdjustmentType, setStockAdjustmentType] = useState<
     "add" | "remove" | null
@@ -39,8 +57,11 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   };
 
   const handleEditClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
+    if (event.currentTarget) {
+      setAnchorEl(event.currentTarget); // Abre el menú en el ícono de editar
+    }
   };
+  
 
   const handleMenuClose = () => {
     setAnchorEl(null);

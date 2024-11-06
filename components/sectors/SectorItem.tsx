@@ -32,7 +32,7 @@ const SectorItem = ({
   onDelete,
 }: any) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | any>(null);
   const [sectorId, setSectorId] = useState<number | null>(null);
   const [selectedSector, setSelectedSector] = useState<any | null>(null);
 
@@ -190,7 +190,7 @@ const SectorItem = ({
       {/* Modal de confirmación de eliminación */}
       {isDeleteModalOpen && selectedSector && (
         <ModalComponent
-          isOpen={isDeleteModalOpen}
+          isOpen={isDeleteModalOpen ?? false}
           handleClose={handleCancelDelete}
           onSubmit={handleConfirmDelete}
           textButton="Eliminar"

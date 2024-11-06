@@ -64,6 +64,8 @@ const MaterialsTable = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false); // Estado de carga
+
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
     const [toastProps, setToastProps] = useState({
@@ -109,6 +111,8 @@ const MaterialsTable = ({
 
   const handleDeleteConfirm = async () => {
     if (!materialId) return;
+
+    
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
@@ -150,6 +154,7 @@ const MaterialsTable = ({
       if (!selectedMaterial || !materialId) {
         return;
       }
+      setLoading(true); // Activamos el loading
 
       const { category, ...rest } = material; // Desestructuramos el material
       const updatedMaterial = {
@@ -201,6 +206,8 @@ const MaterialsTable = ({
 
   const handleCreateMaterial = async (formData: any) => {
     try {
+    setLoading(true); // Activamos el loading
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/create`,
         {
@@ -290,7 +297,7 @@ const MaterialsTable = ({
           <Filters handleFilter={handleFilter} />
           {/* Otros componentes que necesiten acceso a los filtros */}
 
-          <Box sx={{ maxHeight: "600px", overflowX: "auto", width: "100%" }}>
+          <Box sx={{ height: "450px", overflowX: "auto", width: "100%" }}>
             {currentMaterials.length ? (
               currentMaterials.map((material: MaterialProps, index: any) => (
                 <TableRowItem
@@ -324,11 +331,12 @@ const MaterialsTable = ({
 
         {isEditModalOpen && (
           <ModalComponent
-            isOpen={isEditModalOpen}
+            isOpen={isEditModalOpen ?? false}
             handleClose={handleModalClose}
             title="Editar Material"
             onSubmit={handleSave}
             textButton="Editar"
+            loading={loading}
           >
             <MaterialEditForm materialId={materialId} />
           </ModalComponent>
@@ -336,7 +344,7 @@ const MaterialsTable = ({
 
         {isDeleteModalOpen && (
           <ModalComponent
-            isOpen={isDeleteModalOpen}
+            isOpen={isDeleteModalOpen ?? false}
             handleClose={handleDeleteModalClose}
             onSubmit={handleDeleteConfirm}
             title={`¿ Deseas eliminar el material ${selectedMaterial?.name} ?`}
@@ -351,11 +359,13 @@ const MaterialsTable = ({
         )}
         {openModalCreate && (
           <ModalComponent
-            isOpen={openModalCreate}
+            isOpen={openModalCreate ?? false}
             handleClose={handleCloseModalCreate}
             title="Crear Material"
             onSubmit={() => handleCreateMaterial(formData)}
             textButton="Guardar"
+            loading={loading}
+
           >
             <CreateMaterialForm
               formData={formData}

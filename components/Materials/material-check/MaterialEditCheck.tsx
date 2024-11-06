@@ -21,17 +21,7 @@ const MaterialEditCheck = ({
   setIsStockModalOpen,
   setAnchorEl,
 }: any) => {
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // const [isStockModalOpen, setIsStockModalOpen] = useState(false);
-  // const [stockAdjustmentType, setStockAdjustmentType] = useState<
-  //   "add" | "remove" | null
-  // >(null);
-  // const [updatedMaterial, setUpdatedMaterial] = useState(materialToCheck);
-
-  // const handleMenuClose = () => {
-  //   setAnchorEl(null);
-  // };
-
+ 
   const handleStockUpdate = (newStock: number) => {
     setUpdatedMaterial({ ...updatedMaterial, actual_stock: newStock });
   };

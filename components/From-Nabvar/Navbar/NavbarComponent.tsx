@@ -60,7 +60,6 @@ const NavbarComponent = () => {
   const clearUserData = useUserStore((state) => state.clearUserData);
   const username = useUserStore((state) => state.username);
 
-console.log("username", username)
 
   useEffect(() => {
     // Detect route change and reset isSelected state after 2 seconds
@@ -82,22 +81,27 @@ console.log("username", username)
     event: React.MouseEvent<HTMLElement>,
     menu: string
   ) => {
-    setAnchorEl(event.currentTarget);
+    if (event.currentTarget instanceof HTMLElement) {
+      setAnchorEl(event.currentTarget); // Asegúrate de que sea un HTMLElement
+    }
     setDropdownMenu(menu);
     setOpenDropdowns((prevState) => ({
       ...prevState,
-      [menu]: !prevState[menu], // Toggle open/close value
+      [menu]: !prevState[menu],
     }));
   };
+  
+  
 
   const handleCloseMenu = (menu: string) => {
-    setAnchorEl(null);
+    setAnchorEl(null); // Esto está correcto
     setDropdownMenu(null);
     setOpenDropdowns((prevState) => ({
       ...prevState,
       [menu]: false,
     }));
   };
+  
 
   const handleSelectItem = (label: string, menu: string) => {
     setIsSelected(label);
@@ -105,73 +109,17 @@ console.log("username", username)
   };
 
   const navbarOptions = [
-    // {
-    //   label: "Panel De Control",
-    //   href: "/panel-de-control",
-    //   startIcon: (
-    //     <img
-    //       src={controlPanel.src}
-    //       alt="Panel De Control"
-    //       style={{ width: 24, height: 24 }}
-    //     />
-    //   ),
-    // },
+    
     {
       label: "Espacios",
       href: "/gestion/sectors",
-      startIcon: <IconToImage icon={space.src} alt="Plano" w={24} h={24} />,
+      startIcon: <IconToImage icon={space.src}  w={24} h={24} />,
     },
-    // {
-    //   label: "Gestión",
-    //   startIcon: (
-    //     <img
-    //       src={gestion.src}
-    //       alt="Gestion"
-    //       style={{ width: 24, height: 24 }}
-    //     />
-    //   ),
-    //   endIcon: openDropdowns["Gestión"] ? (
-    //     <ExpandLessOutlinedIcon />
-    //   ) : (
-    //     <ExpandMoreOutlinedIcon />
-    //   ),
-    //   options: [
-    //     {
-    //       label: "Línea de Tiempo",
-    //       href: "/gestion/timeline",
-    //       icon: <IconToImage icon={timeline} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //     {
-    //       label: "Listados",
-    //       href: "/gestion/listings",
-    //       icon: <IconToImage icon={listados} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //     {
-    //       label: "Solicitudes",
-    //       href: "/gestion/requests",
-    //       icon: <IconToImage icon={solicitudes} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //     {
-    //       label: "Lista de Clientes",
-    //       href: "/gestion/clientslist",
-    //       icon: <IconToImage icon={listaclientes} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //     {
-    //       label: "Proveedores",
-    //       href: "/gestion/suppliers",
-    //       icon: <IconToImage icon={proveedores} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //     {
-    //       label: "Sectores",
-    //       href: "/gestion/sectors",
-    //       icon: <IconToImage icon={sectores} w={20} h={20} />, // Ejemplo de ícono
-    //     },
-    //   ],
-    // },
+   
     {
       label: "Depósito",
       startIcon: (
-        <IconToImage icon={deposito.src} alt="Deposito" w={24} h={24} />
+        <IconToImage icon={deposito.src}  w={24} h={24} />
       ),
       endIcon: openDropdowns["Depósito"] ? (
         <ExpandLessOutlinedIcon />
@@ -182,31 +130,12 @@ console.log("username", username)
         {
           label: "Materiales",
           href: "/deposito/materiales",
-          icon: <IconToImage icon={materials.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
+          icon: <IconToImage icon={materials.src}  w={20} h={20} />, // Ejemplo de ícono
         },
-        // {
-        //   label: "Consultas de Stock",
-        //   href: "/deposito/stock",
-        //   icon: <IconToImage icon={stock.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
-        // },
-        // {
-        //   label: "Subdepósito 2",
-        //   href: "/deposito/subdeposito2",
-        //   icon: <KeyboardArrowDownOutlinedIcon />, // Ejemplo de ícono
-        // },
+       
       ],
     },
-    // {
-    //   label: "Estadísticas",
-    //   href: "/estadisticas",
-    //   startIcon: (
-    //     <img
-    //       src={estadisticas.src}
-    //       alt="Estadisticas"
-    //       style={{ width: 24, height: 24 }}
-    //     />
-    //   ),
-    // },
+    
   ];
 
   const handleLogout = async () => {
@@ -257,7 +186,6 @@ console.log("username", username)
         <Box>
           <IconToImage
             icon={logo.src}
-            alt="Logo La Rural"
             w={isMobile ? 120 : 150}
             h={isMobile ? 40 : 50}
           />
@@ -526,11 +454,10 @@ console.log("username", username)
                 {/* Imagen PNG */}
                 <IconToImage
                   icon={account.src}
-                  alt="info"
                   w={34}
                   h={34}
                   // style={{ width: 34, height: 34, marginRight: "5px" }}
-                  sx={{mr:5}}
+                  sx={{mr:1}}
                 />
 
                 {/* Contenido del texto */}
@@ -564,9 +491,9 @@ console.log("username", username)
             </Button>
 
             <Menu
-              anchorEl={anchorEl}
+              anchorEl={anchorEl || null}
               open={dropdownMenu === username}
-              onClose={() => handleCloseMenu(username || "")}
+              onClose={() => handleCloseMenu(username || '')}
               PaperProps={{
                 style: {
                   borderRadius: 8,

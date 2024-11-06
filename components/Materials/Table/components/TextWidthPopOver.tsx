@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { Grid, Popover, Typography } from '@mui/material';
 
 const TextWithPopover = ({ text, title, onClick }: { text: string | null; title: string; onClick: (event: React.MouseEvent<HTMLElement>) => void; }) => {
@@ -13,7 +13,8 @@ const TextWithPopover = ({ text, title, onClick }: { text: string | null; title:
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
+
+  const open = !!anchorEl; 
   const id = open ? `${title}-popover` : undefined;
 
   return (

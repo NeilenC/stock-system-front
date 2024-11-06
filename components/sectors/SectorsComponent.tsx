@@ -109,7 +109,7 @@ const SectorsComponent = ({ salas, children }: any) => {
         {/* {children} */}
         {/* Modal to create or edit a sector */}
         <ModalComponent
-          isOpen={isModalOpen}
+          isOpen={isModalOpen ?? false}
           handleClose={handleCloseModal}
           title="Crear un nuevo Espacio"
           onSubmit={() => handleSubmitSector()}

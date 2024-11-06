@@ -110,7 +110,7 @@ const ModalCategoryCreate = ({
   return (
     <div>
       <Modal
-        open={isOpen}
+        open={isOpen || false}
         onClose={onClose}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
