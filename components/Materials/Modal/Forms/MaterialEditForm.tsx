@@ -4,7 +4,7 @@ import { useMaterialStore } from "../../../../zustand/materialStore";
 import { FormLabelComponent } from "../../../../commons/styled-components/CustomTextFields";
 import { CustomTextFieldMaterial } from "../../StyledMaterial";
 
-const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
+const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number | null, updatedMaterial?:any }) => {
   const {
     material,
     categories,
@@ -44,7 +44,7 @@ const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
   useEffect(() => {
     if (materialId) fetchMaterialData(materialId);
     fetchCategories();
-  }, [materialId]);
+  }, [materialId, updatedMaterial]);
 
   return (
     <form>
@@ -99,9 +99,8 @@ const MaterialEditForm = ({ materialId }: { materialId: number | null }) => {
           />
         </Grid>
 
-        {/** Stock Actual */}
         <Grid item xs={12} sm={4}>
-          <FormLabelComponent>Stock Actual</FormLabelComponent>
+          <FormLabelComponent>Stock Actual (no editable)</FormLabelComponent>
           <CustomTextFieldMaterial
             margin="dense"
             name="actual_stock"

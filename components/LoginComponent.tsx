@@ -32,7 +32,7 @@ const Login: React.FC = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/auth/login`,
@@ -44,23 +44,23 @@ const Login: React.FC = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Hubo un error. Por favor corrobore las credenciales.");
       }
-
+  
       const data = await response.json();
-      console.log("Login success:", data);
-
-      if (data && data.access_token) {
+  
+      if (data && data.access_token && data.user) {
         localStorage.setItem("token", data.access_token);
         setAccessToken(data.access_token);
-        setEmailInStore(email); 
-        setUsernameInStore(data.username); 
-        setPhoneNumberInStore(data.phonenumber); 
+        setEmailInStore(data.user.email); 
+        setUsernameInStore(data.user.username); 
+        setPhoneNumberInStore(data.user.phoneNumber); 
+  
         router.push("/deposito/materiales");
       } else {
-        throw new Error("No se recibió el token de acceso.");
+        throw new Error("No se recibió el token de acceso o la información del usuario.");
       }
     } catch (error: any) {
       setError(
@@ -71,6 +71,7 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Box

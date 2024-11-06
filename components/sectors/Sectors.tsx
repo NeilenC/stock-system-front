@@ -7,6 +7,8 @@ import { groupSectorsByCategory } from "./functions";
 import ModalComponent from "../../commons/modals/ModalComponent";
 import { useSectorStore } from "../../zustand/sectorsStore";
 import SectorEditForm from "./forms/SectorFormEdit";
+import Toast from "../../commons/Toast";
+import theme from "../../themes/theme";
 
 const Sectors = () => {
   const { salas, setSalas } = useSectors(); // Asegúrate de tener una función para setear las salas
@@ -16,7 +18,18 @@ const Sectors = () => {
   const groupedSectors = groupSectorsByCategory(salas);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingSectorId, setEditingSectorId] = useState<number | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastProps, setToastProps] = useState({
+    messageLeft: "",
+    messageRight: "",
+    bgcolor: theme.palette.success.light,
+    color: "black",
+  });
 
+  const showToastMessage = (messageLeft:string, messageRight:string, bgcolor:string, color:string) => {
+    setToastProps({ messageLeft, messageRight, bgcolor, color });
+    setShowToast(true);
+  };
   const handleEditSector = (sectorId: number) => {
     setEditingSectorId(sectorId);
     setIsEditModalOpen(true);
@@ -51,8 +64,20 @@ const Sectors = () => {
 
         setIsEditModalOpen(false);
         setEditingSectorId(null);
+        showToastMessage(
+          "Sector actualizado con éxito",
+          "",
+          theme.palette.success.light,
+          "black"
+        );
       } catch (error) {
         console.error("Error updating sector:", error);
+        showToastMessage(
+          "Error al actualizar el sector. Intente nuevamente",
+          "Intente de nuevo",
+          theme.palette.error.light,
+          "white"
+        );
       }
     }
   };
@@ -74,8 +99,20 @@ const Sectors = () => {
 
     // Actualiza el estado local para reflejar la eliminación
     setSalas((prevSalas: any) => prevSalas.filter((sector: any) => sector.id !== sectorId));
+    showToastMessage(
+      "Sector eliminado con éxito",
+      "",
+      theme.palette.success.light,
+      "black"
+    );
   } catch (error) {
     console.error("Error deleting sector:", error);
+    showToastMessage(
+      "Error al eliminar el sector. Intente nuevamente",
+      "Intente de nuevo",
+      theme.palette.error.light,
+      "white"
+    );
   }
 };
 
@@ -114,6 +151,15 @@ const Sectors = () => {
           />
         </ModalComponent>
       )}
+      {showToast && (
+      <Toast
+        messageLeft={toastProps.messageLeft}
+        messageRight={toastProps.messageRight}
+        bgcolor={toastProps.bgcolor}
+        color={toastProps.color}
+        onClose={() => setShowToast(false)}
+      />
+    )}
     </Box>
   );
 };

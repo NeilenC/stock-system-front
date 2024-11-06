@@ -3,7 +3,6 @@ const logoBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0wAAAERCAYAAA
 export const printTable = (currentMaterials: any) => {
   const printWindow = window.open("", "_blank");
   if (!printWindow) {
-    console.log("No se pudo abrir la ventana de impresión. Puede que esté bloqueada.");
     return;
   }
 

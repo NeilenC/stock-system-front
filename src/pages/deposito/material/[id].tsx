@@ -67,7 +67,9 @@ const MaterialMovements = () => {
         {/* Ajusta el margen para el contenido debajo de las pestañas */}
         {selectedTab === 0 && 
          <GeneralComponent materialToCheck={material}/>   }
-        {selectedTab === 1 && <StockMovemments materialId={material?.id ?? 0}/>}
+        {selectedTab === 1 && 
+        <Box sx={{height:'100vh'}}>
+        <StockMovemments materialId={material?.id ?? 0}/></Box>}
 
         
       </Box>

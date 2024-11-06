@@ -10,6 +10,7 @@ interface LastStockUpdate {
   changeDate: string;
   previousStock: number;
   material: MaterialProps;
+  actualStock:number;
   user: {
     email: string;
     username: string;
@@ -20,11 +21,11 @@ interface LastStockUpdate {
 }
 
 interface LastActualizationProps {
-  materialId: number;
+  materialId: number;updatedMaterial:any
 }
 
 const LastActualization: React.FC<LastActualizationProps> = ({
-  materialId,
+  materialId,updatedMaterial
 }) => {
   const [lastStockUpdate, setLastStockUpdate] =
     useState<LastStockUpdate | null>(null);
@@ -46,7 +47,7 @@ const LastActualization: React.FC<LastActualizationProps> = ({
 
   useEffect(() => {
     getLastActualization();
-  }, [materialId]);
+  }, [materialId, updatedMaterial]);
 
   return (
     <Box sx={{ display: "flex",}}>
@@ -88,12 +89,21 @@ const LastActualization: React.FC<LastActualizationProps> = ({
                   {lastStockUpdate.changeAmount}
                 </Typography>
               </FormLabelComponent>
+
               <FormLabelComponent>
-                Cantidad Anterior
+                Cantidad Actual (en depósito)
+                <Typography sx={{ p: 1 }}>
+                  {lastStockUpdate.actualStock}
+                </Typography>
+              </FormLabelComponent>
+              
+              <FormLabelComponent>
+                Cantidad Anterior (en depósito)
                 <Typography sx={{ p: 1 }}>
                   {lastStockUpdate.previousStock}
                 </Typography>
               </FormLabelComponent>
+
               <FormLabelComponent>
                 Depósito Afectado
                 <Typography sx={{ p: 1 }}>

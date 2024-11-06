@@ -66,7 +66,17 @@ const MaterialsTable = ({
   const [materialId, setMaterialId] = useState<number | null>(null);
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
-
+    const [toastProps, setToastProps] = useState({
+      messageLeft: "",
+      messageRight: "",
+      bgcolor: theme.palette.success.light,
+      color: "black",
+    });
+    
+    const showToastMessage = (messageLeft:string, messageRight:string, bgcolor:string, color:string) => {
+      setToastProps({ messageLeft, messageRight, bgcolor, color });
+      setShowToast(true);
+    };
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -116,10 +126,22 @@ const MaterialsTable = ({
       }
       setIsDeleteModalOpen(false);
       setSelectedMaterial(null); // Limpiar el material seleccionado al confirmar eliminación}7
+      showToastMessage(
+        "Material eliminado con éxito",
+        "",
+        theme.palette.success.light,
+        "black"
+      );
       await fetchMaterials();
       // Aquí podrías llamar a una función para volver a obtener los materiales actualizados
     } catch (error) {
       console.error("Failed to update material:", error);
+      showToastMessage(
+        "Error al eliminar el material",
+        "Intente de nuevo",
+        theme.palette.error.light,
+        "white"
+      );
     }
   };
 
@@ -160,8 +182,20 @@ const MaterialsTable = ({
       await fetchMaterials();
 
       setIsEditModalOpen(false); // Cierra el modal
+      showToastMessage(
+        "Material actualizado con éxito",
+        "",
+        theme.palette.success.light,
+        "black"
+      );
     } catch (error) {
       console.error("Failed to update material:", error);
+      showToastMessage(
+        "Error al actualizar el material",
+        "Intente de nuevo",
+        theme.palette.error.light,
+        "white"
+      );
     }
   };
 
@@ -180,19 +214,33 @@ const MaterialsTable = ({
       );
 
       if (response.ok) {
-        setShowToast(true)
-
         setOpenModalCreate(false);
-        // addMaterial(formData);
         setFormData(initialFormData);
         await fetchMaterials();
+        showToastMessage(
+          "Material creado con éxito",
+          "",
+          theme.palette.success.light,
+          "black"
+        );
       } else {
         const errorResponse = await response.json();
-        toast.error(`Error al crear el material: ${errorResponse.message}`);
+        showToastMessage(
+          `Error al crear el material: ${errorResponse.message}`,
+          "Intente de nuevo",
+          theme.palette.error.light,
+          "white"
+        );
       }
     } catch (error) {
       console.error("Error creando material:", error);
-      toast.error("Error creando material.");
+      showToastMessage(
+        "Error al crear el material",
+        "Intente de nuevo",
+        theme.palette.error.light,
+        "white"
+      );
+  
     }
   };
 
@@ -318,14 +366,14 @@ const MaterialsTable = ({
         )}
 
 {showToast && (
-        <Toast
-          messageLeft={'Error al guardar. Intente nuevamente'}
-          messageRight="Intente de nuevo"
-          bgcolor={theme.palette.success.light}
-          color={'black'}
-          onClose={() => setShowToast(false)}
-        />
-      )}
+      <Toast
+        messageLeft={toastProps.messageLeft}
+        messageRight={toastProps.messageRight}
+        bgcolor={toastProps.bgcolor}
+        color={toastProps.color}
+        onClose={() => setShowToast(false)}
+      />
+    )}
       </Box>
     </>
   );

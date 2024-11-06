@@ -76,7 +76,7 @@ const AdjustStock = ({
       }
 
       const updatedMaterial = await response.json();
-      onStockUpdate(updatedMaterial.actual_stock);
+      onStockUpdate(updatedMaterial?.actual_stock);
       // setUpdatedMaterial(updatedMaterial);
       handleClose(); // Cierra el modal
       setErrorMessage(''); // Clear any previous error messages
@@ -167,7 +167,7 @@ const AdjustStock = ({
                 maxWidth: "60%",
               }}
             >
-              {updatedMaterial.actual_stock}
+              {updatedMaterial?.actual_stock}
             </Typography>
           </Box>
         </Box>

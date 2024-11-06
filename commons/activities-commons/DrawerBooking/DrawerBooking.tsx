@@ -135,12 +135,10 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       );
   
       const data = await response.json();
-      console.log("Respuesta del backend:", data);
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${data.message || "Error al confirmar la reserva"}`);
       }
   
-      console.log("Reserva confirmada:", data);
     } catch (error) {
       console.error("Error al confirmar la reserva:", error);
     }

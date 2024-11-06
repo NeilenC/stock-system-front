@@ -31,7 +31,7 @@ const colors = {
     },
     success: {
       light: '#E0FFE9',
-      main: '#4caf50',
+      main: '#81FFA5',
       dark: '#388e3c',
       contrastText: '#fff',
     },

@@ -55,11 +55,10 @@ const NavbarComponent = () => {
   const [isSelected, setIsSelected] = React.useState<string | null>(null);
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useWindowSize().width <= 1025;
-  const username = "Neilen Monlezun";
+  // const username = "Neilen Monlezun";
  // Añadido para limpiar el email
   const clearUserData = useUserStore((state) => state.clearUserData);
-  // const username = useUserStore((state) => state.username);
-
+  const username = useUserStore((state) => state.username);
   useEffect(() => {
     // Detect route change and reset isSelected state after 2 seconds
     const handleRouteChange = () => {
@@ -483,8 +482,10 @@ const NavbarComponent = () => {
           >
             <Button
               onClick={(e) => {
-                handleOpenMenu(e, username);
-                setIsSelected(username); // Actualiza isSelected cuando el usuario selecciona el menú
+                if (username) {
+                  handleOpenMenu(e, username);
+                  setIsSelected(username); // Actualiza isSelected cuando el usuario selecciona el menú
+                }
               }}
               sx={{
                 color: theme.palette.secondary.contrastText,
@@ -503,9 +504,7 @@ const NavbarComponent = () => {
                     display: "flex",
                     alignItems: "center",
                     transition: "transform 0.3s ease", // Transición suave
-                    transform: openDropdowns[username]
-                      ? "rotate(180deg)"
-                      : "rotate(0deg)", // Rotación de la flecha
+                    transform: username && openDropdowns[username] ? "rotate(180deg)" : "rotate(0deg)", // Rotación de la flecha
                   }}
                 >
                   <KeyboardArrowDownOutlinedIcon />
@@ -564,7 +563,7 @@ const NavbarComponent = () => {
             <Menu
               anchorEl={anchorEl}
               open={dropdownMenu === username}
-              onClose={() => handleCloseMenu(username)}
+              onClose={() => handleCloseMenu(username || "")}
               PaperProps={{
                 style: {
                   borderRadius: 8,
@@ -584,7 +583,7 @@ const NavbarComponent = () => {
             >
               {/* Perfil Option */}
               <MenuItem
-                onClick={() => handleCloseMenu(username)}
+                onClick={() => handleCloseMenu(username || "")}
                 sx={{
                   padding: "10px 16px", // Padding adjustment
                   "&:hover": {
@@ -606,7 +605,7 @@ const NavbarComponent = () => {
 
               {/* Ajustes Option */}
               <MenuItem
-                onClick={() => handleCloseMenu(username)}
+                onClick={() => handleCloseMenu(username || "")}
                 sx={{
                   padding: "10px 16px",
                   "&:hover": {

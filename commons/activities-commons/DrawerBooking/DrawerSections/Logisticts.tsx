@@ -104,7 +104,6 @@ const LogisticsSection: React.FC = () => {
         minute: "2-digit",
       });
 
-      console.log("dismantling date", date, "time", time);
       handleInputChangeAssembly("initialDateAssembly", date);
       handleInputChangeAssembly("initialTimeAssembly", time);
     } else {
@@ -121,7 +120,6 @@ const LogisticsSection: React.FC = () => {
         minute: "2-digit",
       });
 
-      console.log("dismantling date", date, "time", time);
       handleInputChangeDismantling("initialDateDismantling", date);
       handleInputChangeDismantling("initialTimeDismantling", time);
     } else {

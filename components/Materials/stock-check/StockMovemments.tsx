@@ -12,7 +12,8 @@ interface StockMovement {
   email: string;
   id: number;
   user: any;
-  sector: any
+  sector: any;
+  actualStock:number
 }
 
 const StockMovemments = ({ materialId }: { materialId: number }) => {
@@ -34,9 +35,9 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
   useEffect(() => {
     getLastActualization();
   }, [materialId]);
-console.log("stockuodate", stockMovements)
+
   return (
-    <Box sx={{  bgcolor: "#f9f9f9", borderRadius: "8px" ,height:1}}>
+    <Box sx={{  }}>
         <Box
           sx={{
             bgcolor: theme.palette.primary.dark,
@@ -58,7 +59,7 @@ console.log("stockuodate", stockMovements)
               <TableCell align="center" >Indice</TableCell>
               <TableCell align="center" >Fecha del Cambio</TableCell>
               <TableCell align="center">Cantidad Actualizada</TableCell>
-              {/* <TableCell align="center">Cantidad Actual</TableCell> */}
+              <TableCell align="center">Cantidad Actual <br/>(En depósito)</TableCell>
               <TableCell align="center">Cantidad Anterior <br/>(En depósito)</TableCell>
               <TableCell align="center">Depósito</TableCell>
               <TableCell align="center">Responsable</TableCell>
@@ -70,8 +71,8 @@ console.log("stockuodate", stockMovements)
               sx={{ bgcolor: index % 2 === 0 ? "#ffffff" : "#f0f0f0" }}>
                 <TableCell align="center">{index+1}</TableCell>
                 <TableCell align="center">{new Date(movement.changeDate).toLocaleDateString()}</TableCell>
-                <TableCell align="center">{movement.changeAmount}</TableCell>
-                {/* <TableCell align="center">{movement.actual_stock}</TableCell> */}
+                <TableCell align="center">{movement.changeAmount > 0 ? `+${movement.changeAmount}` : movement.changeAmount}</TableCell>
+                <TableCell align="center">{movement.actualStock}</TableCell>
                 <TableCell align="center">{movement.previousStock}</TableCell>
                 <TableCell align="center">{movement.sector?.name}</TableCell>
                 <TableCell align="center">{movement.user?.username || 'N/C'}</TableCell>
