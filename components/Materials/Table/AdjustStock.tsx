@@ -42,13 +42,13 @@ const AdjustStock = ({
 }: any) => {
   const { storageSectors } = useSectors();
   const [quantity, setQuantity] = useState(0);
-  const userEmailLocalStorage = localStorage.getItem("email");
+  const userEmailStore = useUserStore((store) => store.email)
   // const [updatedMaterial, setUpdatedMaterial] = useState(material);
   const [sectorId, setSectorId] = useState(null);
   const [errorMessage, setErrorMessage] = useState<string>(''); // State for error messages
 
   const handleStockAdjustmentConfirm = async () => {
-    const userEmail = userEmailLocalStorage;
+    const userEmail = userEmailStore;
     const amount = quantity;
     const sector_id = sectorId;
 

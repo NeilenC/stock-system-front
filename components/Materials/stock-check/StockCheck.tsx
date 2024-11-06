@@ -1,7 +1,7 @@
 const StockCheck = () => {
    return (
     <>
-    holi</>
+    Aún no hay nada aquí</>
    ) 
 }
 

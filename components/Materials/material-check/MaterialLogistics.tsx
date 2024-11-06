@@ -43,7 +43,10 @@ const MaterialLogistics = ({
       getStoredMaterials();
     }
   }, [materialToCheck, updatedMaterial?.actual_stock]);
-
+  const totalStock = storedMaterials.reduce(
+    (sum, material) => sum + material.storaged_stock,
+    0
+  );
   return (
     <Box sx={{ display: "flex", height: 400 }}>
       <Box
@@ -73,8 +76,8 @@ const MaterialLogistics = ({
 
         <Box sx={{ bgcolor: theme.palette.secondary.light, p: "7px 24px" }}>
           <Typography sx={{ fontSize: "18px" }}>
-            Stock total actual {updatedMaterial?.actual_stock ? updatedMaterial.actual_stock : materialToCheck?.actual_stock}
-          </Typography>
+            {/* Stock total actual {updatedMaterial?.actual_stock ? updatedMaterial.actual_stock : materialToCheck?.actual_stock} */}
+        Stock total actual {totalStock}  </Typography>
         </Box>
         <Box sx={{}}>
           {storedMaterials && storedMaterials.length > 0 ? (

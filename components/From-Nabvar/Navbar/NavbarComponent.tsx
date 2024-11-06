@@ -59,6 +59,9 @@ const NavbarComponent = () => {
  // Añadido para limpiar el email
   const clearUserData = useUserStore((state) => state.clearUserData);
   const username = useUserStore((state) => state.username);
+
+console.log("username", username)
+
   useEffect(() => {
     // Detect route change and reset isSelected state after 2 seconds
     const handleRouteChange = () => {
@@ -181,11 +184,11 @@ const NavbarComponent = () => {
           href: "/deposito/materiales",
           icon: <IconToImage icon={materials.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
         },
-        {
-          label: "Consultas de Stock",
-          href: "/deposito/stock",
-          icon: <IconToImage icon={stock.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
-        },
+        // {
+        //   label: "Consultas de Stock",
+        //   href: "/deposito/stock",
+        //   icon: <IconToImage icon={stock.src} alt="Plano" w={20} h={20} />, // Ejemplo de ícono
+        // },
         // {
         //   label: "Subdepósito 2",
         //   href: "/deposito/subdeposito2",

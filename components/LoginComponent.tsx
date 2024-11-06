@@ -27,7 +27,6 @@ const Login: React.FC = () => {
   const setEmailInStore = useUserStore((state) => state.setEmail);
   const setUsernameInStore = useUserStore((state) => state.setUsername);
   const setPhoneNumberInStore = useUserStore((state) => state.setPhoneNumber);
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -50,13 +49,12 @@ const Login: React.FC = () => {
       }
   
       const data = await response.json();
-  
+  console.log("DATAAAA", data)
       if (data && data.access_token && data.user) {
         localStorage.setItem("token", data.access_token);
         setAccessToken(data.access_token);
         setEmailInStore(data.user.email); 
-        setUsernameInStore(data.user.username); 
-        setPhoneNumberInStore(data.user.phoneNumber); 
+        setUsernameInStore(data.user.name); 
   
         router.push("/deposito/materiales");
       } else {
