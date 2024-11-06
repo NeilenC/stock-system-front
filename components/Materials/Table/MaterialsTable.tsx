@@ -72,7 +72,7 @@ const MaterialsTable = ({
       messageLeft: "",
       messageRight: "",
       bgcolor: theme.palette.success.light,
-      color: "black",
+      color: "",
     });
     
     const showToastMessage = (messageLeft:string, messageRight:string, bgcolor:string, color:string) => {
@@ -134,7 +134,7 @@ const MaterialsTable = ({
         "Material eliminado con éxito",
         "",
         theme.palette.success.light,
-        "black"
+        "white"
       );
       await fetchMaterials();
       // Aquí podrías llamar a una función para volver a obtener los materiales actualizados
@@ -191,7 +191,7 @@ const MaterialsTable = ({
         "Material actualizado con éxito",
         "",
         theme.palette.success.light,
-        "black"
+        "white"
       );
     } catch (error) {
       console.error("Failed to update material:", error);
@@ -199,7 +199,7 @@ const MaterialsTable = ({
         "Error al actualizar el material",
         "Intente de nuevo",
         theme.palette.error.light,
-        "white"
+        "black"
       );
     }
   };

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import IconToImage from './styled-components/IconImages';
-import cancel from '../public/close-black.png'
+import cancel from '../public/close-white.png'
 import { Box, Button, Typography } from '@mui/material';
 interface ToastProps {
   messageLeft: string;
@@ -13,7 +13,7 @@ interface ToastProps {
 const Toast: React.FC<ToastProps> = ({ messageLeft, messageRight, color,bgcolor, onClose }) => {
   useEffect(() => {
     // Configura el timeout para cerrar el Toast después de 3 segundos
-    const timer = setTimeout(onClose, 5000);
+    const timer = setTimeout(onClose,4000);
     return () => clearTimeout(timer); // Limpia el timeout si el componente se desmonta
   }, [onClose]);
 

@@ -80,7 +80,7 @@ const GeneralComponent: React.FC<GeneralComponentProps> = ({
           "Material actualizado con éxito",
           "",
           theme.palette.success.light,
-          "black"
+          "white"
         );
       }
     } catch (error) {
