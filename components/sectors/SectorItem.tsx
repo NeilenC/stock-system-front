@@ -108,7 +108,7 @@ const SectorItem = ({
       justifyContent: "space-between",
       alignItems: "center", // Centrar verticalmente
       width: "100%",
-      height: "100%", // Asegura que ocupe toda la altura disponible
+      height: "100%", 
     }}
   >
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -122,11 +122,11 @@ const SectorItem = ({
       <Box sx={{ display: "flex", flexDirection: "column", pl: "8px" }}>
         <Typography
           variant="body2"
-          sx={{ fontWeight: "bold", fontSize: "14px" }}
+          sx={{ fontWeight: 500, fontSize: "16px" }}
         >
           {sector.name}
         </Typography>
-        <Typography variant="body2" sx={{ fontSize: "12px" }}>
+        <Typography variant="body2" sx={{ fontSize: "14px" }}>
           {sector.square_meters} m²
         </Typography>
       </Box>
@@ -137,14 +137,14 @@ const SectorItem = ({
   <Box sx={{ cursor: "pointer", pt:0.5 }}>
     <IconToImage
       icon={deleteicon}
-      w={20}
-      h={20}
+      w={25}
+      h={25}
       onClick={() => handleDelete(sector)}
     />
   </Box>
 
   <Box sx={{ cursor: "pointer", position: "relative", ml: 2, display: "flex",  pt:0.5}}>
-    <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
+    <IconToImage w={25} h={25} icon={edit} onClick={handleEditClick} />
     <Menu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
@@ -157,7 +157,7 @@ const SectorItem = ({
           handleMenuClose();
         }}
       >
-        {`Editar ${sector.name}`}
+     <Typography variant="body1">   {`Editar ${sector.name}`}</Typography>
       </MenuItem>
     </Menu>
   </Box>
@@ -176,11 +176,11 @@ const SectorItem = ({
   >
     <Typography
       variant="body2"
-      sx={{ fontSize: "16px", fontWeight: "bold" }}
+      sx={{ fontSize: "18px", fontWeight: 500}}
     >
       Descripción
     </Typography>
-    <Typography variant="body2" sx={{ fontSize: "15px" }}>
+    <Typography variant="body2" sx={{ fontSize: "16px" }}>
       {sector.description}
     </Typography>
   </Box>

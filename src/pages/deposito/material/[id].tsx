@@ -12,11 +12,10 @@ import StockMovemments from "../../../../components/Materials/stock-check/StockM
 import { useRouter } from "next/router";
 
 const MaterialMovements = () => {
-  const router = useRouter()
-  const { id } = router.query; 
+  const router = useRouter();
+  const { id } = router.query;
   const [selectedTab, setSelectedTab] = useState(0);
   const [material, setMaterial] = useState<MaterialProps | null>(null);
-
 
   const fetchMaterialData = async (id: number) => {
     try {
@@ -38,44 +37,49 @@ const MaterialMovements = () => {
 
   return (
     <>
-    <Box sx={{bgcolor: theme.palette.primary.light}} >
-
-      <SectionComponent icon={backicon} text={`${material?.name}`} isId={true} />
-   
-      <Box
-        sx={{
-          position: "absolute", // Hace que TabComponent se superponga
-          top: "130px", // Ajusta este valor para controlar la superposición
-          width: 1,
-          bgcolor: theme.palette.primary.main,
-          zIndex: 1, // Asegura que el TabComponent esté encima del SectionComponent
-        }}
-      >
-        <TabComponent
-          selectedTab={selectedTab}
-          setSelectedTab={setSelectedTab}
+      <Box sx={{ bgcolor: theme.palette.primary.light }}>
+        <SectionComponent
+          icon={backicon}
+          text={`${material?.name}`}
+          isId={true}
         />
+
+        <Box
+          sx={{
+            position: "absolute", // Hace que TabComponent se superponga
+            top: "135px", // Ajusta este valor para controlar la superposición
+            width: 1,
+            bgcolor: theme.palette.primary.main,
+            zIndex: 1, // Asegura que el TabComponent esté encima del SectionComponent
+          }}
+        >
+          <TabComponent
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+        </Box>
+
+        {/* Renderiza el contenido de cada pestaña */}
+        <Box
+          sx={{
+            paddingInline: {
+              xs: "135px", // Para pantallas pequeñas (por defecto)
+              lg: "250px", // Para pantallas grandes (monitores)
+            },
+            marginTop: "55px",
+          }}
+        >
+          {" "}
+          {/* Ajusta el margen para el contenido debajo de las pestañas */}
+          {selectedTab === 0 && <GeneralComponent materialToCheck={material} />}
+          {selectedTab === 1 && (
+            <Box sx={{ height: "100vh" }}>
+              <StockMovemments materialId={material?.id ?? 0} />
+            </Box>
+          )}
+        </Box>
       </Box>
-
-
-      {/* Renderiza el contenido de cada pestaña */}
-      <Box sx={{  paddingInline: {
-      xs: "135px", // Para pantallas pequeñas (por defecto)
-      lg: "250px"  // Para pantallas grandes (monitores)
-    }, marginTop: "55px" ,}}>
-        {" "}
-        {/* Ajusta el margen para el contenido debajo de las pestañas */}
-        {selectedTab === 0 && 
-         <GeneralComponent materialToCheck={material}/>   }
-        {selectedTab === 1 && 
-        <Box sx={{height:'100vh'}}>
-        <StockMovemments materialId={material?.id ?? 0}/></Box>}
-
-        
-      </Box>
-    </Box>
     </>
-
   );
 };
 

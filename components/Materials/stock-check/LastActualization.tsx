@@ -10,35 +10,39 @@ interface LastStockUpdate {
   changeDate: string;
   previousStock: number;
   material: MaterialProps;
-  actualStock:number;
+  actualStock: number;
   user: {
     email: string;
     username: string;
   };
   sector: {
     name: string;
-  }
+  };
 }
 
 interface LastActualizationProps {
-  materialId: number;updatedMaterial:any
+  materialId: number;
+  updatedMaterial: any;
 }
 
 const LastActualization: React.FC<LastActualizationProps> = ({
-  materialId,updatedMaterial
+  materialId,
+  updatedMaterial,
 }) => {
   const [lastStockUpdate, setLastStockUpdate] =
     useState<LastStockUpdate | null>(null);
 
   const getLastActualization = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialId}`
-      );
-      const data = await response.json();
-      if (response.ok && data.length > 0) {
-        const lastUpdate = data.at(0); // Toma el último elemento del array
-        setLastStockUpdate(lastUpdate);
+      if (materialId) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialId}`
+        );
+        const data = await response.json();
+        if (response.ok && data.length > 0) {
+          const lastUpdate = data.at(0); // Toma el último elemento del array
+          setLastStockUpdate(lastUpdate);
+        }
       }
     } catch (e) {
       console.error("Error fetching data:", e);
@@ -50,7 +54,7 @@ const LastActualization: React.FC<LastActualizationProps> = ({
   }, [materialId, updatedMaterial]);
 
   return (
-    <Box sx={{ display: "flex",}}>
+    <Box sx={{ display: "flex" }}>
       <Box
         sx={{
           width: 1,
@@ -96,7 +100,7 @@ const LastActualization: React.FC<LastActualizationProps> = ({
                   {lastStockUpdate.actualStock}
                 </Typography>
               </FormLabelComponent>
-              
+
               <FormLabelComponent>
                 Cantidad Anterior (en depósito)
                 <Typography sx={{ p: 1 }}>
@@ -129,13 +133,13 @@ const LastActualization: React.FC<LastActualizationProps> = ({
               <FormLabelComponent>
                 Nombre de Usuario
                 <Typography sx={{ p: 1 }}>
-                  {lastStockUpdate.user?.username|| 'N/C'}
+                  {lastStockUpdate.user?.username || "N/C"}
                 </Typography>
               </FormLabelComponent>
               <FormLabelComponent>
                 Email
                 <Typography sx={{ p: 1 }}>
-                  {lastStockUpdate.user?.email || 'N/C'} 
+                  {lastStockUpdate.user?.email || "N/C"}
                 </Typography>
               </FormLabelComponent>
             </Box>

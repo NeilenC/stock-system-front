@@ -15,23 +15,17 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    const numericFields = [
-      "width",
-      "depth",
-      "weight",
-      "height",
-      "actual_stock",
-      "price",
-    ];
+  
+    const numericFields = ["width", "depth", "weight", "height", "actual_stock", "price"];
     const processedValue = numericFields.includes(name)
       ? value === ""
-        ? 0
+        ? "" // Allow the field to be empty
         : parseFloat(value)
       : value;
-
+  
     setMaterial({ ...material, [name]: processedValue });
   };
+  
 
   const handleCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedCategoryId = parseInt(e.target.value); // Convierte el valor a número

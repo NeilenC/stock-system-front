@@ -40,7 +40,9 @@ import ajustes from "../../../public/settings.png";
 import roles from "../../../public/navbar/roles.png";
 
 const NavbarComponent = () => {
-  const [anchorEls, setAnchorEls] = useState<{ [key: string]: HTMLElement | null }>({});
+  const [anchorEls, setAnchorEls] = useState<{
+    [key: string]: HTMLElement | null;
+  }>({});
   const [selectedOption, setSelectedOption] = useState<string | null>(null); // Usa un estado para la opción seleccionada
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const username = useUserStore((state) => state.username);
@@ -65,6 +67,7 @@ const NavbarComponent = () => {
     },
     {
       label: username,
+      subLabel: "Admin",
       iconSrc: account,
       options: [
         { label: "Perfil", href: "/perfil", iconSrc: perfil },
@@ -74,7 +77,10 @@ const NavbarComponent = () => {
     },
   ];
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, menu: string | null) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    menu: string | null
+  ) => {
     if (menu) {
       setAnchorEls({ ...anchorEls, [menu]: event.currentTarget });
     }
@@ -98,7 +104,6 @@ const NavbarComponent = () => {
         }}
         sx={{
           padding: "8px 16px",
-          backgroundColor: selectedOption === subOption.label ? theme.palette.secondary.main : "transparent", // Aplica el color de fondo si está seleccionado
         }}
       >
         <Link
@@ -125,12 +130,16 @@ const NavbarComponent = () => {
     >
       <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
         {/* Logo Section */}
-        <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-          <IconToImage icon={logo.src} w={150} h={50} />
+        <Box sx={{ display: "flex", alignItems: "center",}}>
+          <IconToImage icon={logo.src} w={200} h={60} />
         </Box>
 
         {/* Menu Options */}
-        <Box display="flex" justifyContent="flex-end" sx={{ width: "100%", alignItems: "center" }}>
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          sx={{ width: "100%", alignItems: "center" }}
+        >
           {navbarOptions.map((option, index) => (
             <Box key={index} sx={{ p: "1px 6px", borderRadius: "8px" }}>
               {option.options ? (
@@ -142,18 +151,25 @@ const NavbarComponent = () => {
                       fontSize: isMediumScreen ? "10px" : "16px",
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: selectedOption === option.label
-                        ? theme.palette.secondary.main
-                        : "transparent",
+                      backgroundColor:
+                        selectedOption === option.label
+                          ? theme.palette.secondary.main
+                          : "transparent", 
+
                       borderRadius: "8px",
-                      padding: "5px 10px",
+                      padding:  option.label === username ? '3px 8px': "5px 10px",
                       width: 1,
                     }}
                     startIcon={
                       option.label === username ? (
-                        <IconToImage icon={option.iconSrc} w={34} h={34} />
+                        <IconToImage icon={option.iconSrc} w={38} h={38}  sx={{ mt: 1,mr:0.5 }}/>
                       ) : (
-                        <IconToImage icon={option.iconSrc} w={30} h={30} sx={{ mt: 1 }} />
+                        <IconToImage
+                          icon={option.iconSrc}
+                          w={30}
+                          h={30}
+                          sx={{ mt: 1 }}
+                        />
                       )
                     }
                     endIcon={
@@ -164,7 +180,21 @@ const NavbarComponent = () => {
                       )
                     }
                   >
-                    <Box sx={{ p: "0px !important" }}> {option.label}</Box>
+                    <Box
+                      sx={{
+                        p: "0px !important",
+                        display: "flex",
+                        flexDirection: "column", // Asegura que el label y sublabel estén en columna
+                        alignItems: "flex-start", // Alinea el contenido al margen izquierdo
+                      }}
+                    >
+                      <Typography>{option.label}</Typography>
+                      {option.subLabel && (
+                        <Typography variant="body2" sx={{  }}>
+                          {option.subLabel}
+                        </Typography>
+                      )}
+                    </Box>
                   </Button>
                   <Menu
                     anchorEl={anchorEls[option.label ?? ""]}
@@ -180,7 +210,11 @@ const NavbarComponent = () => {
                   </Menu>
                 </>
               ) : (
-                <Link href={option.href} passHref style={{ textDecoration: "none" }}>
+                <Link
+                  href={option.href}
+                  passHref
+                  style={{ textDecoration: "none" }}
+                >
                   <Button
                     onClick={() => handleSelectItem(option.label)}
                     sx={{
@@ -188,16 +222,27 @@ const NavbarComponent = () => {
                       fontSize: isMediumScreen ? "14px" : "18px",
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: selectedOption === option.label
-                        ? theme.palette.secondary.main
-                        : "transparent",
+                      backgroundColor:
+                        selectedOption === option.label
+                          ? theme.palette.secondary.main
+                          : "transparent",
                       borderRadius: "8px",
                       padding: "10px 16px",
                       width: 1,
                     }}
-                    startIcon={<IconToImage icon={option.iconSrc} w={24} h={24} />}
+                    startIcon={
+                      <IconToImage
+                        icon={option.iconSrc}
+                        w={24}
+                        h={24}
+                        sx={{ mt: 1 }}
+                      />
+                    }
                   >
-                    <Typography variant="body2" sx={{ fontWeight: 500, fontSize: "16px" }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 500, fontSize: "16px" }}
+                    >
                       {option.label}
                     </Typography>
                   </Button>
@@ -210,6 +255,5 @@ const NavbarComponent = () => {
     </AppBar>
   );
 };
-
 
 export default NavbarComponent;

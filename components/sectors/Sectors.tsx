@@ -10,8 +10,7 @@ import SectorEditForm from "./forms/SectorFormEdit";
 import Toast from "../../commons/Toast";
 import theme from "../../themes/theme";
 
-const Sectors = () => {
-  const { salas, setSalas } = useSectors(); // Asegúrate de tener una función para setear las salas
+const Sectors = ({ salas = [], setSalas }: { salas: any[] , setSalas:any}) => {
   const { sectorData } = useSectorStore();
   const { sectorPositions, setSectorPositions } = useSectorPositions();
   const sectorRefs = useRef<{ [sectorId: number]: HTMLDivElement | null }>({});
@@ -55,12 +54,11 @@ const Sectors = () => {
           throw new Error(`Failed to update sector: ${response.statusText}`);
         }
 
-        // Actualiza el estado local para reflejar los cambios instantáneamente
-        setSalas((prevSalas: any) => {
-          return prevSalas.map((sector:any) =>
+        setSalas((prevSalas:any) => 
+          prevSalas.map((sector:any) =>
             sector.id === editingSectorId ? { ...sector, ...formattedSectorData } : sector
-          );
-        });
+          )
+        );
 
         setIsEditModalOpen(false);
         setEditingSectorId(null);
@@ -68,7 +66,7 @@ const Sectors = () => {
           "Sector actualizado con éxito",
           "",
           theme.palette.success.light,
-          "black"
+          "white"
         );
       } catch (error) {
         console.error("Error updating sector:", error);
@@ -76,7 +74,7 @@ const Sectors = () => {
           "Error al actualizar el sector. Intente nuevamente",
           "Intente de nuevo",
           theme.palette.error.light,
-          "white"
+          "black"
         );
       }
     }
@@ -98,12 +96,12 @@ const Sectors = () => {
     }
 
     // Actualiza el estado local para reflejar la eliminación
-    setSalas((prevSalas: any) => prevSalas.filter((sector: any) => sector.id !== sectorId));
+    setSalas((prevSalas:any) => prevSalas.filter((sector:any) => sector.id !== sectorId));
     showToastMessage(
       "Sector eliminado con éxito",
       "",
       theme.palette.success.light,
-      "black"
+      "white"
     );
   } catch (error) {
     console.error("Error deleting sector:", error);
@@ -111,7 +109,7 @@ const Sectors = () => {
       "Error al eliminar el sector. Intente nuevamente",
       "Intente de nuevo",
       theme.palette.error.light,
-      "white"
+      "black"
     );
   }
 };

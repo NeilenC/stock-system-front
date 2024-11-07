@@ -67,7 +67,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
       case "price":
         setPrice(value);
         break;
-      case "ancho":
+      case "width":
         setWidth(value);
         break;
       default:
@@ -159,13 +159,13 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={width}
         onChange={(e) => handleFilterChange("width", e.target.value)}
         placeholder="Ancho"
-        size={0.7}
+        size={0.6}
       />
       <FilterField
         value={observations}
         onChange={(e) => handleFilterChange("observations", e.target.value)}
         placeholder="Observaciones"
-        size={isTablet ? 1.2 : 1.4}
+        size={isTablet ? 1.2 : 1.5}
       />
       <FilterField
         value={price}

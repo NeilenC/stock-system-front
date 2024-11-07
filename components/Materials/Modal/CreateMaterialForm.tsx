@@ -60,7 +60,7 @@ const CreateMaterialForm = ({
           <Grid item xs={10}>
             <CustomTextFieldMaterial
               name="category"
-              value={formData.category}
+              value={formData.category || ""}
               onChange={handleChange}
               fullWidth
               margin="dense"
@@ -151,12 +151,12 @@ const CreateMaterialForm = ({
           />
         </Grid>
 
-        {/* Nuevo campo para Selección de Sección de Depósito */}
+        {/* Selección de Depósito */}
         <Grid item xs={4} sm={3}>
           <FormLabelComponent>Ubicación Stock</FormLabelComponent>
           <CustomTextFieldMaterial
-            name="distribution_stock.sector_id" // Cambia aquí el name para que coincida con el estado
-            value={formData.distribution_stock.sector_id} // Aquí accedemos al primer elemento del arreglo
+            name="distribution_stock.sector_id" 
+            value={formData.distribution_stock[0].sector_id ?? ""} 
             onChange={handleChange}
             fullWidth
             margin="dense"

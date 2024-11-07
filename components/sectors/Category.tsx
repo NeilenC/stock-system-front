@@ -39,7 +39,7 @@ const Category = ({ category, sectors, sectorRefs, sectorPositions, setSectorPos
         <IconButton size="small" sx={{ color: "#fff", p: 0 }}>
           {open ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </IconButton>
-        <Typography variant="body1" sx={{ color: "#fff", fontWeight: "bold", pl: "12px" }}>
+        <Typography sx={{ color: "#fff",pl: "12px", fontSize:'20px' }}>
           {category}
         </Typography>
       </Box>

@@ -31,10 +31,10 @@ const initialFormData = {
   observations: "",
   price: 0,
   is_active: true,
-  category: 0,
+  category: "",
   distribution_stock: [
     {
-      sector_id: 0,
+      sector_id: "",
       storaged_stock: 0,
     },
   ],
@@ -225,7 +225,7 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           "Material creado con éxito",
           "",
           theme.palette.success.light,
-          "black"
+          "white"
         );
       } else {
         const errorResponse = await response.json();
@@ -233,7 +233,7 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           `Error al crear el material: ${errorResponse.message}`,
           "Intente de nuevo",
           theme.palette.error.light,
-          "white"
+          "black"
         );
       }
     } catch (error) {
@@ -242,7 +242,7 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
         "Error al crear el material",
         "Intente de nuevo",
         theme.palette.error.light,
-        "white"
+        "black"
       );
   
     }
