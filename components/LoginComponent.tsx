@@ -62,7 +62,7 @@ const Login: React.FC = () => {
       }
     } catch (error: any) {
       setError(
-        error.message || "Hubo un error. Por favor corrobore las credenciales."
+        "Hubo un error. Por favor corrobore las credenciales."
       );
       console.error("Login error:", error);
     } finally {
@@ -89,9 +89,8 @@ const Login: React.FC = () => {
         component="form"
         onSubmit={handleLogin}
         sx={{
-          width: "25%",
-          paddingInline: 5,
-          paddingBlock: 3,
+   width:'550px',
+   p:'35px',
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -108,12 +107,12 @@ const Login: React.FC = () => {
         </Typography> */}
 
         {error && (
-          <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+          <Alert severity="error" sx={{ width: "100%", m: 2 }}>
             {error}
           </Alert>
         )}
 
-        <FormLabelComponent sx={{ display: "block", width: 1 }}>
+        <FormLabelComponent sx={{  width: 1 }}>
           Email
           <TextField
             margin="normal"

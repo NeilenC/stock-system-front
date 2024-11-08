@@ -74,7 +74,8 @@ const MaterialEditCheck = ({
       >
         {" "}
         <Typography sx={{ fontSize: "18px" }}>
-          Sección Editable para "{materialToCheck?.name}"
+          Sección Editable para '{materialToCheck?.name}'
+
         </Typography>{" "}
         <Grid
           item
