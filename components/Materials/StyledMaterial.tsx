@@ -1,16 +1,15 @@
 import styled from "@emotion/styled";
-import theme from "../../themes/theme";
-import { Box, Select, TextField } from "@mui/material";
+import { Box, Select, TextField, Theme } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-const CustomTextFieldMaterial = styled(TextField)(() => ({
+const CustomTextFieldMaterial = styled(TextField)(({ theme }) => ({
   width: '100%',
   "& .MuiOutlinedInput-root": {
     height: "45px",
     boxSizing: 'border-box', // Asegura consistencia en el tamaño
     "& input": {
       padding: "8px",
-      color: theme.palette.primary.dark,
+      color: '#191B26',
     },
     "& fieldset": {
       borderColor: "#E1E6EF",
@@ -19,7 +18,7 @@ const CustomTextFieldMaterial = styled(TextField)(() => ({
       borderColor: "#B0BEC5",
     },
     "&.Mui-focused fieldset": {
-      borderColor: theme.palette.info.light,
+      borderColor:'#E1E6EF',
     },
   },
 }));
@@ -37,20 +36,19 @@ const CustomTextFieldComponent = styled(TextField)<{ isFromBooking?: boolean }>(
       borderColor:'#E1E6EF' ,
     },
     '&:hover fieldset': {
-      borderColor:  isFromBooking ? '#B0BEC5'  : theme.palette.secondary.main, 
+      borderColor:  isFromBooking ? '#B0BEC5'  :  '#2563EB', 
     },
 
   }, 
 }));
 
 
-const CustomSelect = styled(Select)(() => ({
+const CustomSelect = styled(Select)(({ theme }: { theme: Theme }) => ({
   width: '100%',
   "& .MuiOutlinedInput-root": {
     height: "45px",
-    boxSizing: 'border-box', // Igual que en el TextField
     "& .MuiSelect-select": {
-      padding: "8px", // Asegurar que el padding sea igual
+      padding: "8px", // Asegura que el padding sea igual
       color: theme.palette.primary.dark,
     },
     "& fieldset": {
@@ -64,7 +62,6 @@ const CustomSelect = styled(Select)(() => ({
     },
   },
 }));
-
 const CustomSelectComponent = ({ placeholder, ...props }: any) => {
   return (
     <CustomSelect

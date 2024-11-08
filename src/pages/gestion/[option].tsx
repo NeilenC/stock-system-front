@@ -7,15 +7,15 @@ import useSectors from "../../../hooks/useSectors";
 const Management = () => {
   const router = useRouter();
   const { option } = router.query;
-  const { salas } = useSectors();
+  const { salas, setSalas } = useSectors();
 
 
   return (
     <div>
       {/* Based on 'option', you can render different content */}
       {option === "sectors" && (
-        <SectorsComponent salas={salas} >
-          <Sectors />
+        <SectorsComponent  >
+          <Sectors salas={salas} setSalas={setSalas}/>
         </SectorsComponent>
       )}
     </div>
