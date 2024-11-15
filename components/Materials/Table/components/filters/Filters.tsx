@@ -107,7 +107,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={code}
         onChange={(e) => handleFilterChange("code", e.target.value)}
         placeholder="Código"
-        size={1}
+        size={1.1}
       />
       <FilterField
         value={category}
@@ -165,7 +165,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={observations}
         onChange={(e) => handleFilterChange("observations", e.target.value)}
         placeholder="Observaciones"
-        size={isTablet ? 1.2 : 1.5}
+        size={isTablet ? 1.2 : 1.3}
       />
       <FilterField
         value={price}

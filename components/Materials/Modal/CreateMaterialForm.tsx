@@ -70,6 +70,7 @@ const CreateMaterialForm = ({
                 <MenuItem key={category.id} value={category.id}>
                   {category.category_name}
                 </MenuItem>
+                
               ))}
             </CustomTextFieldMaterial>
           </Grid>
@@ -156,7 +157,7 @@ const CreateMaterialForm = ({
           <FormLabelComponent>Ubicación Stock</FormLabelComponent>
           <CustomTextFieldMaterial
             name="distribution_stock.sector_id" 
-            value={formData.distribution_stock[0].sector_id ?? ""} 
+            value={Number(formData.distribution_stock[0].sector_id) ?? 0} 
             onChange={handleChange}
             fullWidth
             margin="dense"

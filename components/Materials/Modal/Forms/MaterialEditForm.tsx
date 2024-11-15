@@ -16,7 +16,7 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
   
-    const numericFields = ["width", "depth", "weight", "height", "actual_stock", "price"];
+    const numericFields = ["width", "depth", "weight", "height","price"];
     const processedValue = numericFields.includes(name)
       ? value === ""
         ? "" // Allow the field to be empty
@@ -35,10 +35,29 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+
+    if (file) {
+      setMaterial({
+        ...material,
+        image_url: file,
+      });
+    }
+  };
+  
+  
+  
+
   useEffect(() => {
-    if (materialId) fetchMaterialData(materialId);
+    if (materialId) {
+      fetchMaterialData(materialId);
+    } else if (updatedMaterial) {
+      setMaterial(updatedMaterial); 
+    }
     fetchCategories();
   }, [materialId, updatedMaterial]);
+  
 
   return (
     <form>
@@ -94,11 +113,12 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
         </Grid>
 
         <Grid item xs={12} sm={4}>
-          <FormLabelComponent>Stock Actual (no editable)</FormLabelComponent>
+          <FormLabelComponent>Stock Actual</FormLabelComponent>
           <CustomTextFieldMaterial
             margin="dense"
             name="actual_stock"
             value={material.actual_stock}
+            disabled={true}
           />
         </Grid>
         {/** Ancho */}
@@ -171,6 +191,18 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
             onChange={handleInputChange}
           />
         </Grid>
+
+  {/** Imágen */}
+<Grid item xs={12} sm={6}>
+  <FormLabelComponent>Imágen</FormLabelComponent>
+  <input 
+    type="file" 
+    onChange={handleFileChange} 
+    accept="image/*" 
+  />
+</Grid>
+
+
         {/** Observaciones */}
         <Grid item xs={12}>
           <FormLabelComponent>Observaciones</FormLabelComponent>

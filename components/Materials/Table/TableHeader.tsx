@@ -28,8 +28,8 @@ const TableHeader = () => {
         weight: 'Peso',
         color: 'Color',
         height: 'Altura',
-        depth: 'Profundidad',
-        quantity: 'Cantidad',
+        depth: 'Prof.',
+        quantity: 'Cant.',
         width: 'Ancho',
         observations: 'Observaciones',
         price: 'Precio',
@@ -37,17 +37,17 @@ const TableHeader = () => {
 
   return (
     <Grid container spacing={1} sx={{ fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.dark, paddingBottom: 1, paddingTop: 2 }}>
-      <Grid item xs={2} sm={1.1}>{columnNames.code}</Grid>
+      <Grid item xs={2} sm={1.2}>{columnNames.code}</Grid>
       <Grid item xs={2} sm={1.2}>{columnNames.category}</Grid>
       <Grid item xs={4} sm={1.5}>{columnNames.description}</Grid>
       <Grid item xs={2} sm={1}>{columnNames.weight}</Grid>
       <Grid item xs={2} sm={1}>{columnNames.color}</Grid>
-      <Grid item xs={2} sm={0.98}>{columnNames.height}</Grid>
-      <Grid item xs={3} sm={0.65}>{columnNames.depth}</Grid>
-      <Grid item xs={2} sm={0.9}>{columnNames.quantity}</Grid>
-      <Grid item xs={2} sm={0.6}>{columnNames.width}</Grid>
+      <Grid item xs={2} sm={0.95}>{columnNames.height}</Grid>
+      <Grid item xs={3} sm={0.6}>{columnNames.depth}</Grid>
+      <Grid item xs={2} sm={1}>{columnNames.quantity}</Grid>
+      <Grid item xs={2} sm={0.5}>{columnNames.width}</Grid>
       <Grid item xs={4} sm={1.5}>{columnNames.observations}</Grid>
-      <Grid item xs={2} sm={0.8}>{columnNames.price}</Grid>
+      <Grid item xs={2} sm={0.5}>{columnNames.price}</Grid>
     </Grid>
   );
 };

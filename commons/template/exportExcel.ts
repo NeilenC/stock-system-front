@@ -25,5 +25,5 @@ import * as XLSX from "xlsx";
     XLSX.utils.book_append_sheet(workbook, worksheet, "Materiales");
 
     // Genera el archivo Excel y lo descarga
-    XLSX.writeFile(workbook, "iventario.xlsx");
+    XLSX.writeFile(workbook, "inventario.xlsx");
   };

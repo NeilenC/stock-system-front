@@ -25,6 +25,7 @@ const initialFormData = {
   color: "",
   image_url: null,
   weight: 0,
+  actual_stock: 0,
   width: 0,
   depth: 0,
   height: 0,
@@ -34,7 +35,7 @@ const initialFormData = {
   category: "",
   distribution_stock: [
     {
-      sector_id: "",
+      sector_id: 0,
       storaged_stock: 0,
     },
   ],
@@ -44,11 +45,10 @@ const MaterialsTable = ({
   initialMaterials,
 }: {
   initialMaterials: MaterialProps[];
-
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const { material } = useMaterialStore();
-const {openModalCreate, setOpenModalCreate} = useModalContext()
+  const { openModalCreate, setOpenModalCreate } = useModalContext();
   const {
     currentMaterials,
     handlePageChange,
@@ -65,23 +65,30 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
   const [loading, setLoading] = useState(false); // Estado de carga
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
-    const [toastProps, setToastProps] = useState({
-      messageLeft: "",
-      messageRight: "",
-      bgcolor: theme.palette.success.light,
-      color: "",
-    });
-    
-    const showToastMessage = (messageLeft:string, messageRight:string, bgcolor:string, color:string) => {
-      setToastProps({ messageLeft, messageRight, bgcolor, color });
-      setShowToast(true);
-    };
+  const [toastProps, setToastProps] = useState({
+    messageLeft: "",
+    messageRight: "",
+    bgcolor: theme.palette.success.light,
+    color: "",
+  });
+
+  const showToastMessage = (
+    messageLeft: string,
+    messageRight: string,
+    bgcolor: string,
+    color: string
+  ) => {
+    setToastProps({ messageLeft, messageRight, bgcolor, color });
+    setShowToast(true);
+  };
   useEffect(() => {
     fetchMaterials();
   }, []);
 
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
+    setFormData(initialFormData);
+
   };
 
   const handleEdit = (materialId: number) => {
@@ -109,7 +116,6 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
   const handleDeleteConfirm = async () => {
     if (!materialId) return;
 
-    
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
@@ -151,38 +157,45 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
       if (!selectedMaterial || !materialId) {
         return;
       }
-      setLoading(true); // Activamos el loading
-
-      const { category, ...rest } = material; // Desestructuramos el material
+  
+      // Desestructuramos el material
+      const { id, is_active, category, image_url, ...rest } = material;
+  
+      // Incluimos el image_url en updatedMaterial
       const updatedMaterial = {
         ...rest,
         category: category?.id, // Asumiendo que el campo en el servidor se llama categoryId
+        image_url,
+        
       };
-
+  
+      // Usamos un conjunto de claves conocidas
+      const formData = new FormData();
+  
+      Object.entries(updatedMaterial).forEach(([key, value]) => {
+        if (value !== null) {
+          formData.append(key, value as any);
+        }
+      });
+ 
+      // Realizamos la petición PATCH con FormData
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
         {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedMaterial),
+          body: formData, // Pasamos el FormData como el cuerpo de la solicitud
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Error updating material");
       }
-
-      const updatedMaterialsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/materials/isActive`
-      );
-      const updatedMaterials = await updatedMaterialsResponse.json();
-      setShowToast(true)
-
+  
+      setShowToast(true);
+  
       // Actualizamos el estado con los materiales obtenidos
       await fetchMaterials();
-
+  
       setIsEditModalOpen(false); // Cierra el modal
       showToastMessage(
         "Material actualizado con éxito",
@@ -200,20 +213,44 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
       );
     }
   };
+  
 
   const handleCreateMaterial = async (formData: any) => {
+    const formD = new FormData();
+    formD.append("name", formData.name);
+    formD.append("description", formData.description);
+    formD.append("code", formData.code);
+    formD.append("color", formData.color);
+    formD.append("actual_stock", formData.actual_stock);
+    formD.append("weight", formData.weight.toString());
+    formD.append("width", formData.width.toString());
+    formD.append("depth", formData.depth.toString());
+    formD.append("height", formData.height.toString());
+    formD.append("observations", formData.observations);
+    formD.append("price", formData.price.toString());
+    formD.append("category", formData.category);
+
+    if (Array.isArray(formData.distribution_stock)) {
+      formData.distribution_stock.forEach((item: any, index: number) => {
+        formD.append(`distribution_stock[${index}][sector_id]`, item.sector_id);
+        formD.append(
+          `distribution_stock[${index}][storaged_stock]`,
+          item.storaged_stock
+        );
+      });
+    }
+    if (formData.image_url) {
+      formD.append("image", formData.image_url);
+    }
     try {
-    setLoading(true); // Activamos el loading
+      setLoading(true);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/create`,
         {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+
+          body: formD,
         }
       );
 
@@ -228,6 +265,7 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           "white"
         );
       } else {
+       
         const errorResponse = await response.json();
         showToastMessage(
           `Error al crear el material: ${errorResponse.message}`,
@@ -244,7 +282,6 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
         theme.palette.error.light,
         "black"
       );
-  
     }
   };
 
@@ -262,10 +299,20 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           ...prev,
           distribution_stock: prev.distribution_stock.map((item, idx) => {
             if (idx === index) {
-              return {
-                ...item,
-                [fieldName]: fieldName === "sector_id" ? Number(value) : value,
-              };
+              // Asignación de valores correctos y asegurándonos de que sean números
+              if (fieldName === "sector_id") {
+                return {
+                  ...item,
+                  sector_id: Number(value), // Asegúrate de que `sector_id` sea un número
+                };
+              }
+              if (fieldName === "storaged_stock") {
+                return {
+                  ...item,
+                  storaged_stock: Number(value), // Asegúrate de que `storaged_stock` sea un número
+                };
+              }
+              return { ...item, [fieldName]: value };
             }
             return item;
           }),
@@ -294,7 +341,14 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           <Filters handleFilter={handleFilter} />
           {/* Otros componentes que necesiten acceso a los filtros */}
 
-          <Box sx={{ height: "450px", overflowX: "auto", width: "100%" , bgcolor:theme.palette.primary.main}}>
+          <Box
+            sx={{
+              height: "450px",
+              overflowX: "auto",
+              width: "100%",
+              bgcolor: theme.palette.primary.main,
+            }}
+          >
             {currentMaterials.length ? (
               currentMaterials.map((material: MaterialProps, index: any) => (
                 <TableRowItem
@@ -371,15 +425,15 @@ const {openModalCreate, setOpenModalCreate} = useModalContext()
           </ModalComponent>
         )}
 
-{showToast && (
-      <Toast
-        messageLeft={toastProps.messageLeft}
-        messageRight={toastProps.messageRight}
-        bgcolor={toastProps.bgcolor}
-        color={toastProps.color}
-        onClose={() => setShowToast(false)}
-      />
-    )}
+        {showToast && (
+          <Toast
+            messageLeft={toastProps.messageLeft}
+            messageRight={toastProps.messageRight}
+            bgcolor={toastProps.bgcolor}
+            color={toastProps.color}
+            onClose={() => setShowToast(false)}
+          />
+        )}
       </Box>
     </>
   );

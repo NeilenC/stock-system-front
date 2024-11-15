@@ -43,10 +43,40 @@ const NavbarComponent = () => {
   const [anchorEls, setAnchorEls] = useState<{
     [key: string]: HTMLElement | null;
   }>({});
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); // Usa un estado para la opción seleccionada
+  const [selectedOption, setSelectedOption] = useState<string | null>(null); // estado para la opción seleccionada
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const username = useUserStore((state) => state.username);
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        console.error("Error al cerrar sesión.");
+      }
+      useUserStore.getState().clearUserData();
+      localStorage.removeItem("token");
+      console.log("Sesión cerrada correctamente.");
+      router.push("/");
+    } catch (error) {
+      console.error("Error al procesar el cierre de sesión:", error);
+    }
+  };
 
   const navbarOptions = [
     {
@@ -70,9 +100,9 @@ const NavbarComponent = () => {
       subLabel: "Admin",
       iconSrc: account,
       options: [
-        { label: "Perfil", href: "/perfil", iconSrc: perfil },
-        { label: "Ajustes", href: "/ajustes", iconSrc: ajustes },
-        { label: "Cerrar Sesión", href: "/logout", iconSrc: logout },
+        { label: "Perfil", href: "#", iconSrc: perfil },
+        { label: "Ajustes", href: "#", iconSrc: ajustes },
+        { label: "Cerrar Sesión", href: "#", iconSrc: logout },
       ],
     },
   ];
@@ -99,8 +129,12 @@ const NavbarComponent = () => {
       <MenuItem
         key={subIndex}
         onClick={() => {
-          handleSelectItem(subOption.label);
-          handleCloseMenu(parentLabel);
+          if (subOption.label === "Cerrar Sesión") {
+            handleLogout();
+          } else {
+            handleSelectItem(subOption.label);
+            handleCloseMenu(parentLabel);
+          }
         }}
         sx={{
           padding: "8px 16px",
@@ -130,7 +164,7 @@ const NavbarComponent = () => {
     >
       <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
         {/* Logo Section */}
-        <Box sx={{ display: "flex", alignItems: "center",}}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <IconToImage icon={logo.src} w={200} h={60} />
         </Box>
 
@@ -154,15 +188,21 @@ const NavbarComponent = () => {
                       backgroundColor:
                         selectedOption === option.label
                           ? theme.palette.secondary.main
-                          : "transparent", 
+                          : "transparent",
 
                       borderRadius: "8px",
-                      padding:  option.label === username ? '3px 8px': "5px 10px",
+                      padding:
+                        option.label === username ? "3px 8px" : "5px 10px",
                       width: 1,
                     }}
                     startIcon={
                       option.label === username ? (
-                        <IconToImage icon={option.iconSrc} w={38} h={38}  sx={{ mt: 1,mr:0.5 }}/>
+                        <IconToImage
+                          icon={option.iconSrc}
+                          w={38}
+                          h={38}
+                          sx={{ mt: 1, mr: 0.5 }}
+                        />
                       ) : (
                         <IconToImage
                           icon={option.iconSrc}
@@ -190,7 +230,7 @@ const NavbarComponent = () => {
                     >
                       <Typography>{option.label}</Typography>
                       {option.subLabel && (
-                        <Typography variant="body2" sx={{  }}>
+                        <Typography variant="body2" sx={{}}>
                           {option.subLabel}
                         </Typography>
                       )}

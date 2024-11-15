@@ -27,10 +27,14 @@ const Login: React.FC = () => {
   const setEmailInStore = useUserStore((state) => state.setEmail);
   const setUsernameInStore = useUserStore((state) => state.setUsername);
   const setPhoneNumberInStore = useUserStore((state) => state.setPhoneNumber);
+  console.log("ACA EN LOGIN COMPONENT")
+
+
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    console.log("ACA EN LOGIN FUNCTION")
   
     try {
       const response = await fetch(
@@ -43,13 +47,17 @@ const Login: React.FC = () => {
           body: JSON.stringify({ email, password }),
         }
       );
+    console.log("Aprocess.env.NEXT_PUBLIC_API_BASE", process.env.NEXT_PUBLIC_API_BASE)
   
       if (!response.ok) {
+    console.log("response failed ----- ", response)
+
         throw new Error("Hubo un error. Por favor corrobore las credenciales.");
       }
+
+    console.log("response ", response)
   
       const data = await response.json();
-  console.log("DATAAAA", data)
       if (data && data.access_token && data.user) {
         localStorage.setItem("token", data.access_token);
         setAccessToken(data.access_token);

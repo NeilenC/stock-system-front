@@ -8,7 +8,7 @@ export interface MaterialProps {
   color: string;
   category: Category | null;  // Permite null en caso de que no haya categoría
   weight: number;
-  image_url: File | null;
+  image_url: File | null; 
   width: number;
   height: number;
   depth: number;
