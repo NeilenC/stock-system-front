@@ -30,12 +30,14 @@ import notifications from "../../../public/navbar/notifications.png";
 import iconButton from "../../../public/plus-icon.png";
 import info from "../../../public/navbar/info-icon.png";
 import account from "../../../public/account2.png";
+import calendar from "../../../public/calendar.png";
 import stock from "../../../public/stockcheck.png";
 import materials from "../../../public/materials.png";
 import estadisticas from "../../../public/navbar/estadisticas.png";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import perfil from "../../../public/profile.png";
 import logout from "../../../public/logout.png";
+import tree from "../../../public/account_tree.png";
 import ajustes from "../../../public/settings.png";
 import roles from "../../../public/navbar/roles.png";
 
@@ -83,6 +85,17 @@ const NavbarComponent = () => {
       label: "Espacios",
       href: "/gestion/sectors",
       iconSrc: space,
+    },
+    {
+      label: "Gestión",
+      iconSrc: tree,
+      options: [
+        {
+          label: "Actividades",
+          href: "/gestion/actividades",
+          iconSrc: calendar,
+        },
+      ],
     },
     {
       label: "Depósito",

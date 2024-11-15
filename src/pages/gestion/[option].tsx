@@ -3,6 +3,7 @@ import React from "react";
 import SectorsComponent from "../../../components/sectors/SectorsComponent";
 import Sectors from "../../../components/sectors/Sectors";
 import useSectors from "../../../hooks/useSectors";
+import Activities from "../../../components/Activities/Activities";
 
 const Management = () => {
   const router = useRouter();
@@ -17,6 +18,9 @@ const Management = () => {
         <SectorsComponent  >
           <Sectors salas={salas} setSalas={setSalas}/>
         </SectorsComponent>
+      )}
+       {option === "actividades" && (
+          <Activities/>
       )}
     </div>
   );

@@ -12,7 +12,6 @@ import MaterialsTable from "./MaterialsTable";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import materialsicon from "../../../public/materials.png";
 import theme from "../../../themes/theme";
-import * as XLSX from "xlsx";
 import download from "../../../public/download.png";
 import clear from "../../../public/reset.png";
 import print from "../../../public/print.png";
