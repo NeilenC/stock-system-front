@@ -116,9 +116,9 @@ export const useMaterialStore = create<MaterialState>((set) => ({
         actual_stock: 0,
         price: 0,
         observations: "",
-        image_url: null, // reset to default or empty string
-        last_stock_update: new Date(), // reset to current date
-        is_active: true, // reset as appropriate
+        image_url: null, 
+        last_stock_update: new Date(),
+        is_active: true, 
       },
     }),
 }));

@@ -75,14 +75,12 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
 
   const handleIconMouseEnter = () => {
-    const timeout = setTimeout(() => setIsImageModalOpen(true), 700); // Abre el modal después de 500ms
+    const timeout = setTimeout(() => setIsImageModalOpen(true), 700); 
     setHoverTimeout(timeout);
   };
 
   const handleIconMouseLeave = () => {
-    if (hoverTimeout) clearTimeout(hoverTimeout); // Cancela la apertura si se sale antes de los 500ms
-    setHoverTimeout(null);
-    setIsImageModalOpen(false); // Cierra el modal si está abierto
+    setIsImageModalOpen(false); 
   };
 
   const handleIconClick = () => {
@@ -106,7 +104,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
         sm={0.3}
         sx={{ cursor: "pointer", position: "relative" }}
         onMouseEnter={handleIconMouseEnter}
-        onMouseLeave={handleIconMouseLeave}
+        // onMouseLeave={handleIconMouseLeave}
       >
         <IconToImage w={20} h={20} icon={photo} onClick={handleIconClick} />
 
@@ -129,7 +127,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
             boxShadow: 24,
             p: 3,
             pt:4,
-            borderRadius: "10px", 
+            borderRadius: "5px", 
             maxWidth: "80vw", 
             maxHeight: "80vh", 
             overflow: "hidden", 
@@ -167,7 +165,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
           <img
             src={`${process.env.NEXT_PUBLIC_API_BASE}${material.image_url}`}
             alt={material.name}
-            style={{height:'500px', width:'700px',   borderRadius: "5px",}}
+            style={{height:'400px', width:'600px',   borderRadius: "5px",}}
           />
           </Box>
         </Modal>
@@ -179,7 +177,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
         sm={0.3}
         sx={{ cursor: "pointer", position: "relative" }}
         onMouseEnter={handleIconMouseEnter}
-        onMouseLeave={handleIconMouseLeave}
+        // onMouseLeave={handleIconMouseLeave}
       >
         <IconToImage w={20} h={20} icon={notphoto} onClick={handleIconClick} />
 

@@ -6,13 +6,10 @@ import TableRowItem from "./TableRowItem";
 import Pagination from "./Pagination";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
-// import useMaterialsFilter from "./Hooks/useMaterialsFilter";
 import { MaterialProps } from "../materialsProps";
 import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import CreateMaterialForm from "../Modal/CreateMaterialForm";
-import { toast } from "react-toastify";
-import { FiltersProvider } from "./context/FiltersContext";
 import { useMaterialsContext } from "./context/MaterialsContextProps";
 import Toast from "../../../commons/Toast";
 import theme from "../../../themes/theme";
@@ -158,18 +155,15 @@ const MaterialsTable = ({
         return;
       }
   
-      // Desestructuramos el material
       const { id, is_active, category, image_url, ...rest } = material;
   
-      // Incluimos el image_url en updatedMaterial
       const updatedMaterial = {
         ...rest,
-        category: category?.id, // Asumiendo que el campo en el servidor se llama categoryId
+        category: category?.id, 
         image_url,
         
       };
-  
-      // Usamos un conjunto de claves conocidas
+
       const formData = new FormData();
   
       Object.entries(updatedMaterial).forEach(([key, value]) => {
@@ -178,12 +172,12 @@ const MaterialsTable = ({
         }
       });
  
-      // Realizamos la petición PATCH con FormData
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
         {
           method: "PATCH",
-          body: formData, // Pasamos el FormData como el cuerpo de la solicitud
+          body: formData, 
         }
       );
   
@@ -193,10 +187,9 @@ const MaterialsTable = ({
   
       setShowToast(true);
   
-      // Actualizamos el estado con los materiales obtenidos
       await fetchMaterials();
   
-      setIsEditModalOpen(false); // Cierra el modal
+      setIsEditModalOpen(false); 
       showToastMessage(
         "Material actualizado con éxito",
         "",
@@ -339,7 +332,6 @@ const MaterialsTable = ({
         <Grid container>
           <TableHeader />
           <Filters handleFilter={handleFilter} />
-          {/* Otros componentes que necesiten acceso a los filtros */}
 
           <Box
             sx={{
