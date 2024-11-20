@@ -286,8 +286,8 @@ const NavbarComponent = () => {
                     startIcon={
                       <IconToImage
                         icon={option.iconSrc}
-                        w={24}
-                        h={24}
+                        w={26}
+                        h={26}
                         sx={{ mt: 1 }}
                       />
                     }

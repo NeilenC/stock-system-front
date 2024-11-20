@@ -13,7 +13,8 @@ export interface SectorProps {
 const useSectors = () => {
   const [sectors, setSalas] = useState<SectorProps[]>([]);
   const [storageSectors, setStorageSectors] = useState<SectorProps[]>([]);
-
+  const [ticketOfficeSectors, setTicketOfficeSectors] = useState<SectorProps[]>([]);
+  const [excludedSectors, setExcludedSectors] = useState<SectorProps[]>([]);
 
   const getSalas = async () => {
     try {
@@ -29,6 +30,14 @@ const useSectors = () => {
         const storageSectors = data.filter((sector: SectorProps) => sector.sector === "Depósito");
         setStorageSectors(storageSectors);
 
+        const ticketOfficeSectors = data.filter((sector: SectorProps) => sector.sector === "Boleterías");
+        setTicketOfficeSectors(ticketOfficeSectors);
+
+        const filteredSectors = data.filter(
+          (sector: SectorProps) => sector.sector !== "Depósito" && sector.sector !== "Boletería"
+        );
+        setExcludedSectors(filteredSectors);
+
     } catch (error) {
       console.error("Failed to fetch Salas:", error);
     }
@@ -38,7 +47,7 @@ const useSectors = () => {
     getSalas();
   }, []);
 
-  return { salas: sectors, storageSectors, setSalas,setStorageSectors,  getSalas }; // Devuelve también la función para actualizar el estado
+  return { salas: sectors, storageSectors, setSalas,setStorageSectors,ticketOfficeSectors, excludedSectors, getSalas }; // Devuelve también la función para actualizar el estado
 };
 
 export default useSectors;
