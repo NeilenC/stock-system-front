@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
 import {
   Autocomplete,
@@ -66,19 +66,42 @@ const LogisticsSection: React.FC = () => {
 
   // Función que se llama al seleccionar un sector
   const handleSectorSelect = (event: any, newValue: any) => {
-    console.log("AREAS", newValue)
     if (newValue) {
       const newSectorIds = newValue.map((sector: any) => sector.value);
-    console.log("AREAS", newSectorIds)
-
-      setSelectedSectors(newSectorIds); // Actualiza el estado local
-      setSectors(newSectorIds); // Actualiza el estado en Zustand
+      setSelectedSectors(newSectorIds); 
+      setSectors(newSectorIds); 
+      useEventStore.setState((state) => ({
+        ...state,
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            detailsLogistics: {
+              ...state.eventData.logistics.detailsLogistics,
+              sectors: newSectorIds, 
+            },
+          },
+        },
+      }));
     } else {
-      setSelectedSectors([]); // Resetea si no hay selección
-      setSectors([]); // Resetea en Zustand
+      setSelectedSectors([]);
+      setSectors([]);
+      useEventStore.setState((state) => ({
+        ...state,
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            detailsLogistics: {
+              ...state.eventData.logistics.detailsLogistics,
+              sectors: [],
+            },
+          },
+        },
+      }));
     }
   };
-
+  
   const handleInputChangeAssembly = (
     key: keyof typeof eventData.logistics.assembly,
     value: string

@@ -19,7 +19,7 @@ const TableActivities = () => {
 
 
   return (
-    <Box>
+    <Box sx={{ borderRadius:'20px', border:'1px solid blue'}}>
       <Grid container>
         <ActivityTableHeader />
         {/* Pasar handleFilter como prop a ActivityFilters */}

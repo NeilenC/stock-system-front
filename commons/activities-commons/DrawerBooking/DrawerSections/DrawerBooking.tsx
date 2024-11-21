@@ -20,16 +20,22 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const eventData = useEventStore.getState().eventData;
   // const { eventData } = useEventStore();
-  console.log("eventData", eventData)
+  console.log("eventData", eventData);
 
   const handleClose = () => {
     setIsOpen(false);
   };
-console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
+  const clientIdFromStore = useEventStore(
+    (state) => state.eventData.logistics.clientData.client.clientId
+  );
+  const sectors = useEventStore(
+    (state) => state.eventData.logistics.detailsLogistics.sectors
+  );
+
   // Crea el payload que se ajusta a tu DTO `CreateMemoActivityDto`
   const createMemoActivityDto = {
     // Datos del cliente
-    client_id: eventData.logistics.clientData.client.clientId, // Asigna el client_id
+    client_id: clientIdFromStore, // Asigna el client_id
     client_phone: eventData.logistics.clientData.client.phoneNumber,
     client_email: eventData.logistics.clientData.client.email,
 
@@ -40,7 +46,7 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
 
     // Datos de CWA
     cwa_name: eventData.generalInfo.details.CWAname,
-    cwa_number: parseInt(eventData.generalInfo.details.CWAnumber, 10), // Convierte a número si es necesario
+    cwa_number: eventData.generalInfo.details.CWAnumber, // Convierte a número si es necesario
 
     // Fechas y horarios del evento
     initial_date: eventData.generalInfo.details.dateEvent,
@@ -50,12 +56,12 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
     closing_time: eventData.logistics.dismantling.initialTimeDismantling,
     end_date: eventData.logistics.dismantling.initialDateDismantling,
 
-
     // Datos logísticos - armado
     entry_place_assembly: eventData.logistics.assembly.entryPlaceAssembly,
     initial_date_assembly: eventData.logistics.assembly.initialDateAssembly,
     initial_time_assembly: eventData.logistics.assembly.initialTimeAssembly,
-    property_activity_schedule: eventData.logistics.detailsLogistics.timeActivity,
+    // property_activity_schedule: eventData.logistics.detailsLogistics.timeActivity,
+
     // Datos logísticos - desmontaje
     entry_place_dismantling:
       eventData.logistics.dismantling.entryPlaceDismantling,
@@ -65,15 +71,10 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
       eventData.logistics.dismantling.initialTimeDismantling,
 
     // Sectores
-    sector_activities_ids: Array.isArray(
-      eventData.logistics.detailsLogistics.sectors
-    )
-      ?   eventData.logistics.detailsLogistics.sectors
-      : [],
-
+    sector_activities_ids: eventData.logistics.detailsLogistics.sectors,
     // Detalles logísticos adicionales
-    activity_date_on_property: eventData.logistics.detailsLogistics.dateActivity,
-    activity_schedule_on_property: eventData.logistics.detailsLogistics.timeActivity, 
+    // activity_date_on_property: eventData.logistics.detailsLogistics.dateActivity,
+    // activity_schedule_on_property: eventData.logistics.detailsLogistics.timeActivity,
     entry_point: eventData.logistics.detailsLogistics.entryPoint,
     notes: eventData.logistics.detailsLogistics.notes,
 
@@ -83,18 +84,18 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
     ticket_value:
       eventData.logistics.operationalDetails.ticketOffice.ticketValue,
     // area: eventData.logistics.operationalDetails.ticketOffice.area,
-    schedule_ticketoffice:
-      eventData.logistics.operationalDetails.ticketOffice.schedule,
+    // schedule_ticketoffice:
+    //   eventData.logistics.operationalDetails.ticketOffice.schedule,
     ticketOfficeLocation:
       eventData.logistics.operationalDetails.ticketOffice.ticketOfficeLocation,
 
     // Director técnico
-    technical_director_name:
-      eventData.logistics.clientData.technicalDirector.techDirectorName.toString(),
-    technical_director_phone:
-      eventData.logistics.clientData.technicalDirector.phoneNumber,
-    technical_director_email:
-      eventData.logistics.clientData.technicalDirector.email,
+    // technical_director_name:
+    //   eventData.logistics.clientData.technicalDirector.techDirectorName.toString(),
+    // technical_director_phone:
+    //   eventData.logistics.clientData.technicalDirector.phoneNumber,
+    // technical_director_email:
+    //   eventData.logistics.clientData.technicalDirector.email,
 
     // Responsable
     responsible_name:
@@ -105,11 +106,11 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
       eventData.logistics.clientData.organizerOrResponsible.email,
 
     // Administrador
-    administrator_name:
-      eventData.logistics.clientData.administrator.administratorName.toString(),
-    administrator_phone:
-      eventData.logistics.clientData.administrator.phoneNumber,
-    administrator_email: eventData.logistics.clientData.administrator.email,
+    // administrator_name:
+    //   eventData.logistics.clientData.administrator.administratorName.toString(),
+    // administrator_phone:
+    //   eventData.logistics.clientData.administrator.phoneNumber,
+    // administrator_email: eventData.logistics.clientData.administrator.email,
   };
 
   // Función para enviar los datos al backend
@@ -121,7 +122,7 @@ console.log("ACA EN DRAWER", eventData.logistics.clientData.client.clientId)
       setScrolling(contentRef.current.scrollTop > 1); // Now TypeScript knows contentRef.current is a div
     }
   };
-console.log("createMemoActivityDto", createMemoActivityDto)
+
   useEffect(() => {
     const currentRef = contentRef.current;
 
@@ -136,10 +137,7 @@ console.log("createMemoActivityDto", createMemoActivityDto)
     };
   }, []);
 
-
   const handleConfirmBooking = async () => {
-console.log("createMemoActivityDto", createMemoActivityDto)
-
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity`,
@@ -154,7 +152,11 @@ console.log("createMemoActivityDto", createMemoActivityDto)
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${data.message || "Error al confirmar la reserva"}`);
+        throw new Error(
+          `Error ${response.status}: ${
+            data.message || "Error al confirmar la reserva"
+          }`
+        );
       }
 
       console.log("Reserva confirmada:", data);
@@ -274,7 +276,7 @@ console.log("createMemoActivityDto", createMemoActivityDto)
               color: "#F9FAFB",
               fontSize: "15px",
               fontWeight: 350,
-              width:1
+              width: 1,
             }}
             onClick={handleConfirmBooking}
           >

@@ -32,7 +32,7 @@ const ClientData: React.FC = () => {
   const handleToggleDirector = () => setOpenDirector(!openDirector);
   const handleToggleIntendente = () => setOpenIntendente(!openIntendente);
   const [clientsToPick, setClientsToPick] = useState<any[]>([]);
-  const [selectedClientId, setSelectedClientId] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
 
   useEffect(() => {
     const getClients = async () => {
@@ -53,15 +53,61 @@ const ClientData: React.FC = () => {
     getClients();
   }, []);
 
-  const handleClientNameChange = (
+  const handleClientIdChange = (
     event: React.SyntheticEvent,
-    value: { id: number; name: string } | null 
+    value: { id: number; name: string } | null
   ) => {
     if (value) {
-      setClientData("clientId", value.id); 
-    } 
+      // Actualiza el estado local para el ID del cliente
+      setSelectedClientId(value.id);
+      
+      // Usa el store de Zustand para actualizar el clientId en el estado global
+      useEventStore.setState((state) => ({
+        ...state,
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            clientData: {
+              ...state.eventData.logistics.clientData,
+              client: {
+                ...state.eventData.logistics.clientData.client,
+                clientId: value.id,  // Aquí actualizamos el ID del cliente
+              },
+            },
+          },
+        },
+      }));
+  
+      console.log("Client ID Set:", value.id);
+    } else {
+      // En caso de que se deseleccione, puedes resetear el clientId a null si lo deseas
+      setSelectedClientId(null);
+      useEventStore.setState((state) => ({
+        ...state,
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            clientData: {
+              ...state.eventData.logistics.clientData,
+              client: {
+                ...state.eventData.logistics.clientData.client,
+                clientId: null,  // Aquí estamos reseteando el clientId
+              },
+            },
+          },
+        },
+      }));
+  
+      console.log("Client ID Cleared");
+    }
   };
+  
 
+  
+
+  
 
   const handleClientPhoneChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -155,7 +201,7 @@ const ClientData: React.FC = () => {
               <Autocomplete
                 options={clientsToPick} 
                 getOptionLabel={(option) => option.name || ""}
-                onChange={handleClientNameChange}
+                onChange={handleClientIdChange}
                 renderInput={(params) => (
                   <TextField
                     {...params}

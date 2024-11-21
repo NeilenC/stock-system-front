@@ -7,7 +7,7 @@ export interface EventData {
       typeEvent: string;
       typeContract: string;
       CWAname: string;
-      CWAnumber: string;
+      CWAnumber: number;
       dateEvent: string;
       timeEvent: string;
     };
@@ -66,7 +66,6 @@ export interface EventData {
   };
 }
 
-
 interface EventStore {
   eventData: EventData;
   setGeneralInfo: (
@@ -109,10 +108,11 @@ interface EventStore {
     key: keyof EventData["logistics"]["clientData"]["administrator"],
     value: string | number
   ) => void;
-  setSectors: (sectorIds: number[]) => void; // Añade este método
+  setSectors: (sectorIds: number[]) => void; 
   resetForm: () => void;
-}
+} 
 
+// console.log("sectoooor", eventData.operationalDetails.sectors)
 
 const useEventStore = create<EventStore>((set) => ({
   eventData: {
@@ -122,7 +122,7 @@ const useEventStore = create<EventStore>((set) => ({
         typeEvent: "",
         typeContract: "",
         CWAname: "",
-        CWAnumber: "",
+        CWAnumber: 0,
         dateEvent: "",
         timeEvent: "",
       },
@@ -369,7 +369,7 @@ const useEventStore = create<EventStore>((set) => ({
             typeEvent: "",
             typeContract: "",
             CWAname: "",
-            CWAnumber: "",
+            CWAnumber: 0,
             dateEvent: "",
             timeEvent: "",
           },
