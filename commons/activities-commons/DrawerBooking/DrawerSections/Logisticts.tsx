@@ -14,7 +14,6 @@ import {
   CustomTextField,
   FormLabelComponent,
 } from "./CustomTextFields";
-import CustomDateTimePicker from "../../../styled-components/CustomDatePicker";
 import useEventStore from "../activity-hook/useEventStore";
 import theme from "../../../../themes/theme";
 // import { SelectPicker, Stack } from 'rsuite';
@@ -179,7 +178,7 @@ const LogisticsSection: React.FC = () => {
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
       {/* Armado */}
-      <Box>
+      {/* <Box>
         <SecondTitleComponent
           onClick={handleToggleLogistics}
           open={openLogistics}
@@ -221,10 +220,10 @@ const LogisticsSection: React.FC = () => {
             </FormLabelComponent>
           </Box>
         </Collapse>
-      </Box>
+      </Box> */}
       {/* Desarme  */}
 
-      <Box>
+      {/* <Box>
         <SecondTitleComponent
           onClick={handleToggleDesarme}
           open={openDesarme}
@@ -259,11 +258,10 @@ const LogisticsSection: React.FC = () => {
                   minDate={dayjs()}
                 
                 />
-              {/* // AGREGAR FECHA Y HORA */}
             </FormLabelComponent>
           </Box>
         </Collapse>
-      </Box>
+      </Box> */}
 
       {/* Más Detalles  */}
 
@@ -317,7 +315,7 @@ const LogisticsSection: React.FC = () => {
                 onChange={handleDateTimeChangeDetails}
               />
             </FormLabelComponent> */}
-            <FormControl fullWidth sx={{ mb: 2 }}>
+            {/* <FormControl fullWidth sx={{ mb: 2 }}>
               <FormLabelComponent>Ingreso al Público</FormLabelComponent>
               <CustomSelect
                 fullWidth
@@ -331,7 +329,7 @@ const LogisticsSection: React.FC = () => {
                 <MenuItem value="sector1">sector 1</MenuItem>
                 <MenuItem value="sector2">sector 2</MenuItem>
               </CustomSelect>
-            </FormControl>
+            </FormControl> */}
 
             <TextField
               sx={{

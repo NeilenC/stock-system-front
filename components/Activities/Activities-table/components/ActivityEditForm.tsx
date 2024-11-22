@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { Grid, MenuItem } from "@mui/material";
 import { useActivityStore } from "../../../../zustand/activityStore"; // Asume que usas Zustand para manejar el estado
-import { FormLabelComponent } from "../../../../commons/styled-components/CustomTextFields";
+import { CustomAutocomplete, FormLabelComponent } from "../../../../commons/styled-components/CustomTextFields";
 import { CustomTextFieldMaterial } from "../../../Materials/StyledMaterial";
-import { activityStates, typeOfActivities, typeOfContracts } from "../../../../commons/activities-commons/DrawerBooking/enums";
+import { ActivityState, activityStates, typeOfActivities, typeOfContracts } from "../../../../commons/activities-commons/DrawerBooking/enums";
+import { Stack } from "rsuite";
 
 const ActivityEditForm = ({ activityId  }: { activityId: number | null; }) => {
   const {updatedActivity, setActivity, fetchActivityById } = useActivityStore();
@@ -12,7 +13,6 @@ const ActivityEditForm = ({ activityId  }: { activityId: number | null; }) => {
     setActivity({ ...updatedActivity, [name]: value });
   };
   
-console.log("SELECTED ACTIVITY", updatedActivity)
   useEffect(() => {
     if (activityId) fetchActivityById(activityId);
   }, [activityId]);
@@ -60,11 +60,11 @@ console.log("SELECTED ACTIVITY", updatedActivity)
             onChange={handleInputChange}
             select
           >
-            {activityStates.map((state, index) => (
-              <MenuItem key={index} value={state}>
-                {state}
-              </MenuItem>
-            ))}
+             {Object.values(ActivityState).map((state, index) => (
+    <MenuItem key={index} value={state}>
+      {state}
+    </MenuItem>
+  ))}
           </CustomTextFieldMaterial>
         </Grid>
 
@@ -132,6 +132,26 @@ console.log("SELECTED ACTIVITY", updatedActivity)
           />
         </Grid>
 
+        {/* <FormLabelComponent>
+              Areas Arrendadas
+              <Stack spacing={10} direction="column" alignItems="flex-start">
+                <CustomAutocomplete
+                  options={updatedActivity.}
+                  getOptionLabel={(option: any) => option.label}
+                  onChange={handleSectorSelect}
+                  multiple
+                  renderInput={(params: any) => (
+                    <TextField
+                      {...params}
+                      label="Seleccionar Sectores"
+                      variant="outlined"
+                      sx={{pb:2}}
+                    />
+                  )}
+                />
+              </Stack>
+            </FormLabelComponent> */}
+
         {/** Email del Responsable */}
         <Grid item xs={12} sm={6}>
           <FormLabelComponent>Email del Responsable</FormLabelComponent>
@@ -146,7 +166,7 @@ console.log("SELECTED ACTIVITY", updatedActivity)
 
 
         {/** Lugar de Ensamblaje */}
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <FormLabelComponent>Lugar de Ensamblaje</FormLabelComponent>
           <CustomTextFieldMaterial
             margin="dense"

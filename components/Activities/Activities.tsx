@@ -12,58 +12,42 @@ import {
   Chip,
   Divider,
   Box,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import DrawerBooking from "../../commons/activities-commons/DrawerBooking/DrawerSections/DrawerBooking";
-import { ActivityState } from "../../enum/activities/activity.enum";
-import { ActivityColor } from "../../commons/activities-commons/DrawerBooking/enums";
 import LastActivities from "./LastsActivities";
 import TableActivities from "./TableActivities";
 import { useActivitiesContext } from "./Activities-table/context/useActivitiesContext";
 
 const Activities = () => {
-  const {activities, setActivities } = useActivitiesContext();
+  const { activities , itemsPerPage, updateItemsPerPage} = useActivitiesContext();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [openDrawer, setoOpenDrawer] = useState(false);
-
-  useEffect(() => {
-    const getActivities = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/active`
-        );
-        if (!response.ok) {
-          throw new Error("Error al obtener las actividades");
-        }
-        const activities = await response.json();
-        setActivities(activities);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getActivities();
-  }, []);
-
-  const handleOpenDrawer = () => {
-    setoOpenDrawer(true);
+  const handleItemsPerPageChange = (event: any) => {
+    const value = parseInt(event.target.value, 10); // 
+    updateItemsPerPage(value); 
   };
 
-  const getNormalizedState = (state: string): string => {
-    // Normaliza el texto del estado (puedes ajustarlo según tus necesidades)
-    return state.trim().toUpperCase().replace(/\s+/g, "_");
+
+  useEffect(() => {
+    if (activities && activities.length > 0) {
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, [activities]); 
+  
+  const handleOpenDrawer = () => {
+    setoOpenDrawer(true);
   };
 
   return (
     <>
       <SectionComponent icon={calendar} text={"Actividades"}>
-              {/* Botón para limpiar filtros */}
+        {/* Botón para limpiar filtros */}
 
         <CustomButton
           icon={add}
@@ -71,9 +55,9 @@ const Activities = () => {
           text={"Crear Reserva"}
         />
       </SectionComponent>
-      <Box sx={{ paddingInline: "20px" }}>
+      <Box sx={{ }}>
         {loading ? (
-          <CircularProgress style={{ display: "block", margin: "20px auto" }} />
+          <CircularProgress style={{ margin: "20px auto" }} />
         ) : error ? (
           <Typography color="error" align="center" marginTop={2}>
             {error}
@@ -83,10 +67,45 @@ const Activities = () => {
             No hay actividades disponibles.
           </Typography>
         ) : (
-          <LastActivities activities={activities} />
+          <LastActivities activities={activities.slice(0, 3)} />
         )}
       </Box>
-      <TableActivities/>
+      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex'}}>
+        <Select
+          labelId="items-per-page-label"
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          label="Items por página"
+          sx={{ height: '45px' }}
+        >
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+          <MenuItem value={30}>30</MenuItem>
+          <MenuItem value={40}>40</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+        </Select>
+        <Typography variant='body1'sx={{alignContent:'center', pl:2}}>Registros por página</Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center", 
+          paddingBlock: "10px",
+          paddingInline: "16px",
+        }}
+      >
+      <Box
+          sx={{
+            borderRadius: "16px",
+            border: "1px solid #E2E8F0",
+            overflow: "hidden",
+          }}
+        >
+
+      <TableActivities />
+      </Box>
+      </Box>
       {openDrawer && (
         <DrawerBooking isOpen={openDrawer} setIsOpen={setoOpenDrawer} />
       )}

@@ -14,13 +14,35 @@ import useEventStore from "../activity-hook/useEventStore";
 import GeneralInfoContent from "./GeneralInfo";
 import LogisticsSection from "./Logisticts";
 import OperationalDetails from "./OperationalDetails";
+
 import ClientData from "./ClientData";
+import { useActivitiesContext } from "../../../../components/Activities/Activities-table/context/useActivitiesContext";
+import Toast from "../../../Toast";
 
 const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const eventData = useEventStore.getState().eventData;
   // const { eventData } = useEventStore();
+  const {fetchActivities} = useActivitiesContext()
   console.log("eventData", eventData);
+  const [showToast, setShowToast] = useState(false);
+  const [toastProps, setToastProps] = useState({
+    messageLeft: "",
+    messageRight: "",
+    bgcolor: theme.palette.success.light,
+    color: "",
+  });
+
+  const showToastMessage = (
+    messageLeft: string,
+    messageRight: string,
+    bgcolor: string,
+    color: string
+  ) => {
+    setToastProps({ messageLeft, messageRight, bgcolor, color });
+    setShowToast(true);
+  };
+
 
   const handleClose = () => {
     setIsOpen(false);
@@ -42,52 +64,53 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     // Nombre del evento y tipo de contrato
     activity_name: eventData.generalInfo.details.nameEvent,
     type_activity: eventData.generalInfo.details.typeEvent, // Mapea el tipo de actividad
-    type_of_contract: eventData.generalInfo.details.typeContract,
+    // type_of_contract: eventData.generalInfo.details.typeContract,
 
     // Datos de CWA
-    cwa_name: eventData.generalInfo.details.CWAname,
-    cwa_number: eventData.generalInfo.details.CWAnumber, // Convierte a número si es necesario
+    // cwa_name: eventData.generalInfo.details.CWAname,
+    // cwa_number: eventData.generalInfo.details.CWAnumber, 
 
     // Fechas y horarios del evento
-    initial_date: eventData.generalInfo.details.dateEvent,
-    opening_date: eventData.generalInfo.details.dateEvent,
-    opening_time: eventData.generalInfo.details.timeEvent,
-    closing_date: eventData.logistics.dismantling.initialDateDismantling,
-    closing_time: eventData.logistics.dismantling.initialTimeDismantling,
-    end_date: eventData.logistics.dismantling.initialDateDismantling,
+    initial_date: eventData.generalInfo.details.initialDate,
+    opening_date: eventData.generalInfo.details.initialDate,
+    opening_time: eventData.generalInfo.details.initialTime,
+    closing_date:eventData.generalInfo.details.closingDate,
+    closing_time: eventData.generalInfo.details.closingTime,
+    end_date: eventData.generalInfo.details.endDate,
+    end_time: eventData.generalInfo.details.endTime,
+    state: eventData.generalInfo.details.state,
 
     // Datos logísticos - armado
-    entry_place_assembly: eventData.logistics.assembly.entryPlaceAssembly,
-    initial_date_assembly: eventData.logistics.assembly.initialDateAssembly,
-    initial_time_assembly: eventData.logistics.assembly.initialTimeAssembly,
+    // entry_place_assembly: eventData.logistics.assembly.entryPlaceAssembly,
+    // initial_date_assembly: eventData.logistics.assembly.initialDateAssembly,
+    // initial_time_assembly: eventData.logistics.assembly.initialTimeAssembly,
     // property_activity_schedule: eventData.logistics.detailsLogistics.timeActivity,
 
     // Datos logísticos - desmontaje
-    entry_place_dismantling:
-      eventData.logistics.dismantling.entryPlaceDismantling,
-    initial_date_dismantling:
-      eventData.logistics.dismantling.initialDateDismantling,
-    initial_time_dismantling:
-      eventData.logistics.dismantling.initialTimeDismantling,
+    // entry_place_dismantling:
+    //   eventData.logistics.dismantling.entryPlaceDismantling,
+    // initial_date_dismantling:
+    //   eventData.logistics.dismantling.initialDateDismantling,
+    // initial_time_dismantling:
+    //   eventData.logistics.dismantling.initialTimeDismantling,
 
     // Sectores
     sector_activities_ids: eventData.logistics.detailsLogistics.sectors,
     // Detalles logísticos adicionales
     // activity_date_on_property: eventData.logistics.detailsLogistics.dateActivity,
     // activity_schedule_on_property: eventData.logistics.detailsLogistics.timeActivity,
-    entry_point: eventData.logistics.detailsLogistics.entryPoint,
+    // entry_point: eventData.logistics.detailsLogistics.entryPoint,
     notes: eventData.logistics.detailsLogistics.notes,
 
     // Detalles operativos
-    expositors_quantity:
-      eventData.logistics.operationalDetails.information.expositorsQuantity,
-    ticket_value:
-      eventData.logistics.operationalDetails.ticketOffice.ticketValue,
+    // expositors_quantity:
+    //   eventData.logistics.operationalDetails.information.expositorsQuantity,
+    // ticket_value:
+    //   eventData.logistics.operationalDetails.ticketOffice.ticketValue,
     // area: eventData.logistics.operationalDetails.ticketOffice.area,
     // schedule_ticketoffice:
     //   eventData.logistics.operationalDetails.ticketOffice.schedule,
-    ticketOfficeLocation:
-      eventData.logistics.operationalDetails.ticketOffice.ticketOfficeLocation,
+    // ticketOfficeLocation: eventData.logistics.operationalDetails.ticketOffice.ticketOfficeLocation,
 
     // Director técnico
     // technical_director_name:
@@ -98,12 +121,12 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     //   eventData.logistics.clientData.technicalDirector.email,
 
     // Responsable
-    responsible_name:
-      eventData.logistics.clientData.organizerOrResponsible.responsibleName.toString(),
-    responsible_phone:
-      eventData.logistics.clientData.organizerOrResponsible.phoneNumber,
-    responsible_email:
-      eventData.logistics.clientData.organizerOrResponsible.email,
+    // responsible_name:
+    //   eventData.logistics.clientData.organizerOrResponsible.responsibleName.toString(),
+    // responsible_phone:
+    //   eventData.logistics.clientData.organizerOrResponsible.phoneNumber,
+    // responsible_email:
+    //   eventData.logistics.clientData.organizerOrResponsible.email,
 
     // Administrador
     // administrator_name:
@@ -138,6 +161,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   }, []);
 
   const handleConfirmBooking = async () => {
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity`,
@@ -158,10 +182,22 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
           }`
         );
       }
-
+      await fetchActivities()
+      handleClose()
+      showToastMessage(
+        "¡ Creaste una nueva Reserva !",
+        "",
+        theme.palette.success.light,
+        "white"
+      );
       console.log("Reserva confirmada:", data);
     } catch (error) {
-      console.error("Error al confirmar la reserva:", error);
+      showToastMessage(
+        "Error al crear la reserva",
+        "Intente de nuevo",
+        theme.palette.error.light,
+        "white"
+      );
     }
   };
 
@@ -249,7 +285,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
         <LogisticsSection />
 
         {/* Detalles Operativos del Evento */}
-        <OperationalDetails />
+        {/* <OperationalDetails /> */}
 
         {/* Información del cliente */}
         <ClientData />
@@ -284,6 +320,15 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
           </Button>
         </Box>
       </Box>
+      {showToast && (
+        <Toast
+          messageLeft={toastProps.messageLeft}
+          messageRight={toastProps.messageRight}
+          bgcolor={toastProps.bgcolor}
+          color={toastProps.color}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </Drawer>
   );
 };

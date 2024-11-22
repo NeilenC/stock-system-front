@@ -1,13 +1,16 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { typeOfActivities, typeOfContracts } from "../commons/activities-commons/DrawerBooking/enums";
-import { ActivityState } from "../enum/activities/activity.enum";
+import {
+  ActivityState,
+  typeOfActivities,
+  typeOfContracts,
+} from "../commons/activities-commons/DrawerBooking/enums";
 
 interface Activity {
   id: number;
   activity_name: string;
-  type_activity: typeof typeOfActivities[number]; 
-  type_of_contract: typeof typeOfContracts[number]; 
+  type_activity: (typeof typeOfActivities)[number];
+  type_of_contract: (typeof typeOfContracts)[number];
   state: ActivityState; // Enum
   client_email: string;
   client_phone: string;
@@ -31,6 +34,11 @@ interface Activity {
   opening_time: string;
   closing_date: string;
   closing_time: string;
+  sector_activities_ids: [
+    {
+      id: number;
+    }
+  ];
   is_active: boolean;
   cwa_name: string;
   cwa_number: number;
@@ -40,7 +48,7 @@ interface Activity {
 }
 
 interface ActivityStore {
-    updatedActivity: Activity | null;
+  updatedActivity: Activity | null;
   activities: Activity[];
   setActivity: (activity: any | null) => void;
   setActivities: (activities: Activity[]) => void;
@@ -56,16 +64,21 @@ export const useActivityStore = create<ActivityStore>()(
     setActivities: (activities) => set({ activities }),
     fetchActivityById: async (id: number) => {
       try {
-        const response = await fetch( `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${id}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${id}`
+        );
         const data: Activity = await response.json();
         set({ updatedActivity: data });
+        console.log("DATAAAAAA", data);
       } catch (error) {
         console.error("Error fetching activity by ID:", error);
       }
     },
     fetchAllActivities: async () => {
       try {
-        const response = await fetch( `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity`
+        );
         const data: Activity[] = await response.json();
         set({ activities: data });
       } catch (error) {

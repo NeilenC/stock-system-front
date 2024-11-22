@@ -5,6 +5,7 @@ import ActivityFilters from "./Activities-table/components/ActivityFilter";
 import ActivityTableRowItem from "./Activities-table/ActivityItemTableRow";
 
 import Pagination from "../Materials/Table/Pagination";
+import theme from "../../themes/theme";
 
 const TableActivities = () => {
   const {
@@ -19,20 +20,20 @@ const TableActivities = () => {
 
 
   return (
-    <Box sx={{ borderRadius:'20px', border:'1px solid blue'}}>
+    <Box sx={{}}>
       <Grid container>
         <ActivityTableHeader />
-        {/* Pasar handleFilter como prop a ActivityFilters */}
         <ActivityFilters handleFilter={handleFilter} />
         <Box
-          sx={{
-            height: "450px",
-            overflowX: "auto",
-            width: "100%",
-            bgcolor: "primary.main",
-          }}
-        >
-          <Box sx={{ paddingInline: 1 }}>
+            sx={{
+              height: "450px",
+              overflowX: "auto",
+              width: "100%",
+              bgcolor: theme.palette.primary.main,
+            }}
+          >
+          
+          {/* <Box sx={{ paddingInline: 1 }}> */}
             {currentActivities.length > 0 ? (
               currentActivities.map((activity: any, index: any) => (
                 <ActivityTableRowItem
@@ -62,7 +63,7 @@ const TableActivities = () => {
             totalItems={totalItems}
             itemsPerPage={itemsPerPage}
           />
-        </Box>
+        {/* </Box> */}
       </Grid>
     </Box>
   );

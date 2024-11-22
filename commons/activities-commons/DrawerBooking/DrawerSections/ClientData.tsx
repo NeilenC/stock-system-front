@@ -185,7 +185,7 @@ const ClientData: React.FC = () => {
 
   return (
     <>
-      <TitleComponent variant="h6" text={"Datos del Cliente / Organizador"} />
+      <TitleComponent variant="h6" text={"Datos del Cliente"} />
 
       {/* Datos del cliente */}
       <Box>
@@ -260,7 +260,7 @@ const ClientData: React.FC = () => {
       </Box>
 
       {/* Organizador responsable */}
-      <Box>
+      {/* <Box>
         <SecondTitleComponent
           onClick={handleToggleOrganizer}
           open={openOrganizer}
@@ -324,7 +324,7 @@ const ClientData: React.FC = () => {
             </FormLabelComponent>
           </Box>
         </Collapse>
-      </Box>
+      </Box> */}
 
       {/* Director Técnico */}
       {/* <Box>

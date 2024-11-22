@@ -23,6 +23,7 @@ import ActivityEditForm from "./components/ActivityEditForm";
 import { useActivitiesContext } from "./context/useActivitiesContext";
 import ActivityDetails from "./components/ActivityDetails";
 import { format, parseISO } from "date-fns";
+import { ActivityColor } from "../../../commons/activities-commons/DrawerBooking/enums";
 // interface ActivityTableRowItemProps {
 //   activity: {
 //     id: string;
@@ -51,8 +52,20 @@ const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
     useActivityStore();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const getNormalizedState = (state: string): string => {
+    return state
+      .trim()
+      .normalize("NFD") // Descompone caracteres con acento
+      .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
+      .replace(/[^a-zA-Z0-9\s]/g, "") // Elimina caracteres especiales como /
+      .toUpperCase()
+      .replace(/\s+/g, "_"); // Reemplaza espacios con guiones bajos
+  };
 
-  const formattedInitialDate = format(parseISO(activity.initial_date), "dd/MM/yyyy");
+  const formattedInitialDate = format(
+    parseISO(activity.initial_date),
+    "dd/MM/yyyy"
+  );
   const formattedEndDate = format(parseISO(activity.end_date), "dd/MM/yyyy");
   useEffect(() => {
     if (selectedId !== null) {
@@ -95,19 +108,18 @@ const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
   };
 
   const handleDeactivateActivity = async () => {
-
-      const sendUpdate = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${selectedId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ is_active: false }),
-        }
-      );
-      if (sendUpdate.ok) {
-        await fetchActivities();
+    const sendUpdate = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${selectedId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ is_active: false }),
+      }
+    );
+    if (sendUpdate.ok) {
+      await fetchActivities();
       handleCloseModal();
     }
   };
@@ -118,17 +130,28 @@ const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
       sx={{
         textAlign: "center",
         borderBottom: "1px solid #ccc",
-        paddingBlock: 1.2,
+        paddingBlock: 1.5,
         bgcolor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
       }}
     >
-      <Grid item xs={2} sm={2}>
+      <Grid item xs={2} sm={1.7}>
         {activity.activity_name}
       </Grid>
-      <Grid item xs={2} sm={1.2}>
+      <Grid
+        item
+        xs={2}
+        sm={1.5}
+        sx={{
+        borderRadius:'20px', p:0,
+          backgroundColor:
+            ActivityColor[
+              getNormalizedState(activity.state) as keyof typeof ActivityColor
+            ] || "white",
+        }}
+      >
         {activity.state}
       </Grid>
-      <Grid item xs={2} sm={1.2}>
+      <Grid item xs={2} sm={1.5}>
         {activity.type_activity}
       </Grid>
       <Grid item xs={2} sm={1.1}>
@@ -146,7 +169,7 @@ const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
       <Grid item xs={2} sm={1.3}>
         {formattedInitialDate}
       </Grid>
-      <Grid item xs={2} sm={1.3}>
+      <Grid item xs={2} sm={1.6}>
         {formattedEndDate}
       </Grid>
 

@@ -8,8 +8,15 @@ export interface EventData {
       typeContract: string;
       CWAname: string;
       CWAnumber: number;
-      dateEvent: string;
-      timeEvent: string;
+      initialDate: string;
+      initialTime: string;
+      openingDate: string;
+      openingTime: string;
+      closingDate: string;
+      closingTime: string; 
+      endDate: string;
+      endTime: string;
+      state: string;
     };
   };
   logistics: {
@@ -123,8 +130,15 @@ const useEventStore = create<EventStore>((set) => ({
         typeContract: "",
         CWAname: "",
         CWAnumber: 0,
-        dateEvent: "",
-        timeEvent: "",
+        initialDate: "",
+        initialTime: "",
+        openingDate: "",
+        openingTime: "",
+        closingDate: "",
+        closingTime: "", 
+        endDate: "",
+        endTime: "",
+        state: "",
       },
     },
     logistics: {
@@ -370,8 +384,15 @@ const useEventStore = create<EventStore>((set) => ({
             typeContract: "",
             CWAname: "",
             CWAnumber: 0,
-            dateEvent: "",
-            timeEvent: "",
+            initialDate: "",
+            initialTime: "",
+            openingDate: "",
+            openingTime: "",
+            closingDate: "",
+            closingTime: "", 
+            endDate: "",
+            endTime: "",
+            state: "",
           },
         },
         logistics: {
