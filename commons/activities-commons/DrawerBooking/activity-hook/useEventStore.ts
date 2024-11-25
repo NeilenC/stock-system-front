@@ -13,7 +13,7 @@ export interface EventData {
       openingDate: string;
       openingTime: string;
       closingDate: string;
-      closingTime: string; 
+      closingTime: string;
       endDate: string;
       endTime: string;
       state: string;
@@ -51,6 +51,7 @@ export interface EventData {
     clientData: {
       client: {
         clientId: number | null;
+        clientName: string;
         phoneNumber: string | null;
         email: string;
       };
@@ -115,9 +116,9 @@ interface EventStore {
     key: keyof EventData["logistics"]["clientData"]["administrator"],
     value: string | number
   ) => void;
-  setSectors: (sectorIds: number[]) => void; 
+  setSectors: (sectorIds: number[]) => void;
   resetForm: () => void;
-} 
+}
 
 // console.log("sectoooor", eventData.operationalDetails.sectors)
 
@@ -135,7 +136,7 @@ const useEventStore = create<EventStore>((set) => ({
         openingDate: "",
         openingTime: "",
         closingDate: "",
-        closingTime: "", 
+        closingTime: "",
         endDate: "",
         endTime: "",
         state: "",
@@ -173,6 +174,7 @@ const useEventStore = create<EventStore>((set) => ({
       clientData: {
         client: {
           clientId: null,
+          clientName: "",
           phoneNumber: "",
           email: "",
         },
@@ -223,7 +225,10 @@ const useEventStore = create<EventStore>((set) => ({
         ...state.eventData,
         logistics: {
           ...state.eventData.logistics,
-          dismantling: { ...state.eventData.logistics.dismantling, [key]: value },
+          dismantling: {
+            ...state.eventData.logistics.dismantling,
+            [key]: value,
+          },
         },
       },
     })),
@@ -259,20 +264,19 @@ const useEventStore = create<EventStore>((set) => ({
       },
     })),
 
-    setSectors: (sectorIds: number[]) => 
-      set((state) => ({
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            detailsLogistics: {
-              ...state.eventData.logistics.detailsLogistics,
-              sectors: sectorIds,
-            },
+  setSectors: (sectorIds: number[]) =>
+    set((state) => ({
+      eventData: {
+        ...state.eventData,
+        logistics: {
+          ...state.eventData.logistics,
+          detailsLogistics: {
+            ...state.eventData.logistics.detailsLogistics,
+            sectors: sectorIds,
           },
         },
-      })),
-    
+      },
+    })),
 
   setTicketOfficeDetails: (key, value) =>
     set((state) => ({
@@ -291,88 +295,87 @@ const useEventStore = create<EventStore>((set) => ({
       },
     })),
 
-    setClientData: (
-      key: keyof EventData["logistics"]["clientData"]["client"],
-      value: string | number | null 
-    ) =>
-      set((state) => {
-        return {
-          eventData: {
-            ...state.eventData,
-            logistics: {
-              ...state.eventData.logistics,
-              clientData: {
-                ...state.eventData.logistics.clientData,
-                client: {
-                  ...state.eventData.logistics.clientData.client,
-                  [key]: value,
-                },
-              },
-            },
-          },
-        };
-      }),
-    
-
-    setOrganizerOrResponsible: (
-      key: keyof EventData["logistics"]["clientData"]["organizerOrResponsible"],
-      value: string | number | null // Ajusta el tipo para que coincida con la interfaz
-    ) =>
-      set((state) => ({
+  setClientData: (
+    key: keyof EventData["logistics"]["clientData"]["client"],
+    value: string | number | null
+  ) =>
+    set((state) => {
+      return {
         eventData: {
           ...state.eventData,
           logistics: {
             ...state.eventData.logistics,
             clientData: {
               ...state.eventData.logistics.clientData,
-              organizerOrResponsible: {
-                ...state.eventData.logistics.clientData.organizerOrResponsible,
+              client: {
+                ...state.eventData.logistics.clientData.client,
                 [key]: value,
               },
             },
           },
         },
-      })),
+      };
+    }),
 
-    setTechnicalDirector: (
-      key: keyof EventData["logistics"]["clientData"]["technicalDirector"],
-      value: string | number | null // Ajusta el tipo para que coincida con la interfaz
-    ) =>
-      set((state) => ({
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            clientData: {
-              ...state.eventData.logistics.clientData,
-              technicalDirector: {
-                ...state.eventData.logistics.clientData.technicalDirector,
-                [key]: value,
-              },
+  setOrganizerOrResponsible: (
+    key: keyof EventData["logistics"]["clientData"]["organizerOrResponsible"],
+    value: string | number | null // Ajusta el tipo para que coincida con la interfaz
+  ) =>
+    set((state) => ({
+      eventData: {
+        ...state.eventData,
+        logistics: {
+          ...state.eventData.logistics,
+          clientData: {
+            ...state.eventData.logistics.clientData,
+            organizerOrResponsible: {
+              ...state.eventData.logistics.clientData.organizerOrResponsible,
+              [key]: value,
             },
           },
         },
-      })),
+      },
+    })),
 
-    setAdministrator: (
-      key: keyof EventData["logistics"]["clientData"]["administrator"],
-      value: string | number | null // Ajusta el tipo para que coincida con la interfaz
-    ) =>
-      set((state) => ({
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            clientData: {
-              ...state.eventData.logistics.clientData,
-              administrator: {
-                ...state.eventData.logistics.clientData.administrator,
-                [key]: value,
-              },
+  setTechnicalDirector: (
+    key: keyof EventData["logistics"]["clientData"]["technicalDirector"],
+    value: string | number | null // Ajusta el tipo para que coincida con la interfaz
+  ) =>
+    set((state) => ({
+      eventData: {
+        ...state.eventData,
+        logistics: {
+          ...state.eventData.logistics,
+          clientData: {
+            ...state.eventData.logistics.clientData,
+            technicalDirector: {
+              ...state.eventData.logistics.clientData.technicalDirector,
+              [key]: value,
             },
           },
         },
-      })),
+      },
+    })),
+
+  setAdministrator: (
+    key: keyof EventData["logistics"]["clientData"]["administrator"],
+    value: string | number | null // Ajusta el tipo para que coincida con la interfaz
+  ) =>
+    set((state) => ({
+      eventData: {
+        ...state.eventData,
+        logistics: {
+          ...state.eventData.logistics,
+          clientData: {
+            ...state.eventData.logistics.clientData,
+            administrator: {
+              ...state.eventData.logistics.clientData.administrator,
+              [key]: value,
+            },
+          },
+        },
+      },
+    })),
 
   resetForm: () =>
     set({
@@ -389,7 +392,7 @@ const useEventStore = create<EventStore>((set) => ({
             openingDate: "",
             openingTime: "",
             closingDate: "",
-            closingTime: "", 
+            closingTime: "",
             endDate: "",
             endTime: "",
             state: "",
@@ -427,6 +430,7 @@ const useEventStore = create<EventStore>((set) => ({
           clientData: {
             client: {
               clientId: null,
+              clientName: "",
               phoneNumber: null,
               email: "",
             },

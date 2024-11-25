@@ -66,6 +66,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: '1em',
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {

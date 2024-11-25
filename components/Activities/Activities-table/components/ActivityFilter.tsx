@@ -18,6 +18,9 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
     endDate,
     cwaNumber,
     typeOfContract,
+    openingDate,
+    closingDate,
+    sectors,
     setActivityName,
     setClientPhone,
     setClientEmail,
@@ -28,6 +31,9 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
     setEndDate,
     setCWANumber,
     setTypeOfContract,
+    setOpeningDate,
+    setClosingDate,
+    setSectors,
     clearFilters,
   } = useFiltersActivContext();
 
@@ -62,6 +68,15 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
       case "typeOfContract":
         setTypeOfContract(value);
         break;
+      case "openingDate":
+        setOpeningDate(value);
+        break;
+      case "closingDate":
+        setClosingDate(value);
+        break;
+      case "sectors":
+        setSectors(value);
+        break;
       // case "price":
       //   setPrice(value);
       //   break;
@@ -84,6 +99,8 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
       endDate,
       cwaNumber,
       typeOfContract,
+      openingDate,
+      closingDate,
     };
     handleFilter({ ...filters, [field]: value });
   };
@@ -103,7 +120,7 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
         value={activityName}
         onChange={(e) => handleFilterChange("activityName", e.target.value)}
         placeholder="Actividad"
-        size={1.5}
+        size={1.3}
       />
       <FilterField
         value={state}
@@ -116,10 +133,19 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
         value={typeActivity}
         onChange={(e) => handleFilterChange("typeActivity", e.target.value)}
         placeholder="Tipo"
-        size={isTablet ? 1 : 1.4}
+        size={isTablet ? 1 : 1.1}
         maxLength={15}
       />
+
       <FilterField
+        value={sectors}
+        onChange={(e) => handleFilterChange("sectors", e.target.value)}
+        placeholder="Sector"
+        size={isTablet ? 1 : 1.3}
+        maxLength={15}
+      />
+
+      {/* <FilterField
         value={cwaNumber}
         onChange={(e) => handleFilterChange("cwaNumber", e.target.value)}
         placeholder="Número CWA"
@@ -131,28 +157,31 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
         onChange={(e) => handleFilterChange("typeOfContract", e.target.value)}
         placeholder="Tipo de  contrato"
         size={1.3}
-      />
+      /> */}
 
-
-
-
-      <FilterField
-        value={responsible}
-        onChange={(e) => handleFilterChange("responsible", e.target.value)}
-        placeholder="Responsable"
-        size={1}
-      />
       <FilterField
         value={initialDate}
         onChange={(e) => handleFilterChange("initialDate", e.target.value)}
         placeholder="Fecha Inicio"
-        size={1.4}
+        size={1.2}
+      />
+      <FilterField
+        value={openingDate}
+        onChange={(e) => handleFilterChange("openingDate", e.target.value)}
+        placeholder="Apertura"
+        size={1.45}
+      />
+      <FilterField
+        value={closingDate}
+        onChange={(e) => handleFilterChange("closingDate", e.target.value)}
+        placeholder="Cierre"
+        size={1.5}
       />
       <FilterField
         value={endDate}
         onChange={(e) => handleFilterChange("endDate", e.target.value)}
         placeholder="Fecha Fin"
-        size={1.4}
+        size={1.1}
       />
 
       {/* <FilterField

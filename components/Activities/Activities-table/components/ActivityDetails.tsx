@@ -7,6 +7,7 @@ interface ActivityDetailsProps {
     type_of_contract: string;
     state: string;
     client_email: string;
+    client_name: string;
     client_phone: string;
     responsible_name: string;
     responsible_email: string;
@@ -53,12 +54,7 @@ const ActivityDetails = ({ activity }: ActivityDetailsProps) => {
           </Typography>
           <Typography>{activity.type_activity}</Typography>
         </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Contrato
-          </Typography>
-          <Typography>{activity.type_of_contract}</Typography>
-        </Grid>
+    
         <Grid item xs={6}>
           <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
             Estado
@@ -67,45 +63,12 @@ const ActivityDetails = ({ activity }: ActivityDetailsProps) => {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Email del Cliente
+             Cliente
           </Typography>
-          <Typography>{activity.client_email}</Typography>
+          <Typography>{activity.client_name}</Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Teléfono del Cliente
-          </Typography>
-          <Typography>{activity.client_phone}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Responsable
-          </Typography>
-          <Typography>{activity.responsible_name}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Email del Responsable
-          </Typography>
-          <Typography>{activity.responsible_email}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Teléfono del Responsable
-          </Typography>
-          <Typography>{activity.responsible_phone}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Cantidad de Expositores
-          </Typography>
-          <Typography>{activity.expositors_quantity}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Valor de la Entrada
-          </Typography>
-          <Typography>{activity.ticket_value}</Typography>
+         
         </Grid>
         {/* Agrega más campos de manera similar */}
       </Grid>

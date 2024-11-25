@@ -34,85 +34,86 @@ const ClientData: React.FC = () => {
   const [clientsToPick, setClientsToPick] = useState<any[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
 
-  useEffect(() => {
-    const getClients = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/clients`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setClientsToPick(data); // Asegúrate de que los datos contengan un array de objetos con `id` y `name`
-        } else {
-          console.error("Error al obtener los clientes");
-        }
-      } catch (error) {
-        console.error("Error en la solicitud:", error);
-      }
-    };
-    getClients();
-  }, []);
+  // useEffect(() => {
+  //   const getClients = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_API_BASE}/clients`
+  //       );
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setClientsToPick(data); // Asegúrate de que los datos contengan un array de objetos con `id` y `name`
+  //       } else {
+  //         console.error("Error al obtener los clientes");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error en la solicitud:", error);
+  //     }
+  //   };
+  //   getClients();
+  // }, []);
 
-  const handleClientIdChange = (
-    event: React.SyntheticEvent,
-    value: { id: number; name: string } | null
-  ) => {
-    if (value) {
-      // Actualiza el estado local para el ID del cliente
-      setSelectedClientId(value.id);
-      
-      // Usa el store de Zustand para actualizar el clientId en el estado global
-      useEventStore.setState((state) => ({
-        ...state,
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            clientData: {
-              ...state.eventData.logistics.clientData,
-              client: {
-                ...state.eventData.logistics.clientData.client,
-                clientId: value.id,  // Aquí actualizamos el ID del cliente
-              },
-            },
-          },
-        },
-      }));
-  
-      console.log("Client ID Set:", value.id);
-    } else {
-      // En caso de que se deseleccione, puedes resetear el clientId a null si lo deseas
-      setSelectedClientId(null);
-      useEventStore.setState((state) => ({
-        ...state,
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            clientData: {
-              ...state.eventData.logistics.clientData,
-              client: {
-                ...state.eventData.logistics.clientData.client,
-                clientId: null,  // Aquí estamos reseteando el clientId
-              },
-            },
-          },
-        },
-      }));
-  
-      console.log("Client ID Cleared");
-    }
-  };
-  
+  // const handleClientIdChange = (
+  //   event: React.SyntheticEvent,
+  //   value: { id: number; name: string } | null
+  // ) => {
+  //   if (value) {
+  //     // Actualiza el estado local para el ID del cliente
+  //     setSelectedClientId(value.id);
 
-  
+  //     // Usa el store de Zustand para actualizar el clientId en el estado global
+  //     useEventStore.setState((state) => ({
+  //       ...state,
+  //       eventData: {
+  //         ...state.eventData,
+  //         logistics: {
+  //           ...state.eventData.logistics,
+  //           clientData: {
+  //             ...state.eventData.logistics.clientData,
+  //             client: {
+  //               ...state.eventData.logistics.clientData.client,
+  //               clientId: value.id, // Aquí actualizamos el ID del cliente
+  //             },
+  //           },
+  //         },
+  //       },
+  //     }));
 
-  
+  //     console.log("Client ID Set:", value.id);
+  //   } else {
+  //     // En caso de que se deseleccione, puedes resetear el clientId a null si lo deseas
+  //     setSelectedClientId(null);
+  //     useEventStore.setState((state) => ({
+  //       ...state,
+  //       eventData: {
+  //         ...state.eventData,
+  //         logistics: {
+  //           ...state.eventData.logistics,
+  //           clientData: {
+  //             ...state.eventData.logistics.clientData,
+  //             client: {
+  //               ...state.eventData.logistics.clientData.client,
+  //               clientId: null, // Aquí estamos reseteando el clientId
+  //             },
+  //           },
+  //         },
+  //       },
+  //     }));
+
+  //     console.log("Client ID Cleared");
+  //   }
+  // };
 
   const handleClientPhoneChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setClientData("phoneNumber", event.target.value);
+  };
+
+  const handleClientNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setClientData("clientName", event.target.value);
   };
 
   const handleClientEmailChange = (
@@ -196,7 +197,7 @@ const ClientData: React.FC = () => {
         />
         <Collapse in={openClient}>
           <Box>
-            <FormLabelComponent>
+            {/* <FormLabelComponent>
               Cliente
               <Autocomplete
                 options={clientsToPick} 
@@ -213,6 +214,26 @@ const ClientData: React.FC = () => {
                 isOptionEqualToValue={(option, value) =>
                   option.id === value?.id
                 }
+              />
+            </FormLabelComponent> */}
+
+            <FormLabelComponent>
+              Nombre del Cliente
+              <CustomTextField
+                placeholder="Ingrese nombre del cliente"
+                variant="outlined"
+                fullWidth
+                value={getSafeValue(
+                  eventData.logistics.clientData.client.clientName
+                )}
+                onChange={handleClientNameChange}
+                // InputProps={{
+                //   startAdornment: (
+                //     <InputAdornment position="start">
+                //       <IconToImage icon={phone} w={20} h={20} />
+                //     </InputAdornment>
+                //   ),
+                // }}
               />
             </FormLabelComponent>
 

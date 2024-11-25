@@ -5,6 +5,11 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+interface Sector {
+  id: string;  // O el tipo adecuado que use tu sistema para identificar sectores
+  name: string;
+}
+
 export interface FiltersState {
   activity_name: string;
   type_activity: string;
@@ -15,6 +20,7 @@ export interface FiltersState {
   end_date: string;
   cwa_number: string;
   type_of_contract: string;
+  sector_activities_ids: { sector: Sector }[];
 }
 
 type ActivityContextType = {
@@ -43,6 +49,7 @@ const initialFilters = {
   endDate: "",
   cwaNumber: "",
   typeOfContract: "",
+  sectors: ""
 };
 
 const ActivityContext = createContext<ActivityContextType | undefined>(
@@ -100,6 +107,15 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
           .includes(filters.typeActivity.toLowerCase())
       );
     }
+
+    if (filters.sectors.length > 0) {
+      filtered = filtered.filter((act) => {
+        return act.sector_activities_ids?.some((sect) =>
+          sect.sector.name.toLowerCase().includes(filters.sectors.toLowerCase())
+        );
+      });
+    }
+    
 
     if (filters.responsible) {
       filtered = filtered.filter((act) =>

@@ -10,39 +10,37 @@ interface Activity {
   id: number;
   activity_name: string;
   type_activity: (typeof typeOfActivities)[number];
-  type_of_contract: (typeof typeOfContracts)[number];
+  // type_of_contract: (typeof typeOfContracts)[number];
   state: ActivityState; // Enum
   client_email: string;
   client_phone: string;
-  responsible_name: string;
-  responsible_email: string;
-  responsible_phone: string;
-  expositors_quantity: number;
-  ticket_value: number;
-  ticketOfficeLocation: string;
-  schedule_ticketoffice: string;
-  entry_place_assembly: string;
-  entry_place_dismantling: string;
-  entry_point: string;
+  // responsible_name: string;
+  // responsible_email: string;
+  // responsible_phone: string;
+  // expositors_quantity: number;
+  // ticket_value: number;
+  // ticketOfficeLocation: string;
+  // schedule_ticketoffice: string;
+  // entry_place_assembly: string;
+  // entry_place_dismantling: string;
+  // entry_point: string;
   initial_date: string;
+  initial_time: string;
   end_date: string;
-  initial_date_assembly: string;
-  initial_date_dismantling: string;
-  initial_time_assembly: string;
-  initial_time_dismantling: string;
+  end_time: string;
+  // initial_date_assembly: string;
+  // initial_date_dismantling: string;
+  // initial_time_assembly: string;
+  // initial_time_dismantling: string;
   opening_date: string;
   opening_time: string;
   closing_date: string;
   closing_time: string;
-  sector_activities_ids: [
-    {
-      id: number;
-    }
-  ];
+  sector_activities_ids: any;
   is_active: boolean;
-  cwa_name: string;
-  cwa_number: number;
-  activity_date_on_property: string;
+  // cwa_name: string;
+  // cwa_number: number;
+  // activity_date_on_property: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -69,7 +67,6 @@ export const useActivityStore = create<ActivityStore>()(
         );
         const data: Activity = await response.json();
         set({ updatedActivity: data });
-        console.log("DATAAAAAA", data);
       } catch (error) {
         console.error("Error fetching activity by ID:", error);
       }

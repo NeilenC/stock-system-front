@@ -22,6 +22,7 @@ import Toast from "../../../Toast";
 const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const eventData = useEventStore.getState().eventData;
+  const resetForm = useEventStore.getState().resetForm;
   // const { eventData } = useEventStore();
   const {fetchActivities} = useActivitiesContext()
   console.log("eventData", eventData);
@@ -72,8 +73,9 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
 
     // Fechas y horarios del evento
     initial_date: eventData.generalInfo.details.initialDate,
-    opening_date: eventData.generalInfo.details.initialDate,
-    opening_time: eventData.generalInfo.details.initialTime,
+    initial_time: eventData.generalInfo.details.initialTime,
+    opening_date: eventData.generalInfo.details.openingDate,
+    opening_time: eventData.generalInfo.details.openingTime,
     closing_date:eventData.generalInfo.details.closingDate,
     closing_time: eventData.generalInfo.details.closingTime,
     end_date: eventData.generalInfo.details.endDate,
@@ -184,6 +186,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       }
       await fetchActivities()
       handleClose()
+      resetForm()
       showToastMessage(
         "¡ Creaste una nueva Reserva !",
         "",

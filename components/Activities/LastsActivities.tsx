@@ -27,13 +27,6 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
       .replace(/\s+/g, "_"); // Reemplaza espacios con guiones bajos
   };
 
-  console.log("Estado recibido:", activities[1].state);
-  console.log("Estado normalizado:", getNormalizedState(activities[1].state));
-  console.log(
-    "Color asociado:",
-    ActivityColor[getNormalizedState(activities[1].state) as keyof typeof ActivityColor]
-  );
-  
   return (
     <>
       <Box

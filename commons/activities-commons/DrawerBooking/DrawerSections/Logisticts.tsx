@@ -19,25 +19,7 @@ import theme from "../../../../themes/theme";
 // import { SelectPicker, Stack } from 'rsuite';
 import { Stack } from "@mui/material";
 import useSectors from "../../../../hooks/useSectors";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
 
-const sectoresOptions: any = [
-  { label: "Sector 1", value: "sector1" },
-  { label: "Sector 2", value: "sector2" },
-  { label: "Sector 3", value: "sector3" },
-];
-
-const data = [
-  "Eugenia",
-  "Bryan",
-  "Linda",
-  "Nancy",
-  "Lloyd",
-  "Alice",
-  "Julia",
-  "Albert",
-].map((item) => ({ label: item, value: item }));
 
 const LogisticsSection: React.FC = () => {
   const {
@@ -122,58 +104,8 @@ const LogisticsSection: React.FC = () => {
     setLogisticsDismantling(key, value); // Adjust to use the appropriate setter method
   };
 
-  const handleDateTimeChangeAssembly = (newValue: Date | null) => {
-    if (newValue && !isNaN(newValue.getTime())) {
-      // Verifica si la fecha es válida
-      const date = newValue.toLocaleDateString("en-CA");
-      const time = newValue.toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
 
-      console.log("dismantling date", date, "time", time);
-      handleInputChangeAssembly("initialDateAssembly", date);
-      handleInputChangeAssembly("initialTimeAssembly", time);
-    } else {
-      console.error("Fecha inválida seleccionada para initialTimeAssembly");
-    }
-  };
-
-  const handleDateTimeChangeDismantling = (newValue: Date | null) => {
-    if (newValue && !isNaN(newValue.getTime())) {
-      // Verifica si la fecha es válida
-      const date = newValue.toLocaleDateString("en-CA");
-      const time = newValue.toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      console.log("dismantling date", date, "time", time);
-      handleInputChangeDismantling("initialDateDismantling", date);
-      handleInputChangeDismantling("initialTimeDismantling", time);
-    } else {
-      console.error("Fecha inválida seleccionada para Dismantling");
-    }
-  };
-
-  const handleDateTimeChangeDetails = (newValue: Date | null) => {
-    if (newValue && !isNaN(newValue.getTime())) {
-      // Verifica si la fecha es válida
-      const date = newValue.toLocaleDateString("en-CA");
-      const time = newValue.toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      handleInputChangeDetails("dateActivity", date);
-      handleInputChangeDetails("timeActivity", time);
-    } else {
-      console.error("Fecha inválida seleccionada para Details");
-    }
-  };
-
-
-
+console.log("sector sectorOptions", sectorOptions)
   return (
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
@@ -278,7 +210,6 @@ const LogisticsSection: React.FC = () => {
               <Stack spacing={10} direction="column" alignItems="flex-start">
                 <CustomAutocomplete
                   options={sectorOptions}
-                  getOptionLabel={(option: any) => option.label}
                   onChange={handleSectorSelect}
                   multiple
                   renderInput={(params: any) => (

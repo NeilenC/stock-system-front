@@ -2,10 +2,10 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useActivitiesContext } from "./Activities-table/context/useActivitiesContext";
 import ActivityTableHeader from "./Activities-table/components/ActivityHeader";
 import ActivityFilters from "./Activities-table/components/ActivityFilter";
-import ActivityTableRowItem from "./Activities-table/ActivityItemTableRow";
 
 import Pagination from "../Materials/Table/Pagination";
 import theme from "../../themes/theme";
+import ActivityTableRowItem from "./Activities-table/components/ActivityItemTableRow";
 
 const TableActivities = () => {
   const {

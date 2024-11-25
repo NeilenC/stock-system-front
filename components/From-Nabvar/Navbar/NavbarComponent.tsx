@@ -31,6 +31,7 @@ import iconButton from "../../../public/plus-icon.png";
 import info from "../../../public/navbar/info-icon.png";
 import account from "../../../public/account2.png";
 import calendar from "../../../public/calendar.png";
+import orderlist from "../../../public/orderlist.png";
 import stock from "../../../public/stockcheck.png";
 import materials from "../../../public/materials.png";
 import estadisticas from "../../../public/navbar/estadisticas.png";
@@ -94,6 +95,11 @@ const NavbarComponent = () => {
           label: "Actividades",
           href: "/gestion/actividades",
           iconSrc: calendar,
+        },
+        {
+          label: "Pedidos",
+          href: "/gestion/pedidos",
+          iconSrc: orderlist,
         },
       ],
     },

@@ -6,12 +6,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField } from "@mui/material";
 
 interface CustomDateTimePickerProps {
-  value: Dayjs | null;
+  value:any;
   onChange: (newValue: Dayjs | null) => void;
   minDate?: Dayjs;
   label?: string;
   error?: boolean;
   helperText?: string;
+  withTime?: boolean; // Nueva propiedad opcional para habilitar la hora
 }
 
 const CustomDateTimePicker: React.FC<CustomDateTimePickerProps> = ({
@@ -21,14 +22,18 @@ const CustomDateTimePicker: React.FC<CustomDateTimePickerProps> = ({
   label = "",
   error = false,
   helperText = "",
+  withTime = false, // Controla si mostramos la hora o no
 }) => {
+  // Define el formato dependiendo de si se incluye la hora o no
+  const dateFormat = withTime ? "DD/MM/YYYY HH:mm" : "DD/MM/YYYY";
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
         label={label}
         value={value}
         onChange={onChange}
-        format="DD/MM/YYYY"
+        format={dateFormat} 
         minDate={minDate}
         slotProps={{
           textField: {

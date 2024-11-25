@@ -4,6 +4,7 @@ import SectorsComponent from "../../../components/sectors/SectorsComponent";
 import Sectors from "../../../components/sectors/Sectors";
 import useSectors from "../../../hooks/useSectors";
 import Activities from "../../../components/Activities/Activities";
+import OrdersComponent from "../../../components/Orders/OrdersComponent";
 
 const Management = () => {
   const router = useRouter();
@@ -21,6 +22,9 @@ const Management = () => {
       )}
        {option === "actividades" && (
           <Activities/>
+      )}
+             {option === "pedidos" && (
+          <OrdersComponent/>
       )}
     </div>
   );

@@ -25,6 +25,7 @@ const Toast: React.FC<ToastProps> = ({ messageLeft, messageRight, color,bgcolor,
       padding: '14px 16px',
       borderRadius: '5px',
       display: 'flex',
+      zIndex: 9999,
       justifyContent: 'space-between',
       alignItems: 'center',
       boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
@@ -33,7 +34,6 @@ const Toast: React.FC<ToastProps> = ({ messageLeft, messageRight, color,bgcolor,
       top: '88px', // puedes ajustar la distancia desde el borde superior
       left: '50%',
       transform: 'translateX(-50%)', // centra horizontalmente
-      zIndex: 1300, // MUI recomienda usar 1300 o superior para estar encima de otros componentes
       textAlign: 'center',
     }}
   >
