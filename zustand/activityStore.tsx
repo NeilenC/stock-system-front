@@ -6,7 +6,7 @@ import {
   typeOfContracts,
 } from "../commons/activities-commons/DrawerBooking/enums";
 
-interface Activity {
+export interface Activity {
   id: number;
   activity_name: string;
   type_activity: (typeof typeOfActivities)[number];

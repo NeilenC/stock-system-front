@@ -70,7 +70,7 @@ const Activities = () => {
           <LastActivities activities={activities.slice(0, 3)} />
         )}
       </Box>
-      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex'}}>
+      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex',}}>
         <Select
           labelId="items-per-page-label"
           value={itemsPerPage}

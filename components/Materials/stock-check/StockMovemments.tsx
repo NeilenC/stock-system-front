@@ -13,7 +13,8 @@ interface StockMovement {
   id: number;
   user: any;
   sector: any;
-  actualStock:number
+  actualStock:number,
+  message:string,
 }
 
 const StockMovemments = ({ materialId }: { materialId: number }) => {
@@ -35,6 +36,8 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
   useEffect(() => {
     getLastActualization();
   }, [materialId]);
+console.log("stockMovements",stockMovements)
+
 
   return (
     <Box sx={{  }}>
@@ -63,6 +66,7 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
               <TableCell align="center">Cantidad Anterior <br/>(En depósito)</TableCell>
               <TableCell align="center">Depósito</TableCell>
               <TableCell align="center">Responsable</TableCell>
+              <TableCell align="center">Motivo del Cambio</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -76,6 +80,7 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
                 <TableCell align="center">{movement.previousStock}</TableCell>
                 <TableCell align="center">{movement.sector?.name}</TableCell>
                 <TableCell align="center">{movement.user?.username || 'N/C'}</TableCell>
+                <TableCell align="center">{movement.message || 'Ajuste Stock'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -5,7 +5,7 @@ import ActivityFilters from "./Activities-table/components/ActivityFilter";
 
 import Pagination from "../Materials/Table/Pagination";
 import theme from "../../themes/theme";
-import ActivityTableRowItem from "./Activities-table/components/ActivityItemTableRow";
+import ActivityRowItem from "./Activities-table/components/ActivityRowItem";
 
 const TableActivities = () => {
   const {
@@ -36,7 +36,7 @@ const TableActivities = () => {
           {/* <Box sx={{ paddingInline: 1 }}> */}
             {currentActivities.length > 0 ? (
               currentActivities.map((activity: any, index: any) => (
-                <ActivityTableRowItem
+                <ActivityRowItem
                   key={activity.id}
                   activity={activity}
                   index={index}

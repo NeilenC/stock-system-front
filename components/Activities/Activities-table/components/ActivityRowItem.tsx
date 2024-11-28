@@ -3,28 +3,24 @@ import {
   Box,
   Chip,
   Grid,
-  IconButton,
   Menu,
   MenuItem,
-  Modal,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import IconToImage from "../../../../commons/styled-components/IconImages";
 import edit from "../../../../public/edit.png";
-import search from "../../../../public/search.png";
 import deleteicon from "../../../../public/delete.png";
 import { useRouter } from "next/router";
 import ModalComponent from "../../../../commons/modals/ModalComponent";
 import { useActivityStore } from "../../../../zustand/activityStore";
-import ActivityEditForm from "../components/ActivityEditForm";
+import ActivityEditForm from "./ActivityEditForm";
 import { useActivitiesContext } from "../context/useActivitiesContext";
-import ActivityDetails from "../components/ActivityDetails";
+import ActivityDetails from "./ActivityDetails";
 import { format, parseISO } from "date-fns";
 import { ActivityColor } from "../../../../commons/activities-commons/DrawerBooking/enums";
 import dayjs from "dayjs";
 
-const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
+const ActivityRowItem = ({ activity, onEdit, index }: any) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -327,4 +323,4 @@ const ActivityTableRowItem = ({ activity, onEdit, index }: any) => {
   );
 };
 
-export default ActivityTableRowItem;
+export default ActivityRowItem;

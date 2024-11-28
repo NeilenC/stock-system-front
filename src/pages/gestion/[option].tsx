@@ -11,21 +11,16 @@ const Management = () => {
   const { option } = router.query;
   const { salas, setSalas } = useSectors();
 
-
   return (
     <div>
       {/* Based on 'option', you can render different content */}
       {option === "sectors" && (
-        <SectorsComponent  >
-          <Sectors salas={salas} setSalas={setSalas}/>
+        <SectorsComponent>
+          <Sectors salas={salas} setSalas={setSalas} />
         </SectorsComponent>
       )}
-       {option === "actividades" && (
-          <Activities/>
-      )}
-             {option === "pedidos" && (
-          <OrdersComponent/>
-      )}
+      {option === "actividades" && <Activities />}
+      {option === "pedidos" && <OrdersComponent />}
     </div>
   );
 };
