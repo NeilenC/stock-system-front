@@ -55,7 +55,7 @@ const SectorEditForm = ({
       console.error("Error fetching sector data:", error);
     }
   };
-
+console.log("sectordata", sectorData)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     let isValid = true;
@@ -149,7 +149,7 @@ const SectorEditForm = ({
           {renderHelperText("square_meters")}
         </FormControl>
 
-        <FormControl
+        {/* <FormControl
           sx={{ flex: 1 }}
           margin="normal"
           required
@@ -166,7 +166,7 @@ const SectorEditForm = ({
             onChange={handleChange("number_of_bathrooms")}
           />
           {renderHelperText("number_of_bathrooms")}
-        </FormControl>
+        </FormControl> */}
       </Box>
 
       <FormControl fullWidth margin="normal">

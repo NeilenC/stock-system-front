@@ -125,7 +125,7 @@ const SectorFormCreate = () => {
             </FormHelperText>
           )}
         </FormControl>
-
+{/* 
         <FormControl
           sx={{ flex: 1 }}
           margin="normal"
@@ -168,7 +168,7 @@ const SectorFormCreate = () => {
               La cantidad de baños es requerida
             </FormHelperText>
           )}
-        </FormControl>
+        </FormControl> */}
       </Box>
 
       <FormControl fullWidth margin="normal">

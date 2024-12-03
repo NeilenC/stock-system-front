@@ -170,6 +170,9 @@ console.log("createMemoActivityDto", createMemoActivityDto)
       anchor="right"
       open={isOpen}
       onClose={handleClose}
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation(), 
+      }}
       sx={{
         flexShrink: 0,
         "& .MuiDrawer-paper": {

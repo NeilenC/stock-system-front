@@ -1,6 +1,6 @@
 // CreateCategoryModal.tsx
 import React, { useState, useEffect } from "react";
-import { Typography, Snackbar, Modal, Box, Divider, FormHelperText, IconButton } from "@mui/material";
+import { Typography, Snackbar, Modal, Box, Divider, FormHelperText } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import { CustomTextField, FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
@@ -30,12 +30,18 @@ const modalStyle = {
   padding: "0", // Elimina el padding para el contenedor
 };
 
-const ModalCategoryCreate = ({
+const ModalCategory = ({
   isOpen,
   onClose,
+  onCreateSuccess,
+  categoryToEdit,  // Nuevo prop para la categoría que se va a editar
+  isEditSucces
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onCreateSuccess?: () => void;
+  categoryToEdit?: any;  // Si está presente, indica que es un modal de edición
+  isEditSucces?: any
 }) => {
   const [categoryName, setCategoryName] = useState("");
   const { fetchCategories } = useMaterialStore();
@@ -48,11 +54,16 @@ const ModalCategoryCreate = ({
   const [error, setError] = useState(false);
 
   useEffect(() => {
-
     if (isOpen) {
       fetchCategories();
+      if (categoryToEdit) {
+        setCategoryName(categoryToEdit.category_name); 
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, categoryToEdit]);
+
+console.log("categorytoedit", categoryToEdit)
+
 
   const handleChange = (event: any) => {
     const { value } = event.target;
@@ -68,9 +79,8 @@ const ModalCategoryCreate = ({
       setError(true);
     }
   };
-  
 
-  const handleCreateCategory = async (
+  const handleCreateOrUpdateCategory = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
@@ -84,30 +94,58 @@ const ModalCategoryCreate = ({
     const body = JSON.stringify({ category_name: categoryName });
   
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: body,
+      if (categoryToEdit) {
+        // Si estamos editando, hacer una solicitud de actualización
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/materials-category/${categoryToEdit.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: body,
+          }
+        );
+
+        if (response.ok) {
+          setSnackbarMessage("Categoría actualizada exitosamente.");
+          setSnackbarSeverity("success");
+          isEditSucces(true)
+        } else {
+          const errorData = await response.json();
+          const backendMessage =
+            "Error al actualizar la categoría";
+          setSnackbarMessage(backendMessage);
+          setSnackbarSeverity("error");
         }
-      );
-  
-      if (response.ok) {
-        setSnackbarMessage("Categoría creada exitosamente.");
-        setSnackbarSeverity("success");
-        fetchCategories();
-        onClose();
       } else {
-        // Manejo de errores del backend
-        const errorData = await response.json();
-        const backendMessage =
-          "Categoría existente";
-        setSnackbarMessage(backendMessage);
-        setSnackbarSeverity("error");
+        // Si estamos creando, hacer una solicitud de creación
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: body,
+          }
+        );
+  
+        if (response.ok) {
+          setSnackbarMessage("Categoría creada exitosamente.");
+          setSnackbarSeverity("success");
+        } else {
+          const errorData = await response.json();
+          const backendMessage =
+            "Categoría existente";
+          setSnackbarMessage(backendMessage);
+          setSnackbarSeverity("error");
+        }
       }
+
+      fetchCategories();
+      onClose();
+      if (onCreateSuccess) onCreateSuccess();
     } catch (error) {
       setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
       setSnackbarSeverity("error");
@@ -115,14 +153,12 @@ const ModalCategoryCreate = ({
   
     setCategoryName("");
     setOpenSnackbar(true);
-    setError(false); // Resetear el error al enviar
+    setError(false); 
   };
-  
 
   const handleSnackbarClose = () => {
-    setOpenSnackbar(false); // Cambia el estado para ocultar el Snackbar
+    setOpenSnackbar(false); 
   };
-  
 
   return (
     <div>
@@ -134,81 +170,73 @@ const ModalCategoryCreate = ({
       >
         <Box sx={modalStyle}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',  p:1, pt:2}}>
-        
+
             <Typography
               gutterBottom
               align="center"
               sx={{ width: "100%" }}
             >
-              Crear Nueva Categoría
+              {categoryToEdit ? "Editar Categoría" : "Crear Nueva Categoría"}
             </Typography>
-          
+
           </Box>
           <Divider />
           
           <form style={{ display: "flex", flexDirection: "column", paddingInline: "25px" }}>
-  <Box sx={{ height: "200px", alignContent: "center" }}>
-    <FormLabelComponent>
-      Nombre
-      <CustomTextField
-        variant="outlined"
-        fullWidth
-        required
-        value={categoryName}
-        onChange={handleChange}
-        margin="dense"
-        error={error} // Activa el estado de error si la categoría existe
-      />
-    </FormLabelComponent>
-    <Box>
-    <Box>
-  <FormHelperText error={error} sx={{ height: "5px" }}>
-    {error ? "La categoría ya existe. Por favor, utiliza otra." : ""}
-  </FormHelperText>
-</Box>
-
-    </Box>
-  </Box>
-</form>
-
+            <Box sx={{ height: "200px", alignContent: "center" }}>
+              <FormLabelComponent>
+                Nombre
+                <CustomTextField
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={categoryName}
+                  onChange={handleChange}
+                  margin="dense"
+                  error={error} // Activa el estado de error si la categoría existe
+                />
+              </FormLabelComponent>
+              <FormHelperText error={error} sx={{ height: "5px" }}>
+                {error ? "La categoría ya existe. Por favor, utiliza otra." : ""}
+              </FormHelperText>
+            </Box>
+          </form>
 
           <Divider />
-          <Box sx={{ p: 2 , display:'flex', direction:'row', gap:2 }}>
-          <CustomButton
-          text="Cancelar"
-          onClick={onClose}
-          sx={{
-            backgroundColor: "rgba(0, 0, 0, 0.01)",
-            border: "1px solid rgba(0, 0, 0, 0.1)",
-            color: "#6e6e6e",
-            padding: "8px 8px",
-            fontSize: "16px",
-            fontWeight: "500",
-            cursor: "pointer",
-          }}
-        />
+          <Box sx={{ p: 2, display:'flex', gap: 2 }}>
             <CustomButton
-              text="Crear"
-              onClick={handleCreateCategory}
-              sx={{ }} // Asegúrate de que el botón ocupe el ancho completo
+              text="Cancelar"
+              onClick={onClose}
+              sx={{
+                backgroundColor: "rgba(0, 0, 0, 0.01)",
+                border: "1px solid rgba(0, 0, 0, 0.1)",
+                color: "#6e6e6e",
+                padding: "8px 8px",
+                fontSize: "16px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
             />
-            
+            <CustomButton
+              text={categoryToEdit ? "Actualizar" : "Crear"}
+              onClick={handleCreateOrUpdateCategory}
+            />
           </Box>
+
           <Snackbar
-  open={openSnackbar}
-  autoHideDuration={6000}
-  onClose={handleSnackbarClose}
->
-  <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
-    {snackbarMessage}
-  </Alert>
-</Snackbar>
+            open={openSnackbar}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
 
         </Box>
       </Modal>
-
     </div>
   );
 };
 
-export default ModalCategoryCreate;
+export default ModalCategory;

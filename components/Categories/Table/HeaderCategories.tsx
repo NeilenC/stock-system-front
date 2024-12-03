@@ -8,13 +8,14 @@ const HeaderCategories = () => {
 
 
   const columnNames = {
-      name: 'Nombre',
+      name: 'Nombre de la Categoría',
+      actions: 'Acciones',
       
       };
 
   return (
-    <Grid container spacing={1} sx={{ fontWeight: 'bold', textAlign: 'center', color: theme.palette.primary.dark, paddingBottom: 1, paddingTop: 2 }}>
-      <Grid item xs={2} sm={11}>{columnNames.name}</Grid>
+    <Grid container  sx={{ fontWeight: 'bold', color: theme.palette.primary.dark, p:'16px 24px', border:'1px solid #E2E8F0'}}>
+      <Grid item xs={2} sm={12}>{columnNames.name}</Grid>
       
     </Grid>
   );

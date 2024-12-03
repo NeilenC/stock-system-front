@@ -2,17 +2,23 @@ import React, { useState, useEffect } from "react";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import Toast from "../../../commons/Toast";
 import theme from "../../../themes/theme";
-import { CategoryProps, useCategoriesContext } from "../context/CategoriesContext";
+import {
+  CategoryProps,
+  useCategoriesContext,
+} from "../context/CategoriesContext";
 import HeaderCategories from "./HeaderCategories";
-import { Box, Grid,Typography } from "@mui/material";
+import { Box, Grid, MenuItem, Select, Typography } from "@mui/material";
 import TableItemCategory from "./TableItemCategory";
 import FiltersCategories from "./FiltersCategories";
 import { useModalContext } from "../../Materials/Table/context/ModalContext";
 import Pagination from "../../Materials/Table/Pagination";
+import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
+import categotiesIcon from "../../../public/category_search.png";
+import CustomButton from "../../../commons/buttons-commons/CustomButton";
+import ModalCategory from "../../Materials/Modal/ModalCategoryCreate";
 
 const initialFormData = {
   name: "",
- 
 };
 
 const CategoriesComponent = () => {
@@ -21,6 +27,7 @@ const CategoriesComponent = () => {
   const {
     currentCategories,
     handlePageChange,
+    updateItemsPerPage,
     handleFilter,
     currentPage,
     itemsPerPage,
@@ -33,7 +40,13 @@ const CategoriesComponent = () => {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false); // Estado de carga
   const [selectedCategory, setSelectedCategory] =
-    useState< CategoryProps | null>(null);
+    useState<CategoryProps | null>(null);
+
+    const handleItemsPerPageChange = (event: any) => {
+      const value = parseInt(event.target.value, 10); // 
+      updateItemsPerPage(value); 
+    };
+
   const [toastProps, setToastProps] = useState({
     messageLeft: "",
     messageRight: "",
@@ -50,14 +63,14 @@ const CategoriesComponent = () => {
     setToastProps({ messageLeft, messageRight, bgcolor, color });
     setShowToast(true);
   };
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
     setFormData(initialFormData);
+  };
 
+  const handleCreateCategorySuccess = () => {
+    fetchCategories();
   };
 
   const handleEdit = (categoryId: number) => {
@@ -82,29 +95,45 @@ const CategoriesComponent = () => {
     setSelectedCategory(null); // Limpiar el Category seleccionado al cerrar el modal
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = async () => {};
 
-  };
-  
-
-  const handleCreateCategory = async (formData: any) => {
-    
-  };
+  const handleCreateCategory = async (formData: any) => {};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    
-  };
-
+  ) => {};
+  console.log("itemsperpage", itemsPerPage)
 
   return (
     <>
-      <Box sx={{}}>
+      <SectionComponent text="Categorías" icon={categotiesIcon}>
+        {/* <CustomButton text="Limpiar Filtros" /> */}
+        <CustomButton
+          text="Crear Categoría "
+          onClick={() => setOpenModalCreate(true)}
+        />
+      </SectionComponent>
+     
+
+      <Box
+        sx={{
+          justifyContent: "center",
+          alignItems: "center", 
+          paddingBlock: "10px",
+          paddingInline: "16px",
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: "16px",
+            border: "1px solid #E2E8F0",
+            overflow: "hidden",
+          }}
+        >
+        <FiltersCategories handleFilter={handleFilter} />
         <Grid container>
           <HeaderCategories />
-          <FiltersCategories handleFilter={handleFilter} />
-
+          
           <Box
             sx={{
               height: "450px",
@@ -144,37 +173,14 @@ const CategoriesComponent = () => {
           itemsPerPage={itemsPerPage}
         />
 
-        {isDeleteModalOpen && (
-          <ModalComponent
-            isOpen={isDeleteModalOpen}
-            handleClose={handleDeleteModalClose}
-            onSubmit={handleDeleteConfirm}
-            title={`¿ Deseas eliminar el Category ${selectedCategory?.name} ?`}
-            fromDelete={true}
-            textButton="Eliminar"
-            width="550px"
-          >
-            {/* {selectedCategory && (
-              <CategoryDetails Category={selectedCategory} />
-            )} */} borrar?
-          </ModalComponent>
-        )}
         {openModalCreate && (
-          <ModalComponent
+          <ModalCategory
             isOpen={openModalCreate}
-            handleClose={handleCloseModalCreate}
-            title="Crear Nueva Categoría"
-            onSubmit={() => handleCreateCategory(formData)}
-            textButton="Guardar"
-            // loading={loading}
-          >
-            {/* <CreateCategoryForm
-              formData={formData}
-              handleChange={handleChange}
-              handleFileChange={handleFileChange}
-            /> */} crear?
-          </ModalComponent>
+            onClose={handleCloseModalCreate}
+            onCreateSuccess={handleCreateCategorySuccess}
+          />
         )}
+
 
         {showToast && (
           <Toast
@@ -186,6 +192,8 @@ const CategoriesComponent = () => {
           />
         )}
       </Box>
+</Box>
+
     </>
   );
 };

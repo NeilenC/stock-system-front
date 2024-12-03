@@ -39,7 +39,7 @@ const Sectors = ({ salas = [], setSalas }: { salas: any[] , setSalas:any}) => {
         const formattedSectorData = {
           ...sectorData,
           square_meters: Number(sectorData.square_meters),
-          number_of_bathrooms: Number(sectorData.number_of_bathrooms),
+          // number_of_bathrooms: Number(sectorData.number_of_bathrooms),
         };
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/sectors/${editingSectorId}`, {
@@ -79,40 +79,54 @@ const Sectors = ({ salas = [], setSalas }: { salas: any[] , setSalas:any}) => {
       }
     }
   };
-
+  console.log("sectorData", sectorData)
   const handleDeleteSector = async (sectorId: number) => {
-  try {
-    // Realiza la solicitud PATCH para actualizar el sector a inactivo
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/sectors/${sectorId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ is_active: false }), // Suponiendo que el backend maneja la eliminación lógica así
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete sector: ${response.statusText}`);
+    try {
+      // Realiza la solicitud PATCH para actualizar el sector a inactivo
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/sectors/${sectorId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ is_active: false }), 
+        }
+      );
+  
+      if (!response.ok) {
+        // Analizar el error devuelto por el backend
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete sector');
+      }
+  
+      // Actualiza el estado local para reflejar la eliminación
+      setSalas((prevSalas: any) => prevSalas.filter((sector: any) => sector.id !== sectorId));
+      showToastMessage(
+        'Sector eliminado con éxito',
+        '',
+        theme.palette.success.light,
+        'white'
+      );
+    } catch (error: any) {
+      if (error.message.includes('associated')) {
+        showToastMessage(
+            'No se puede desactivar el sector porque tiene asociaciones.',
+            'Elimina las relaciones antes de continuar.',
+            theme.palette.error.light,
+            'black'
+        );
+    } else {
+        showToastMessage(
+            'Error al desactivar el sector. Intente nuevamente',
+            'Intente de nuevo',
+            theme.palette.error.light,
+            'black'
+        );
     }
-
-    // Actualiza el estado local para reflejar la eliminación
-    setSalas((prevSalas:any) => prevSalas.filter((sector:any) => sector.id !== sectorId));
-    showToastMessage(
-      "Sector eliminado con éxito",
-      "",
-      theme.palette.success.light,
-      "white"
-    );
-  } catch (error) {
-    console.error("Error deleting sector:", error);
-    showToastMessage(
-      "Error al eliminar el sector. Intente nuevamente",
-      "Intente de nuevo",
-      theme.palette.error.light,
-      "black"
-    );
-  }
-};
+    }
+  };
+  
 
 
   return (

@@ -9,7 +9,7 @@ export enum ActivityState {
     // PENDIENTE_DE_APROBACION='Pendiente de aprobación',
     // OBRAS_REPARACIONES='Obras / Reparaciones',
     // ARCHIVADO= 'Archivado',
-    // CANCELADO = 'Cancelado',
+    CANCELADO = 'Cancelado',
   }
  
   export enum ActivityColor {
@@ -22,7 +22,7 @@ export enum ActivityState {
     // OCUPACIÓN_PARCIAL_DEL_DIA ='pink',
     // DIA_COMPARTIDO='#F3A5D0',
     // OBRAS_REPARACIONES='#F3A5A5',
-    // CANCELADO = '#8A8787',
+    CANCELADO = '#8A8787',
     // ARCHIVADO='#D0D0D0',
   }
 

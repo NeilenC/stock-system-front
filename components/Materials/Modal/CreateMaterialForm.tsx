@@ -141,7 +141,7 @@ const CreateMaterialForm = ({
         </Grid>
 
         <Grid item xs={3} sm={3}>
-          <FormLabelComponent>Stock</FormLabelComponent>
+          <FormLabelComponent>Stock Inicial</FormLabelComponent>
           <CustomNumberInput
             name="distribution_stock.storaged_stock"
             value={formData.distribution_stock[0].storaged_stock}

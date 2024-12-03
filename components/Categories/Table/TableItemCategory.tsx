@@ -14,13 +14,24 @@ import search from "../../../public/search.png";
 import deleteicon from "../../../public/delete.png";
 import { useRouter } from "next/router";
 import ModalComponent from "../../../commons/modals/ModalComponent";
+import ModalCategory from "../../Materials/Modal/ModalCategoryCreate";
+import { useMaterialStore } from "../../../zustand/materialStore";
 
 const TableItemCategory = ({ category, onEdit, index }: any) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [modalCategoryDelete, setModalCategoryDelete] = useState(false);
   const [categoryId, setCategoryId] = useState<number>(0);
+  const [categoryToEdit, setCategoryToEdit] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const  [openModalEdit, setOpenModalEdit] = useState(false);
+  const [isEditSucces, setIsEditSuccess] = useState(false)
+  const { fetchCategories } = useMaterialStore();
+  
+useEffect(()=> {
+  fetchCategories()
+},[isEditSucces])
+
 
   const handleCloseModal = () => {
     setModalCategoryDelete(false);
@@ -58,24 +69,21 @@ const TableItemCategory = ({ category, onEdit, index }: any) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+console.log("category", category)
   return (
     <Grid
       container
-      spacing={1}
       sx={{
-        textAlign: "center",
-        borderBottom: "1px solid #ccc",
-        paddingBlock: 1.2,
+        p:'16px 30px',
         bgcolor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
       }}
     >
       <Grid item xs={2} sm={11}>
-        {category.category_name}
+        <Typography sx={{}}>{category.category_name}</Typography>
       </Grid>
 
       {/* Íconos de Editar y Eliminar */}
-      <Grid item xs={1} sm={0.3} sx={{ cursor: "pointer" }}>
+      <Grid item xs={1} sm={0.5} sx={{ cursor: "pointer" }}>
         <IconToImage
           icon={deleteicon}
           w={20}
@@ -104,7 +112,8 @@ const TableItemCategory = ({ category, onEdit, index }: any) => {
         >
           <MenuItem
             onClick={() => {
-              onEdit(category.id);
+              setCategoryToEdit(category); // Set the category ID to edit
+              setOpenModalEdit(true);
               handleMenuClose();
             }}
           >
@@ -136,6 +145,15 @@ const TableItemCategory = ({ category, onEdit, index }: any) => {
           </Box>
         </ModalComponent>
       )}
+
+{openModalEdit && (
+    <ModalCategory
+      isOpen={openModalEdit}
+      onClose={() => setOpenModalEdit(false)}
+      categoryToEdit={categoryToEdit}
+      isEditSucces={setIsEditSuccess}
+    />
+  )}
     </Grid>
   );
 };

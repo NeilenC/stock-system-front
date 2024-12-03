@@ -38,7 +38,7 @@ return (    <Grid container spacing={4}>
       
     </Grid>
 
-    <Grid item xs={6} md={6}>
+    {/* <Grid item xs={6} md={6}>
       <Typography
         variant="body1"
         color="textSecondary"
@@ -49,7 +49,7 @@ return (    <Grid container spacing={4}>
       <Typography>{sector.number_of_bathrooms} </Typography>
 
       
-    </Grid>
+    </Grid> */}
     
     <Grid item xs={6} md={12}>
       <Typography
