@@ -31,7 +31,12 @@ export interface EventData {
       initialTimeDismantling: string;
     };
     detailsLogistics: {
-      sectors: number[];
+      sectors: { 
+        sector_id: number; 
+        name?: string;
+        is_partially_rented: boolean; 
+        square_meters_rented: number; 
+      }[];
       dateActivity: string;
       timeActivity: string;
       entryPoint: string;
@@ -116,7 +121,9 @@ interface EventStore {
     key: keyof EventData["logistics"]["clientData"]["administrator"],
     value: string | number
   ) => void;
-  setSectors: (sectorIds: number[]) => void;
+  setSectors: (
+    sectors: { sector_id: number; is_partially_rented: boolean; square_meters_rented: number }[]
+  ) => void;
   resetForm: () => void;
 }
 
@@ -154,7 +161,13 @@ const useEventStore = create<EventStore>((set) => ({
         initialTimeDismantling: "",
       },
       detailsLogistics: {
-        sectors: [],
+        sectors: [
+        //   { 
+        //   sector_id: 0,
+        //   is_partially_rented: false,
+        //   square_meters_rented: 0,
+        // }
+      ],
         dateActivity: "",
         timeActivity: "",
         entryPoint: "",
@@ -264,19 +277,22 @@ const useEventStore = create<EventStore>((set) => ({
       },
     })),
 
-  setSectors: (sectorIds: number[]) =>
-    set((state) => ({
-      eventData: {
-        ...state.eventData,
-        logistics: {
-          ...state.eventData.logistics,
-          detailsLogistics: {
-            ...state.eventData.logistics.detailsLogistics,
-            sectors: sectorIds,
+    setSectors: (
+      sectors: { sector_id: number; is_partially_rented: boolean ; square_meters_rented: number}[]
+    ) =>
+      set((state) => ({
+        eventData: {
+          ...state.eventData,
+          logistics: {
+            ...state.eventData.logistics,
+            detailsLogistics: {
+              ...state.eventData.logistics.detailsLogistics,
+              sectors: sectors,
+            },
           },
         },
-      },
-    })),
+      })),
+    
 
   setTicketOfficeDetails: (key, value) =>
     set((state) => ({

@@ -8,13 +8,14 @@ import React, {
 
 export interface FiltersOrderState {
   creation_date: string;
+  activity: string;
   materials: string;
   responsible: string;
   state: string;
 }
 
 type OrderContextType = {
-  Order: FiltersOrderState[];
+  order: FiltersOrderState[];
   currentOrder: FiltersOrderState[];
   addOrder: (material: FiltersOrderState) => void;
   setOrder: React.Dispatch<React.SetStateAction<FiltersOrderState[]>>;
@@ -30,10 +31,10 @@ type OrderContextType = {
 
 const initialFilters = {
   materials: "",
+  activity: "",
   orderDate: "",
   state: "",
   responsible: "",
-  
 };
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
@@ -41,7 +42,7 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [Order, setOrder] = useState<FiltersOrderState[]>([]);
+  const [order, setOrder] = useState<FiltersOrderState[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilters);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -53,7 +54,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchOrder = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/orders`
+        `${process.env.NEXT_PUBLIC_API_BASE}/activity-order`
       );
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -73,7 +74,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const filteredOrder = useMemo(() => {
-    let filtered = Order;
+    let filtered = order;
     if (filters.materials) {
       filtered = filtered.filter((order) =>
         order.materials.toLowerCase().includes(filters.materials.toLowerCase())
@@ -98,7 +99,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     return filtered;
-  }, [Order, filters, currentPage, itemsPerPage]);
+  }, [order, filters, currentPage, itemsPerPage]);
 
   const currentOrder = useMemo(() => {
     return filteredOrder.slice(
@@ -125,7 +126,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <OrderContext.Provider
       value={{
-        Order,
+        order,
         currentOrder,
         fetchOrder,
         setOrder,

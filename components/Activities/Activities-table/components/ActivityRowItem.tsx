@@ -25,7 +25,7 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const { fetchActivities } = useActivitiesContext();
-  const { fetchActivityById, setActivity, updatedActivity } =
+  const { fetchActivityById, setActivity, activityToUpdate } =
     useActivityStore();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedIdToDelete, setSelectedIdToDelete] = useState<number | null>(
@@ -93,22 +93,7 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
   
 
   const handleSaveChanges = async () => {
-    if (updatedActivity) {
-      // Crear una copia del objeto actualizado
-      const { id, ...activityToSend } = updatedActivity; // Excluir el campo id
-
-      // Transformar los sectores en un arreglo de ids
-      if (Array.isArray(activityToSend.sector_activities_ids)) {
-        activityToSend.sector_activities_ids =
-          activityToSend.sector_activities_ids.map(
-            (sector: any) => sector.sector.id // Extraer solo el id de cada sector
-          );
-      }
-
-      console.log(
-        "Datos de la actividad editada (transformada):",
-        activityToSend
-      );
+    if (activityToUpdate) {
 
       try {
         const sendUpdate = await fetch(
@@ -118,7 +103,7 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(activityToSend),
+            body: JSON.stringify(activityToUpdate),
           }
         );
 
@@ -137,8 +122,6 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
       }
     }
   };
-
-  console.log("SELECTED ID", selectedIdToDelete);
 
   const handleDeactivateActivity = async (idToDelete: number | null) => {
     if (!idToDelete) {
@@ -169,7 +152,8 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
     }
   };
   
-  
+
+
   return (
     <Grid
       container
@@ -303,7 +287,9 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
           onSubmit={handleSaveChanges}
           handleClose={handleCloseModal}
           textButton="Editar"
+          width="70%"
         >
+          
           <ActivityEditForm activityId={selectedId} />
         </ModalComponent>
       )}

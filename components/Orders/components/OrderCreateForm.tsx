@@ -58,7 +58,7 @@ const OrderCreateForm = ({
     setOrderItems([]);
     localStorage.removeItem("orderItems");
   };
-
+console.log("orderItems", orderItems)
   useEffect(() => {
     const fetchAllActivities = async () => {
       try {
@@ -165,7 +165,7 @@ const OrderCreateForm = ({
   };
 
   const handleDeleteItem = (index: any) => {
-    setOrderItems((prev: any) => prev.filter((_, i) => i !== index));
+    setOrderItems((prev: any) => prev.filter((_:any, i:any) => i !== index));
   };
 
   return (
@@ -183,7 +183,7 @@ const OrderCreateForm = ({
           const activityId = Number(e.target.value);
           const activity = activities.find((act) => act.id === activityId);
           setSelectedActivity(activity);
-          setIsActivityLocked(true); // Bloquea automáticamente después de seleccionar
+          setIsActivityLocked(true); 
         }
       }}
       displayEmpty
@@ -347,7 +347,7 @@ const OrderCreateForm = ({
         ))}
       </Box>
     ) : (
-      <Typography>No se han agregado materiales.</Typography>
+      <Typography sx={{alignItems:'center'}}>No se han agregado materiales.</Typography>
     )}
   </Box>
   

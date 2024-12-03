@@ -119,9 +119,9 @@ const GeneralComponent: React.FC<GeneralComponentProps> = ({
         <MaterialLogistics materialToCheck={materialToCheck} updatedMaterial={updatedMaterial ? updatedMaterial : null} />
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", pl: 3 }}>
-        <MaterialCalentarComponent text={"Próximo uso"} />
-        <Box sx={{ pt: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", pl: 5 , width:'1600px'}}>
+        {/* <MaterialCalentarComponent text={"Próximo uso"} /> */}
+        <Box >
           <LastActualization materialId={materialToCheck?.id ?? 0} updatedMaterial={updatedMaterial ? updatedMaterial : null}/>
         </Box>
       </Box>

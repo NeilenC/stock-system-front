@@ -1,25 +1,48 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
 import {
   Autocomplete,
   Box,
+  Button,
   Collapse,
   FormControl,
+  IconButton,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemText,
   MenuItem,
+  Select,
+  SelectChangeEvent,
+  Switch,
   TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import {
   CustomAutocomplete,
   CustomSelect,
   CustomTextField,
   FormLabelComponent,
+  StyledSelect,
 } from "./CustomTextFields";
 import useEventStore from "../activity-hook/useEventStore";
 import theme from "../../../../themes/theme";
+
+import add from "../../../../public/add.png";
+import removeIcon from "../../../../public/close-black.png";
 // import { SelectPicker, Stack } from 'rsuite';
 import { Stack } from "@mui/material";
-import useSectors from "../../../../hooks/useSectors";
-
+import useSectors, {
+  SectorActivity,
+  SectorProps,
+} from "../../../../hooks/useSectors";
+import IconToImage from "../../../styled-components/IconImages";
+import { Activity } from "../../../../zustand/activityStore";
+interface SectorOption {
+  label: string;
+  value: number; // o el tipo adecuado según tu base de datos
+}
 
 const LogisticsSection: React.FC = () => {
   const {
@@ -30,59 +53,143 @@ const LogisticsSection: React.FC = () => {
     setSectors,
   } = useEventStore();
 
-  const [selectedSectors, setSelectedSectors] = useState<number[]>([]);
+  const initialDate = eventData.generalInfo.details.initialDate;
+  const endDate = eventData.generalInfo.details.endDate;
+
   const [openLogistics, setOpenLogistics] = useState(true);
   const [openDetalles, setOpenDetalles] = useState(true);
   const [openDesarme, setOpenDesarme] = useState(true);
   const handleToggleLogistics = () => setOpenLogistics(!openLogistics);
   const handleToggleDesarme = () => setOpenDesarme(!openDesarme);
   const handleToggleDetalles = () => setOpenDetalles(!openDetalles);
-  const { salas } = useSectors();
-  const { excludedSectors } = useSectors();
-  // Transforma los sectores en el formato { label, value } para el Autocomplete
-  const sectorOptions = excludedSectors.map((sector: any, index: number) => ({
+  const [selectedSector, setSelectedSector] = useState<number | null>(null);
+  const sectorsInGlobalState =
+    eventData.logistics.detailsLogistics.sectors.length;
+  const { sectorsToRent } = useSectors();
+
+  // Filtrar los sectores disponibles, excluyendo los que ya están en el estado global
+  const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
+    // Verifica si el sector ya está presente en el estado global
+    const isSectorInGlobalState =
+      eventData.logistics.detailsLogistics.sectors.some(
+        (globalSector) => globalSector.sector_id === sector.id // Comparación de nombres
+      );
+    return !isSectorInGlobalState;
+  });
+
+  console.log(
+    "ESTADO DE SECTORS",
+    eventData.logistics.detailsLogistics.sectors
+  );
+  // Función para verificar si hay intersección entre rangos de fechas
+  const isDateOverlap = (
+    start1: Date,
+    end1: Date,
+    start2: Date,
+    end2: Date
+  ) => {
+    return start1 <= end2 && start2 <= end1;
+  };
+
+  const availableSectors = useMemo(() => {
+    if (initialDate && endDate) {
+      return filteredSectors.filter((sector: SectorProps) => {
+        if (sector.sector_activities_ids?.length) {
+          const sectorActivities = sector.sector_activities_ids;
+          console.log("sectorActivitiess", sectorActivities);
+          // Verifica si alguna actividad tiene solapamiento y si está parcialmente alquilada
+          const isOverlappingAndPartiallyRented = sectorActivities.some(
+            (activity) =>
+              isDateOverlap(
+                new Date(initialDate),
+                new Date(endDate),
+                new Date(activity.activity.initial_date),
+                new Date(activity.activity.end_date)
+              ) && !activity.is_partially_rented
+          );
+          return !isOverlappingAndPartiallyRented;
+        }
+        return true;
+      });
+    } else {
+      return filteredSectors;
+    }
+  }, [initialDate, endDate, filteredSectors]);
+  console.log("availableSectors", availableSectors);
+
+  const sectorOptions: SectorOption[] = availableSectors.map((sector) => ({
     label: sector.name,
-    value: sector.id, // Combina id e índice para asegurar unicidad
+    value: sector.id,
   }));
 
-  // Función que se llama al seleccionar un sector
-  const handleSectorSelect = (event: any, newValue: any) => {
-    if (newValue) {
-      const newSectorIds = newValue.map((sector: any) => sector.value);
-      setSelectedSectors(newSectorIds); 
-      setSectors(newSectorIds); 
-      useEventStore.setState((state) => ({
-        ...state,
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            detailsLogistics: {
-              ...state.eventData.logistics.detailsLogistics,
-              sectors: newSectorIds, 
-            },
-          },
-        },
-      }));
-    } else {
-      setSelectedSectors([]);
-      setSectors([]);
-      useEventStore.setState((state) => ({
-        ...state,
-        eventData: {
-          ...state.eventData,
-          logistics: {
-            ...state.eventData.logistics,
-            detailsLogistics: {
-              ...state.eventData.logistics.detailsLogistics,
-              sectors: [],
-            },
-          },
-        },
-      }));
+  // Agregar un nuevo sector
+  const handleAddSector = () => {
+    if (selectedSector !== null) {
+      const selected = sectorOptions.find(
+        (sector) => sector.value === selectedSector
+      );
+      if (
+        selected &&
+        !eventData.logistics.detailsLogistics.sectors.some(
+          (s) => s.sector_id === selected.value
+        )
+      ) {
+        const updatedSector = {
+          sector_id: selected.value,
+          name: selected.label,
+          is_partially_rented: false,
+          square_meters_rented: 0,
+        };
+
+        // Actualizar el estado global
+        setSectors([
+          ...eventData.logistics.detailsLogistics.sectors,
+          updatedSector,
+        ]);
+      }
+      setSelectedSector(null);
     }
   };
-  
+
+  // Eliminar un sector
+  const handleRemoveSector = (sectorId: number) => {
+    const updatedSectors = eventData.logistics.detailsLogistics.sectors.filter(
+      (sector) => sector.sector_id !== sectorId
+    );
+    setSectors(updatedSectors);
+  };
+
+  // Alternar `isParciallyRented` de un sector
+  const handleToggleChange = (sectorId: number) => {
+    // Mapeamos los sectores en el estado global
+    const updatedSectors = eventData.logistics.detailsLogistics.sectors.map(
+      (sector) => {
+        // Verificamos si el sector está en availableSectors y su is_partially_rented es true
+        if (
+          availableSectors.some(
+            (availableSector) => availableSector.id === sectorId
+          ) &&
+          !sector.is_partially_rented
+        ) {
+          // Si el sector está en availableSectors, lo marcamos como 'true'
+          return { ...sector, is_partially_rented: true };
+        }
+
+        // Si el sector no está en availableSectors, lo manejamos con la lógica original
+        return sector.sector_id === sectorId
+          ? { ...sector, is_partially_rented: !sector.is_partially_rented }
+          : sector;
+      }
+    );
+
+    // Actualizamos el estado con los sectores modificados
+    setSectors(updatedSectors);
+  };
+
+  const handleSectorChange = (event: SelectChangeEvent<unknown>) => {
+    setSelectedSector(event.target.value as number);
+  };
+
   const handleInputChangeAssembly = (
     key: keyof typeof eventData.logistics.assembly,
     value: string
@@ -104,99 +211,9 @@ const LogisticsSection: React.FC = () => {
     setLogisticsDismantling(key, value); // Adjust to use the appropriate setter method
   };
 
-
-console.log("sector sectorOptions", sectorOptions)
   return (
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
-      {/* Armado */}
-      {/* <Box>
-        <SecondTitleComponent
-          onClick={handleToggleLogistics}
-          open={openLogistics}
-          text={"Armado"}
-        />
-        <Collapse in={openLogistics}>
-          <Box>
-            <FormLabelComponent>
-              Lugar de Ingreso
-              <CustomSelect
-                defaultValue=""
-                placeholder="Seleccionar área"
-                fullWidth
-                value={eventData.logistics.assembly.entryPlaceAssembly || ""}
-                onChange={(e: any) =>
-                  handleInputChangeAssembly(
-                    "entryPlaceAssembly",
-                    e.target.value
-                  )
-                }
-              >
-                <MenuItem value="Juncal y Biiilingud">
-                  Juncal y Biiilingud
-                </MenuItem>
-                <MenuItem value="Otra área">Otra área</MenuItem>
-                <MenuItem value="Otra más">Otra más</MenuItem>
-              </CustomSelect>
-            </FormLabelComponent>
-
-            <FormLabelComponent sx={{}}>
-              Fecha
-              <DateTimePicker
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateTimeChangeAssembly(newValue ? newValue.toDate() : null)
-                  }
-                  minDate={dayjs()}
-                
-                />
-            </FormLabelComponent>
-          </Box>
-        </Collapse>
-      </Box> */}
-      {/* Desarme  */}
-
-      {/* <Box>
-        <SecondTitleComponent
-          onClick={handleToggleDesarme}
-          open={openDesarme}
-          text={"Desarme"}
-        />
-        <Collapse in={openDesarme}>
-          <Box>
-            <FormLabelComponent>
-              Lugar de Ingreso
-              <CustomTextField
-                placeholder="Seleccionar área" // ACA VAN MAPEADOS TOOS LOS SECTORES
-                variant="outlined"
-                fullWidth
-                value={
-                  eventData.logistics.dismantling.entryPlaceDismantling || ""
-                }
-                onChange={(e: any) =>
-                  handleInputChangeDismantling(
-                    "entryPlaceDismantling",
-                    e.target.value
-                  )
-                }
-              />
-            </FormLabelComponent>
-
-            <FormLabelComponent>
-              Fecha
-              <DateTimePicker
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateTimeChangeDismantling(newValue ? newValue.toDate() : null)
-                  }
-                  minDate={dayjs()}
-                
-                />
-            </FormLabelComponent>
-          </Box>
-        </Collapse>
-      </Box> */}
-
-      {/* Más Detalles  */}
-
       <Box>
         <SecondTitleComponent
           onClick={handleToggleDetalles}
@@ -207,60 +224,161 @@ console.log("sector sectorOptions", sectorOptions)
           <Box>
             <FormLabelComponent>
               Areas Arrendadas
-              <Stack spacing={10} direction="column" alignItems="flex-start">
-                <CustomAutocomplete
-                  options={sectorOptions}
-                  onChange={handleSectorSelect}
-                  multiple
-                  renderInput={(params: any) => (
-                    <TextField
-                      {...params}
-                      label="Seleccionar Sectores"
-                      variant="outlined"
-                      sx={{pb:2}}
-                    />
+              <Stack spacing={2} direction="column" alignItems="flex-start">
+                {/* Container for Select and Add Button in the same line */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    width: "100%",
+                  }}
+                >
+                  {/* Select for choosing sectors */}
+                  <FormControl fullWidth>
+                    <StyledSelect
+                      labelId="sector-select-label"
+                      value={selectedSector || ""}
+                      onChange={handleSectorChange}
+                      displayEmpty
+                      fullWidth
+                      inputProps={{
+                        "aria-hidden": undefined, // Ensure aria-hidden is not applied
+                      }}
+                    >
+                      {sectorOptions.map((sector, index) => {
+                        // Find the sector object from the available sectors
+                        const sectorData = availableSectors.find(
+                          (s) => s.id === sector.value
+                        );
+
+                        return (
+                          <MenuItem
+                            key={index}
+                            value={sector.value}
+                            disabled={!initialDate && !endDate}
+                            sx={{
+                              backgroundColor: sectorData
+                                ?.sector_activities_ids?.map((sec) => {console.log(sec?.is_partially_rented)} )
+                                ?  "transparent"
+                                : "primary.light",
+                            }}
+                          >
+                            {sector.label}
+                          </MenuItem>
+                        );
+                      })}
+                    </StyledSelect>
+                  </FormControl>
+
+                  {/* Add Sector Button */}
+                  <Tooltip title="Agregar Sector" arrow>
+                    <span>
+                      <IconToImage
+                        icon={add}
+                        w={24}
+                        h={24}
+                        onClick={handleAddSector}
+                        sx={{
+                          alignItems: "center",
+                          cursor: "pointer",
+                          opacity: selectedSector !== null ? 1 : 0.5,
+                        }}
+                      />
+                    </span>
+                  </Tooltip>
+                </Box>
+
+                {/* Section Header */}
+                {sectorsInGlobalState > 0 && (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Areas Seleccionadas
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                      Ocupación total / parcial
+                    </Typography>
+                  </Box>
+                )}
+
+                {/* List of added sectors */}
+                <List
+                  sx={{
+                    width: "100%",
+                    bgcolor: sectorsInGlobalState ? "primary.light" : null,
+                  }}
+                >
+                  {sectorsInGlobalState > 0 && (
+                    <List sx={{ width: "100%" }}>
+                      {eventData.logistics.detailsLogistics.sectors.map(
+                        (sector, index) => (
+                          <ListItem
+                            key={index}
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <ListItemText
+                              primary={sector.name}
+                              sx={{ flexGrow: 1 }}
+                            />
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                              }}
+                            >
+                              <Switch
+                                checked={sector.is_partially_rented}
+                                onChange={() =>
+                                  handleToggleChange(sector.sector_id)
+                                }
+                                sx={{
+                                  "& .MuiSwitch-switchBase.Mui-checked": {
+                                    color: "white",
+                                  },
+                                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                    {
+                                      backgroundColor: "secondary.main",
+                                    },
+                                  "& .MuiSwitch-track": {
+                                    backgroundColor: "gray",
+                                  },
+                                }}
+                              />
+
+                              <Tooltip title="Eliminar sector" arrow>
+                                <IconToImage
+                                  icon={removeIcon}
+                                  w={20}
+                                  h={20}
+                                  onClick={() =>
+                                    handleRemoveSector(sector.sector_id)
+                                  }
+                                  sx={{
+                                    cursor: "pointer",
+                                    "&:hover": { color: "blue" },
+                                  }}
+                                />
+                              </Tooltip>
+                            </Box>
+                          </ListItem>
+                        )
+                      )}
+                    </List>
                   )}
-                />
+                </List>
               </Stack>
             </FormLabelComponent>
-            {/* <FormLabelComponent>
-              Horario de actividad en Predio
-              <CustomTextField
-                placeholder="Seleccionar la fecha "
-                variant="outlined"
-                fullWidth
-                // value={eventData.logistics.detailsLogistics.sectors || ""} 
-                // onChange={(e: any) => handleInputChangeDetails('sectors', e.target.value)}
-              />
-              <CustomDateTimePicker
-                value={
-                  eventData.logistics.detailsLogistics.dateActivity
-                    ? new Date(
-                        `${eventData.logistics.assembly.initialDateAssembly}T${
-                          eventData.logistics.detailsLogistics.timeActivity ||
-                          "00:00"
-                        }`
-                      )
-                    : null
-                }
-                onChange={handleDateTimeChangeDetails}
-              />
-            </FormLabelComponent> */}
-            {/* <FormControl fullWidth sx={{ mb: 2 }}>
-              <FormLabelComponent>Ingreso al Público</FormLabelComponent>
-              <CustomSelect
-                fullWidth
-                defaultValue=""
-                placeholder="Seleccionar áreas"
-                value={eventData.logistics.detailsLogistics.entryPoint || ""}
-                onChange={(e: any) =>
-                  handleInputChangeDetails("entryPoint", e.target.value)
-                }
-              >
-                <MenuItem value="sector1">sector 1</MenuItem>
-                <MenuItem value="sector2">sector 2</MenuItem>
-              </CustomSelect>
-            </FormControl> */}
 
             <TextField
               sx={{

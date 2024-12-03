@@ -106,9 +106,9 @@ const GeneralInfoContent: React.FC = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormLabelComponent>
-                Nombre del evento
+                Nombre de la actividad
                 <CustomTextField
-                  placeholder="Ingresa nombre del evento"
+                  placeholder="Ingresa nombre de la actividad"
                   variant="outlined"
                   fullWidth
                   value={eventData.generalInfo.details.nameEvent}
@@ -121,7 +121,7 @@ const GeneralInfoContent: React.FC = () => {
 
             <Grid item xs={12}>
               <FormLabelComponent>
-                Fecha inicio del evento
+                Fecha inicio / Inicio Armado
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.initialDate
@@ -143,7 +143,7 @@ const GeneralInfoContent: React.FC = () => {
 
             <Grid item xs={12}>
               <FormLabelComponent>
-                Fecha Apertura al público
+                Fecha Apertura al público / Fin Armado
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.openingDate
@@ -165,7 +165,7 @@ const GeneralInfoContent: React.FC = () => {
 
             <Grid item xs={12}>
               <FormLabelComponent>
-                Fecha Cierre al público
+                Fecha Cierre al público / Inicio Desarme
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.closingDate
@@ -187,7 +187,7 @@ const GeneralInfoContent: React.FC = () => {
 
             <Grid item xs={12}>
               <FormLabelComponent>
-                Fecha finalización
+                Fecha finalización / Fin Desarme
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.endDate

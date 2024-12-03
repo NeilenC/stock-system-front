@@ -16,7 +16,7 @@ import theme from "../../themes/theme";
 interface LastActivitiesProps {
   activities: Array<any>;
 }
-const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
+const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
   const getNormalizedState = (state: string): string => {
     return state
       .trim()
@@ -37,12 +37,12 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
         }}
       >
         {/* Título alineado dentro del contenedor */}
-        <Typography variant="h5" fontWeight="bold" sx={{ p: "20px" }}>
+        {/* <Typography variant="h5" fontWeight="bold" sx={{ p: "10px 20px" }}>
           Próximos Eventos
-        </Typography>
+        </Typography> */}
 
         {/* Contenedor de las actividades */}
-        <Grid container sx={{ paddingInline: "20px", maxWidth: "1300px" }}>
+        <Grid container sx={{ paddingInline: "20px", maxWidth: "1300px" , pt:3}}>
           {activities.map((activity: any, index: any) => (
             <Grid item xs={12} sm={6} md={4} key={activity.id}>
               <Card
@@ -55,6 +55,9 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
                   <Typography variant="h6" fontWeight="bold" gutterBottom>
                     {activity.activity_name}
                   </Typography>
+
+                  <Divider style={{ marginBottom: "10px" }} />
+
                   <Chip
                     label={
                       ActivityState[
@@ -74,7 +77,6 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
                       color: "black",
                     }}
                   />
-                  <Divider style={{ marginBottom: "10px" }} />
 
                   {/* Campos con su valor alineado */}
                   <Grid container spacing={1} marginBottom={2}>
@@ -86,19 +88,6 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
                     <Grid item xs={7} textAlign="right">
                       <Typography variant="body2" color="text.secondary">
                         {activity.type_activity}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid container spacing={1} marginBottom={2}>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Tipo de Contrato
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6} textAlign="right">
-                      <Typography variant="body2" color="text.secondary">
-                        {activity.type_of_contract}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -132,12 +121,12 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
                   <Grid container spacing={1} marginBottom={2}>
                     <Grid item xs={6}>
                       <Typography variant="body2" color="text.secondary">
-                        Horario
+                        Horario Apertura
                       </Typography>
                     </Grid>
                     <Grid item xs={6} textAlign="right">
                       <Typography variant="body2" color="text.secondary">
-                        {activity.activity_schedule_on_property}
+                        {activity.opening_time}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -145,10 +134,12 @@ const LastActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
               </Card>
             </Grid>
           ))}
+
         </Grid>
+          <Divider sx={{width:1, paddingBlock:3,}}/>
       </Box>
     </>
   );
 };
 
-export default LastActivities;
+export default NextActivities;

@@ -8,14 +8,16 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
   const { isTablet } = useScreenSize();
 
   const {
-material,
+    material,
     state,
     responsible,
     orderDate,
+    activity,
     setState,
     setmaterial,
     setResponsible,
     setOrderDate,
+    setActivity,
     clearFilters,
   } = useOrderFiltersContext();
 
@@ -39,13 +41,16 @@ material,
       case "state":
         setState(value);
         break;
+      case "activity":
+        setActivity(value);
+        break;
       default:
         break;
     }
 
     // Collect current filter values and update
     const filters = {
-        material,
+      material,
       orderDate: orderDate,
       state,
       responsible,
@@ -58,30 +63,39 @@ material,
       container
       gap={1}
       sx={{
-        paddingInline: 1,
+        paddingInline: 3,
         textAlign: "center",
         paddingBlock: "10px",
         border: "1px solid  #E2E8F0",
       }}
     >
-      <FilterField
+      {/* <FilterField
         value={material}
         onChange={(e) => handleFilterChange("material", e.target.value)}
         placeholder="material"
         size={1.3}
+      /> */}
+
+      <FilterField
+        value={orderDate}
+        onChange={(e) => handleFilterChange("orderDate", e.target.value)}
+        placeholder="Tipo"
+        size={isTablet ? 1 : 1.6}
+        maxLength={15}
       />
+      <FilterField
+        value={activity}
+        onChange={(e) => handleFilterChange("activity", e.target.value)}
+        placeholder="Actividad"
+        size={1.6}
+        maxLength={15}
+      />
+
       <FilterField
         value={state}
         onChange={(e) => handleFilterChange("state", e.target.value)}
         placeholder="Estado"
         size={1.6}
-        maxLength={15}
-      />
-      <FilterField
-        value={orderDate}
-        onChange={(e) => handleFilterChange("orderDate", e.target.value)}
-        placeholder="Tipo"
-        size={isTablet ? 1 : 1.1}
         maxLength={15}
       />
 
@@ -92,7 +106,6 @@ material,
         size={isTablet ? 1 : 1.3}
         maxLength={15}
       />
-
     </Grid>
   );
 };

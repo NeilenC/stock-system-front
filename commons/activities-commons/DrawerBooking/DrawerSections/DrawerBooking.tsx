@@ -13,8 +13,6 @@ import { DrawerBookingProps } from "./models/DrawerBookingProps";
 import useEventStore from "../activity-hook/useEventStore";
 import GeneralInfoContent from "./GeneralInfo";
 import LogisticsSection from "./Logisticts";
-import OperationalDetails from "./OperationalDetails";
-
 import ClientData from "./ClientData";
 import { useActivitiesContext } from "../../../../components/Activities/Activities-table/context/useActivitiesContext";
 import Toast from "../../../Toast";
@@ -47,6 +45,8 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
 
   const handleClose = () => {
     setIsOpen(false);
+    resetForm()
+
   };
   const clientIdFromStore = useEventStore(
     (state) => state.eventData.logistics.clientData.client.clientId
@@ -55,23 +55,29 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     (state) => state.eventData.logistics.detailsLogistics.sectors
   );
 
+  useEffect(() => {
+    // if (eventData?.logistics?.detailsLogistics?.sectors) {
+    //   console.log("SECTORES GLOBAL ACTUALIZADOS", eventData.logistics.detailsLogistics.sectors?.map(
+    //     (sector) => ({
+    //       sector_id: sector.sector_id, 
+    //       is_partially_rented: sector.is_partially_rented, 
+    //       square_meters_rented: sector.square_meters_rented || 0, 
+    //     })
+    //   ) );
+    // }
+  }, [eventData]);
+  
+
+  
   // Crea el payload que se ajusta a tu DTO `CreateMemoActivityDto`
   const createMemoActivityDto = {
-    // Datos del cliente
-    client_id: clientIdFromStore, // Asigna el client_id
+    // //Datos del cliente
+    client_id: clientIdFromStore,
+    client_name: eventData.logistics.clientData.client.clientName,
     client_phone: eventData.logistics.clientData.client.phoneNumber,
     client_email: eventData.logistics.clientData.client.email,
-
-    // Nombre del evento y tipo de contrato
     activity_name: eventData.generalInfo.details.nameEvent,
-    type_activity: eventData.generalInfo.details.typeEvent, // Mapea el tipo de actividad
-    // type_of_contract: eventData.generalInfo.details.typeContract,
-
-    // Datos de CWA
-    // cwa_name: eventData.generalInfo.details.CWAname,
-    // cwa_number: eventData.generalInfo.details.CWAnumber, 
-
-    // Fechas y horarios del evento
+    type_activity: eventData.generalInfo.details.typeEvent,
     initial_date: eventData.generalInfo.details.initialDate,
     initial_time: eventData.generalInfo.details.initialTime,
     opening_date: eventData.generalInfo.details.openingDate,
@@ -81,63 +87,18 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     end_date: eventData.generalInfo.details.endDate,
     end_time: eventData.generalInfo.details.endTime,
     state: eventData.generalInfo.details.state,
-
-    // Datos logísticos - armado
-    // entry_place_assembly: eventData.logistics.assembly.entryPlaceAssembly,
-    // initial_date_assembly: eventData.logistics.assembly.initialDateAssembly,
-    // initial_time_assembly: eventData.logistics.assembly.initialTimeAssembly,
-    // property_activity_schedule: eventData.logistics.detailsLogistics.timeActivity,
-
-    // Datos logísticos - desmontaje
-    // entry_place_dismantling:
-    //   eventData.logistics.dismantling.entryPlaceDismantling,
-    // initial_date_dismantling:
-    //   eventData.logistics.dismantling.initialDateDismantling,
-    // initial_time_dismantling:
-    //   eventData.logistics.dismantling.initialTimeDismantling,
-
-    // Sectores
-    sector_activities_ids: eventData.logistics.detailsLogistics.sectors,
-    // Detalles logísticos adicionales
-    // activity_date_on_property: eventData.logistics.detailsLogistics.dateActivity,
-    // activity_schedule_on_property: eventData.logistics.detailsLogistics.timeActivity,
-    // entry_point: eventData.logistics.detailsLogistics.entryPoint,
+    sector_activities_ids: eventData.logistics.detailsLogistics.sectors?.map(
+      (sector) => ({
+        sector_id: sector.sector_id, 
+        is_partially_rented: sector.is_partially_rented, 
+        square_meters_rented: sector.square_meters_rented || 0, 
+      })
+    ) ,
     notes: eventData.logistics.detailsLogistics.notes,
 
-    // Detalles operativos
-    // expositors_quantity:
-    //   eventData.logistics.operationalDetails.information.expositorsQuantity,
-    // ticket_value:
-    //   eventData.logistics.operationalDetails.ticketOffice.ticketValue,
-    // area: eventData.logistics.operationalDetails.ticketOffice.area,
-    // schedule_ticketoffice:
-    //   eventData.logistics.operationalDetails.ticketOffice.schedule,
-    // ticketOfficeLocation: eventData.logistics.operationalDetails.ticketOffice.ticketOfficeLocation,
 
-    // Director técnico
-    // technical_director_name:
-    //   eventData.logistics.clientData.technicalDirector.techDirectorName.toString(),
-    // technical_director_phone:
-    //   eventData.logistics.clientData.technicalDirector.phoneNumber,
-    // technical_director_email:
-    //   eventData.logistics.clientData.technicalDirector.email,
-
-    // Responsable
-    // responsible_name:
-    //   eventData.logistics.clientData.organizerOrResponsible.responsibleName.toString(),
-    // responsible_phone:
-    //   eventData.logistics.clientData.organizerOrResponsible.phoneNumber,
-    // responsible_email:
-    //   eventData.logistics.clientData.organizerOrResponsible.email,
-
-    // Administrador
-    // administrator_name:
-    //   eventData.logistics.clientData.administrator.administratorName.toString(),
-    // administrator_phone:
-    //   eventData.logistics.clientData.administrator.phoneNumber,
-    // administrator_email: eventData.logistics.clientData.administrator.email,
   };
-
+console.log("createMemoActivityDto", createMemoActivityDto)
   // Función para enviar los datos al backend
   const [scrolling, setScrolling] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null); // Type the ref as HTMLDivElement
@@ -180,7 +141,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       if (!response.ok) {
         throw new Error(
           `Error ${response.status}: ${
-            data.message || "Error al confirmar la reserva"
+            data.message || "Error al confirmar la actividad"
           }`
         );
       }
@@ -188,15 +149,15 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       handleClose()
       resetForm()
       showToastMessage(
-        "¡ Creaste una nueva Reserva !",
+        "¡ Creaste una nueva Actividad !",
         "",
         theme.palette.success.light,
         "white"
       );
-      console.log("Reserva confirmada:", data);
+      console.log("Actividad confirmada:", data);
     } catch (error) {
       showToastMessage(
-        "Error al crear la reserva",
+        "Error al crear la actividad",
         "Intente de nuevo",
         theme.palette.error.light,
         "white"
@@ -214,7 +175,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
         "& .MuiDrawer-paper": {
           width: isMediumScreen ? "60%" : "35%",
           height: isMediumScreen ? "94vh" : "91vh",
-          top: "81px",
+          top: "82px",
           display: "flex",
           flexDirection: "column",
         },
@@ -255,7 +216,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
             alignItems: "center",
           }}
         >
-          Crear Reserva
+          Crear Actividad
         </Typography>
       </Box>
 
@@ -319,7 +280,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
             }}
             onClick={handleConfirmBooking}
           >
-            Confirmar Reserva
+            Confirmar
           </Button>
         </Box>
       </Box>

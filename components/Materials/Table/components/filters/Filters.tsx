@@ -9,6 +9,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
 
   const {
     code,
+    name,
     category,
     description,
     weight,
@@ -20,6 +21,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
     price,
     width,
     setCode,
+    setName,
     setCategory,
     setDescription,
     setWeight,
@@ -40,6 +42,9 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
       case "code":
         setCode(value);
         break;
+        case "name":
+          setName(value);
+          break;
       case "category":
         setCategory(value);
         break;
@@ -77,6 +82,7 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
     // Collect current filter values and update
     const filters = {
       code,
+      name,
       category,
       description,
       weight,
@@ -107,22 +113,28 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={code}
         onChange={(e) => handleFilterChange("code", e.target.value)}
         placeholder="Código"
-        size={1.1}
+        size={isTablet? 1 : 1.3}
+      />
+            <FilterField
+        value={name}
+        onChange={(e) => handleFilterChange("name", e.target.value)}
+        placeholder="Nombre"
+        size={isTablet? 1 : 1.2}
       />
       <FilterField
         value={category}
         onChange={(e) => handleFilterChange("category", e.target.value)}
         placeholder="Categoría"
-        size={isTablet? 1 : 1.2}
+        size={isTablet? 0.5 : 1.1}
         maxLength={15}
       />
-      <FilterField
+      {/* <FilterField
         value={description}
         onChange={(e) => handleFilterChange("description", e.target.value)}
         placeholder="Descripción"
         size={1.5}
         maxLength={15}
-      />
+      /> */}
       <FilterField
         value={weight}
         onChange={(e) => handleFilterChange("weight", e.target.value)}
@@ -133,13 +145,13 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={color}
         onChange={(e) => handleFilterChange("color", e.target.value)}
         placeholder="Color"
-        size={1.2}
+        size={1.1}
       />
       <FilterField
         value={height}
         onChange={(e) => handleFilterChange("height", e.target.value)}
         placeholder="Altura"
-        size={0.7}
+        size={0.8}
       />
 
       <FilterField
@@ -152,20 +164,20 @@ const Filters = ({ handleFilter }: { handleFilter: any }) => {
         value={stock}
         onChange={(e) => handleFilterChange("stock", e.target.value)}
         placeholder="Cantidad"
-        size={0.7}
+        size={0.65}
       />
 
       <FilterField
         value={width}
         onChange={(e) => handleFilterChange("width", e.target.value)}
         placeholder="Ancho"
-        size={0.6}
+        size={0.7}
       />
       <FilterField
         value={observations}
         onChange={(e) => handleFilterChange("observations", e.target.value)}
         placeholder="Observaciones"
-        size={isTablet ? 1.2 : 1.3}
+        size={isTablet ? 1.2 : 1.5}
       />
       <FilterField
         value={price}

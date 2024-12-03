@@ -54,23 +54,35 @@ const ModalCategoryCreate = ({
     }
   }, [isOpen]);
 
-  const handleChange = (event:  any) => {
+  const handleChange = (event: any) => {
     const { value } = event.target;
     setCategoryName(value);
-    setError(categories.includes(value)); // Verifica si la categoría ya existe
+  
+    // Resetear el error si el usuario escribe algo nuevo
+    if (error) {
+      setError(false);
+    }
+  
+    // Mantener la verificación de si la categoría ya existe
+    if (categories.includes(value)) {
+      setError(true);
+    }
   };
+  
 
-  const handleCreateCategory = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCreateCategory = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
-
+  
     // Verificar si la categoría ya existe antes de proceder
     if (categories.includes(categoryName)) {
       setError(true);
       return;
     }
-
+  
     const body = JSON.stringify({ category_name: categoryName });
-
+  
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
@@ -82,30 +94,35 @@ const ModalCategoryCreate = ({
           body: body,
         }
       );
-
+  
       if (response.ok) {
         setSnackbarMessage("Categoría creada exitosamente.");
         setSnackbarSeverity("success");
-        fetchCategories()
-        onClose()
+        fetchCategories();
+        onClose();
       } else {
+        // Manejo de errores del backend
         const errorData = await response.json();
-        setSnackbarMessage(errorData.message || "Error al crear la categoría.");
+        const backendMessage =
+          "Categoría existente";
+        setSnackbarMessage(backendMessage);
         setSnackbarSeverity("error");
       }
     } catch (error) {
-      setSnackbarMessage("Error de red. Por favor intenta de nuevo.");
+      setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
       setSnackbarSeverity("error");
     }
-
+  
     setCategoryName("");
     setOpenSnackbar(true);
     setError(false); // Resetear el error al enviar
   };
+  
 
   const handleSnackbarClose = () => {
-    setOpenSnackbar(false);
+    setOpenSnackbar(false); // Cambia el estado para ocultar el Snackbar
   };
+  
 
   return (
     <div>
@@ -129,31 +146,31 @@ const ModalCategoryCreate = ({
           </Box>
           <Divider />
           
-          <form style={{ display: "flex", flexDirection: "column", paddingInline: '25px' }}>
-            <Box sx={{ height: '200px', alignContent: 'center' }}>
-              <FormLabelComponent>Nombre
-                <CustomTextField
-                  variant="outlined"
-                  fullWidth
-                  required
-                  value={categoryName}
-                  onChange={handleChange}
-                  margin="dense"
-                  error={error} // Activa el estado de error si la categoría existe
-                />
-              </FormLabelComponent>
-              <Box>
+          <form style={{ display: "flex", flexDirection: "column", paddingInline: "25px" }}>
+  <Box sx={{ height: "200px", alignContent: "center" }}>
+    <FormLabelComponent>
+      Nombre
+      <CustomTextField
+        variant="outlined"
+        fullWidth
+        required
+        value={categoryName}
+        onChange={handleChange}
+        margin="dense"
+        error={error} // Activa el estado de error si la categoría existe
+      />
+    </FormLabelComponent>
+    <Box>
+    <Box>
+  <FormHelperText error={error} sx={{ height: "5px" }}>
+    {error ? "La categoría ya existe. Por favor, utiliza otra." : ""}
+  </FormHelperText>
+</Box>
 
-              {error ? (
-                <FormHelperText error sx={{height: '5px',}}>
-                  La categoría ya existe. Por favor, utiliza otra 
-                </FormHelperText>
-              ): (
-                <Box sx={{height: '5px',}}></Box>
-              )}
-              </Box>
-            </Box>
-          </form>
+    </Box>
+  </Box>
+</form>
+
 
           <Divider />
           <Box sx={{ p: 2 , display:'flex', direction:'row', gap:2 }}>
@@ -177,15 +194,16 @@ const ModalCategoryCreate = ({
             />
             
           </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+          <Snackbar
+  open={openSnackbar}
+  autoHideDuration={6000}
+  onClose={handleSnackbarClose}
+>
+  <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+
         </Box>
       </Modal>
 

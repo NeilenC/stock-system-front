@@ -51,7 +51,7 @@ const OrdersComponent = () => {
   };
 
   
-console.log("acaaa", selectedActivity?.id)
+console.log("acaaa", currentOrder)
   
   const handleSubmit = async () => {
     const createOrderPayload = {
@@ -74,6 +74,7 @@ console.log("acaaa", selectedActivity?.id)
         body: JSON.stringify(createOrderPayload),
       });
   
+      
       if (response.ok) {
         // Maneja la respuesta del backend
         const data = await response.json();
@@ -88,29 +89,6 @@ console.log("acaaa", selectedActivity?.id)
   };
   
 
-  const mockOrders = [
-    {
-      id: 1,
-      materials: [],
-      creationDate: "20/11/2024",
-      state: "En Proceso",
-      responsible: "Neilen Monlezún",
-    },
-    {
-      id: 2,
-      materials: [],
-      creationDate: "20/11/2024",
-      state: "En Proceso",
-      responsible: "Neilen Monlezún",
-    },
-    {
-      id: 3,
-      materials: [],
-      creationDate: "20/11/2024",
-      state: "En Proceso",
-      responsible: "Neilen Monlezún",
-    },
-  ];
 
   
   return (
@@ -169,8 +147,8 @@ console.log("acaaa", selectedActivity?.id)
               }}
             >
               {/* <Box sx={{ paddingInline: 1 }}> */}
-              {mockOrders.length > 0 ? (
-                mockOrders.map((order: any, index: any) => (
+              {currentOrder.length > 0 ? (
+                currentOrder.map((order: any, index: any) => (
                   <OrderRowItem key={order.id} order={order} index={index} />
                 ))
               ) : (

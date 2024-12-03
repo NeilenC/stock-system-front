@@ -5,12 +5,13 @@ interface OrderFiltersProps {
   orderDate: string;
   responsible: string;
   state: string;
+  activity:string;
 
   setmaterial: (value: string) => void;
   setOrderDate: (value: string) => void;
   setResponsible: (value: string) => void;
   setState: (value: string) => void;
-
+  setActivity:  (value: string) => void;
 
   clearFilters: () => void;
 }
@@ -23,6 +24,7 @@ export const FiltersOrdersProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [material, setmaterial] = useState<string>("");
+  const [activity, setActivity] = useState<string>("");
   const [orderDate, setOrderDate] = useState<string>("");
   const [responsible, setResponsible] = useState<string>("");
   const [state, setState] = useState<string>("");
@@ -32,15 +34,18 @@ export const FiltersOrdersProvider: React.FC<{ children: React.ReactNode }> = ({
     setOrderDate("");
     setState("");
     setResponsible("");
+    setActivity("");
   };
 
   return (
     <OrderFilters.Provider
       value={{
+        activity,
         material,
         orderDate,
         responsible,
         state,
+        setActivity,
         setmaterial,
         setOrderDate,
         setState,

@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface FiltersContextProps {
   code: string;
+  name:string;
   category: string;
   description: string;
   weight: string;
@@ -14,6 +15,7 @@ interface FiltersContextProps {
   price: string;
   width:string;
   setCode: (value: string) => void;
+  setName: (value: string) => void;
   setCategory: (value: string) => void;
   setDescription: (value: string) => void;
   setWeight: (value: string) => void;
@@ -31,6 +33,7 @@ const FiltersContext = createContext<FiltersContextProps | undefined>(undefined)
 
 export const FiltersProvider = ({ children }: { children: React.ReactNode }) => {
   const [code, setCode] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [weight, setWeight] = useState<string>('');
@@ -44,6 +47,7 @@ export const FiltersProvider = ({ children }: { children: React.ReactNode }) => 
 
   const clearFilters = () => {
     setCode('');
+    setName('');
     setCategory('');
     setDescription('');
     setWeight('');
@@ -60,6 +64,7 @@ export const FiltersProvider = ({ children }: { children: React.ReactNode }) => 
     <FiltersContext.Provider
       value={{
         code,
+        name,
         category,
         description,
         weight,
@@ -71,6 +76,7 @@ export const FiltersProvider = ({ children }: { children: React.ReactNode }) => 
         price,
         width,
         setCode,
+        setName,
         setCategory,
         setDescription,
         setWeight,

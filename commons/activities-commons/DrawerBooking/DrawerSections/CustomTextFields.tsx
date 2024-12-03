@@ -38,7 +38,7 @@ const FormLabelComponent = styled(FormLabel)(() => ({
 
 
   
-  const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
+  export const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
   border: 1px solid ${theme.palette.info.light};  
   border-radius: 8px;        
   height: 40px;     

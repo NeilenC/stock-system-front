@@ -20,10 +20,16 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
   return (
     <Modal
       open={isOpen}
-      onClose={handleClose}
+      // onClose={handleClose}
       onSubmit={onSubmit}
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
+      onClose={(event, reason) => {
+        if (reason === "backdropClick") {
+          return; // Evitar cerrar el modal al hacer clic fuera
+        }
+        handleClose; // Permitir cerrar en otros casos
+      }}
     >
       <Box
         sx={{

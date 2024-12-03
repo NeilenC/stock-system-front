@@ -17,6 +17,7 @@ type MaterialsContextType = {
 
 const initialFilters = {
   code: '',
+  name: '',
   category: '',
   stock: '',
   color: '',
@@ -78,6 +79,11 @@ const updateItemsPerPage = (items: number) => {
     if (filters.code) {
       filtered = filtered.filter((material) =>
         material?.code.toLowerCase().includes(filters.code.toLowerCase())
+      );
+    }
+    if (filters.name) {
+      filtered = filtered.filter((material) =>
+        material?.name.toLowerCase().includes(filters.name.toLowerCase())
       );
     }
     if (filters.stock) {

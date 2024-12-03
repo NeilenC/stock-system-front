@@ -36,6 +36,7 @@ function TabComponent({ selectedTab, setSelectedTab }:any) {
     >
       <Tab label="General" value={0} />
       <Tab label="Movimiento de Stock" value={1} />
+      <Tab label="Logística del material" value={2} />
     </Tabs>
   
         </Box>

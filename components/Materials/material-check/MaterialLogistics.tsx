@@ -15,7 +15,7 @@ const MaterialLogistics = ({
   updatedMaterial,
 }: {
   materialToCheck: MaterialProps | null;
-  updatedMaterial: any;
+  updatedMaterial?: any;
 }) => {
   const [storedMaterials, setStoredMaterials] = useState<StoredMaterial[]>([]);
   const [error, setError] = useState("");

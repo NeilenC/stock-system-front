@@ -34,6 +34,8 @@ import calendar from "../../../public/calendar.png";
 import orderlist from "../../../public/orderlist.png";
 import stock from "../../../public/stockcheck.png";
 import materials from "../../../public/materials.png";
+import category from "../../../public/category_search.png";
+import stockInventory from "../../../public/inventory.png";
 import estadisticas from "../../../public/navbar/estadisticas.png";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import perfil from "../../../public/profile.png";
@@ -111,6 +113,16 @@ const NavbarComponent = () => {
           label: "Materiales",
           href: "/deposito/materiales",
           iconSrc: materials,
+        },
+        {
+          label: "Categorías",
+          href: "/deposito/categorias",
+          iconSrc: category,
+        },
+        {
+          label: "Stock",
+          href: "/deposito/stock",
+          iconSrc: stockInventory,
         },
       ],
     },

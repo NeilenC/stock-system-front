@@ -16,7 +16,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import DrawerBooking from "../../commons/activities-commons/DrawerBooking/DrawerSections/DrawerBooking";
-import LastActivities from "./LastsActivities";
+import LastActivities from "./NextActivities";
 import TableActivities from "./TableActivities";
 import { useActivitiesContext } from "./Activities-table/context/useActivitiesContext";
 
@@ -52,7 +52,7 @@ const Activities = () => {
         <CustomButton
           icon={add}
           onClick={handleOpenDrawer}
-          text={"Crear Reserva"}
+          text={"Crear Actividad"}
         />
       </SectionComponent>
       <Box sx={{ }}>

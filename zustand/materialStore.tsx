@@ -67,6 +67,7 @@ export const useMaterialStore = create<MaterialState>((set) => ({
     }
   },
 
+
   fetchCategories: async () => {
     try {
       const response = await fetch("http://localhost:8080/materials-category");

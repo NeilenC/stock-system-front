@@ -10,6 +10,7 @@ import { MaterialProps } from "../../../../components/Materials/materialsProps";
 import GeneralComponent from "../../../../components/Materials/stock-check/GeneralComponent";
 import StockMovemments from "../../../../components/Materials/stock-check/StockMovemments";
 import { useRouter } from "next/router";
+import MaterialLogistics from "../../../../components/Materials/material-check/MaterialLogistics";
 
 const MaterialMovements = () => {
   const router = useRouter();
@@ -75,6 +76,11 @@ const MaterialMovements = () => {
           {selectedTab === 1 && (
             <Box sx={{ height: "100vh" }}>
               <StockMovemments materialId={material?.id ?? 0} />
+            </Box>
+          )}
+           {selectedTab === 2 && (
+            <Box sx={{ height: "100vh" }}>
+              <MaterialLogistics materialToCheck={material}  />
             </Box>
           )}
         </Box>
