@@ -17,29 +17,28 @@ import AdjustStock from "./AdjustStock";
 import { useRouter } from "next/router";
 import photo from "../../../public/photo.png";
 import notphoto from "../../../public/notimage.png";
-
+import restore from "../../../public/restore.png";
 import CloseIcon from "@mui/icons-material/Close";
 import theme from "../../../themes/theme";
-// interface TableRowItemProps {
-//   material: {
-//     id: string;
-//     code: string;
-//     category: { category_name: string };
-//     description: string;
-//     weight: number;
-//     color: string;
-//     height?: number;
-//     depth: number;
-//     actual_stock: number;
-//     width: number;
-//     observations: string;
-//     price: number;
-//   };
-//   openDeleteModal: () => void;
-//   onEdit: (id: string) => void;
-//   index: number;
-// }
-const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
+import ModalComponent from "../../../commons/modals/ModalComponent";
+import MaterialDetails from "./components/MaterialDetails";
+
+const TableRowItem = ({
+  material,
+  openDeleteModal,
+  onEdit,
+  index,
+  fromInactive,
+  openReactionModal,
+}: {
+  material: any;
+  openDeleteModal: any;
+  onEdit: any;
+  index: any;
+  openReactionModal?: any
+
+  fromInactive?: any;
+}) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
@@ -93,6 +92,8 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
   const handleIconClick = () => {
     setIsImageModalOpen(true); // Abre el modal inmediatamente al hacer clic
   };
+
+  
   return (
     <Grid
       container
@@ -240,75 +241,89 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
       </Grid>
 
       {/* Íconos de Editar y Eliminar */}
-      <Grid item xs={1} sm={0.3} sx={{ cursor: "pointer" }}>
-        <ImageToIcon
-          icon={deleteicon}
-          w={20}
-          h={20}
-          onClick={openDeleteModal}
-        />
-      </Grid>
-      <Grid item xs={1} sm={0.2} sx={{ cursor: "pointer" }}>
-        <ImageToIcon
-          icon={search}
-          w={20}
-          h={20}
-          onClick={() => router.push(`/deposito/material/${material.id}`)}
-        />
-      </Grid>
-      <Grid
-        item
-        xs={1}
-        sm={0.1}
-        sx={{ cursor: "pointer", position: "relative" }}
-      >
-        <ImageToIcon w={20} h={20} icon={edit} onClick={handleEditClick} />
-        {/* Menú para editar */}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          transformOrigin={{ vertical: "top", horizontal: "left" }}
-          sx={{ zIndex: 9999 }}
-        >
-          <MenuItem
-            onClick={() => {
-              onEdit(material.id);
-              handleMenuClose();
-            }}
+      {!fromInactive ? (
+        <>
+          <Grid item xs={1} sm={0.3} sx={{ cursor: "pointer" }}>
+            <ImageToIcon
+              icon={deleteicon}
+              w={20}
+              h={20}
+              onClick={openDeleteModal}
+            />
+          </Grid>
+          <Grid item xs={1} sm={0.2} sx={{ cursor: "pointer" }}>
+            <ImageToIcon
+              icon={search}
+              w={20}
+              h={20}
+              onClick={() => router.push(`/deposito/material/${material.id}`)}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={1}
+            sm={0.1}
+            sx={{ cursor: "pointer", position: "relative" }}
           >
-            Editar
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleStockChangeClick("add");
-              handleMenuClose();
-            }}
-          >
-            Agregar Stock
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleStockChangeClick("remove");
-              handleMenuClose();
-            }}
-          >
-            Remover Stock
-          </MenuItem>
-        </Menu>
-        {/* Modal para ajustar stock */}
-        {isStockModalOpen && (
-          <AdjustStock
-            isOpen={isStockModalOpen}
-            handleClose={handleStockModalClose}
-            material={material}
-            updatedMaterial={updatedMaterial}
-            adjustmentType={stockAdjustmentType}
-            onStockUpdate={handleStockUpdate}
+            <ImageToIcon w={20} h={20} icon={edit} onClick={handleEditClick} />
+            {/* Menú para editar */}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
+              sx={{ zIndex: 9999 }}
+            >
+              <MenuItem
+                onClick={() => {
+                  onEdit(material.id);
+                  handleMenuClose();
+                }}
+              >
+                Editar
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleStockChangeClick("add");
+                  handleMenuClose();
+                }}
+              >
+                Agregar Stock
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleStockChangeClick("remove");
+                  handleMenuClose();
+                }}
+              >
+                Remover Stock
+              </MenuItem>
+            </Menu>
+            {/* Modal para ajustar stock */}
+            {isStockModalOpen && (
+              <AdjustStock
+                isOpen={isStockModalOpen}
+                handleClose={handleStockModalClose}
+                material={material}
+                updatedMaterial={updatedMaterial}
+                adjustmentType={stockAdjustmentType}
+                onStockUpdate={handleStockUpdate}
+              />
+            )}
+          </Grid>{" "}
+        </>
+      ) : (
+        <Grid item xs={1} sm={0.3} sx={{ cursor: "pointer" }}>
+          <ImageToIcon
+            icon={restore}
+            w={24}
+            h={24}
+            onClick={openReactionModal}
           />
-        )}
-      </Grid>
+         
+        </Grid>
+      )}
     </Grid>
   );
 };

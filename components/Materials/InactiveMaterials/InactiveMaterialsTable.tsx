@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Box, Typography } from "@mui/material";
-import Filters from "./components/filters/Filters";
-import TableHeader from "./TableHeader";
-import TableRowItem from "./TableRowItem";
-import Pagination from "./Pagination";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
 import { MaterialProps } from "../materialsProps";
-import MaterialDetails from "./components/MaterialDetails";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import CreateMaterialForm from "../Modal/CreateMaterialForm";
-import { useMaterialsContext } from "./context/MaterialsContextProps";
 import Toast from "../../../commons/Toast";
 import theme from "../../../themes/theme";
-import { useModalContext } from "./context/ModalContext";
+import { useMaterialsContext } from "../Table/context/MaterialsContextProps";
+import { useModalContext } from "../Table/context/ModalContext";
+import TableHeader from "../Table/TableHeader";
+import Filters from "../Table/components/filters/Filters";
+import TableRowItem from "../Table/TableRowItem";
+import Pagination from "../Table/Pagination";
+import MaterialDetails from "../Table/components/MaterialDetails";
+import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
+import materialIcon from "../../../public/materials.png";
+import { useFiltersContext } from "../Table/context/FiltersContext";
+import CustomButton from "../../../commons/buttons-commons/CustomButton";
 
 const initialFormData = {
   name: "",
@@ -38,7 +42,7 @@ const initialFormData = {
   ],
 };
 
-const MaterialsTable = () => {
+const InactiveMaterialsTable = () => {
   const [formData, setFormData] = useState(initialFormData);
   const { material } = useMaterialStore();
   const { openModalCreate, setOpenModalCreate } = useModalContext();
@@ -49,13 +53,18 @@ const MaterialsTable = () => {
     currentPage,
     itemsPerPage,
     totalItems,
+    setIsFilteringInactive,
     fetchMaterials,
   } = useMaterialsContext();
+
+  const { clearFilters } = useFiltersContext();
   const [showToast, setShowToast] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [loading, setLoading] = useState(false);
+  const [openReactivationModal, setOpenReactivationModal] = useState(false);
+
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
   const [toastProps, setToastProps] = useState({
@@ -74,19 +83,41 @@ const MaterialsTable = () => {
     setToastProps({ messageLeft, messageRight, bgcolor, color });
     setShowToast(true);
   };
+
+  const clearAllFilters = () => {
+    clearFilters();
+    handleFilter({
+      code: "",
+      name: "",
+      category: "",
+      description: "",
+      weight: "",
+      color: "",
+      height: "",
+      depth: "",
+      stock: "",
+      observations: "",
+      price: "",
+      width: "",
+    });
+  };
+
   useEffect(() => {
     fetchMaterials();
+  }, []);
+
+  useEffect(() => {
+    setIsFilteringInactive(true);
   }, []);
 
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
     setFormData(initialFormData);
-
   };
 
   const handleEdit = (materialId: number) => {
     setMaterialId(materialId);
-    setSelectedMaterial(material); // Establecer el material seleccionado
+    setSelectedMaterial(material);
 
     setIsEditModalOpen(true);
   };
@@ -95,6 +126,12 @@ const MaterialsTable = () => {
     setMaterialId(material.id);
     setSelectedMaterial(material);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleReactiveMaterial = (material: any) => {
+    setMaterialId(material.id);
+    setSelectedMaterial(material);
+    setOpenReactivationModal(true);
   };
 
   const handleModalClose = () => {
@@ -150,42 +187,40 @@ const MaterialsTable = () => {
       if (!selectedMaterial || !materialId) {
         return;
       }
-  
+
       const { id, is_active, category, image_url, ...rest } = material;
-  
+
       const updatedMaterial = {
         ...rest,
-        category: category?.id, 
+        category: category?.id,
         image_url,
-        
       };
 
       const formData = new FormData();
-  
+
       Object.entries(updatedMaterial).forEach(([key, value]) => {
         if (value !== null) {
           formData.append(key, value as any);
         }
       });
- 
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
         {
           method: "PATCH",
-          body: formData, 
+          body: formData,
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Error updating material");
       }
-  
+
       setShowToast(true);
-  
+
       await fetchMaterials();
-  
-      setIsEditModalOpen(false); 
+
+      setIsEditModalOpen(false);
       showToastMessage(
         "Material actualizado con éxito",
         "",
@@ -202,7 +237,6 @@ const MaterialsTable = () => {
       );
     }
   };
-  
 
   const handleCreateMaterial = async (formData: any) => {
     const formD = new FormData();
@@ -254,7 +288,6 @@ const MaterialsTable = () => {
           "white"
         );
       } else {
-       
         const errorResponse = await response.json();
         showToastMessage(
           `Error al crear el material: ${errorResponse.message}`,
@@ -316,6 +349,46 @@ const MaterialsTable = () => {
     });
   };
 
+  const handleReactivateMaterial = async () => {
+    if (!materialId) return;
+
+    try {
+      const reactive = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ is_active: true }),
+        }
+      );
+
+      if (!reactive.ok) {
+        throw new Error("Error updating material");
+      }
+      await fetchMaterials();
+      setOpenReactivationModal(false);
+      setSelectedMaterial(null);
+      setMaterialId(null);
+      showToastMessage(
+        "Material Restaurado",
+        "",
+        theme.palette.success.light,
+        "white"
+      );
+      await fetchMaterials();
+    } catch (error) {
+      console.error("Failed to update material:", error);
+      showToastMessage(
+        "Error al restaurar el material",
+        "Intente de nuevo",
+        theme.palette.error.light,
+        "white"
+      );
+    }
+  };
+
   const handleFileChange = (e: any) => {
     if (e.target.files) {
       setFormData({ ...formData, image_url: e.target.files[0] });
@@ -324,6 +397,15 @@ const MaterialsTable = () => {
 
   return (
     <>
+      <SectionComponent
+        icon={materialIcon}
+        text="Tabla de Materiales Inactivos"
+      >
+        <CustomButton
+          text="Limpiar filtros"
+          onClick={clearAllFilters}
+        ></CustomButton>
+      </SectionComponent>
       <Box sx={{}}>
         <Grid container>
           <TableHeader />
@@ -345,6 +427,8 @@ const MaterialsTable = () => {
                   index={index}
                   onEdit={handleEdit}
                   openDeleteModal={() => handleDelete(material)}
+                  openReactionModal={() => handleReactiveMaterial(material)}
+                  fromInactive={true}
                 />
               ))
             ) : (
@@ -413,6 +497,24 @@ const MaterialsTable = () => {
           </ModalComponent>
         )}
 
+        {openReactivationModal && (
+          <ModalComponent
+            title="¿ Deseas Reactivar el material seleccionado ?"
+            isOpen={openReactivationModal}
+            onSubmit={handleReactivateMaterial}
+            handleClose={() => {
+              setOpenReactivationModal(false);
+              setSelectedMaterial(null);
+              setMaterialId(null);
+            }}
+            textButton="Reactivar"
+          >
+            {selectedMaterial && (
+              <MaterialDetails material={selectedMaterial} />
+            )}
+          </ModalComponent>
+        )}
+
         {showToast && (
           <Toast
             messageLeft={toastProps.messageLeft}
@@ -427,4 +529,4 @@ const MaterialsTable = () => {
   );
 };
 
-export default MaterialsTable;
+export default InactiveMaterialsTable;

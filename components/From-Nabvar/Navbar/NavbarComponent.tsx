@@ -103,6 +103,11 @@ const NavbarComponent = () => {
           href: "/gestion/pedidos",
           iconSrc: orderlist,
         },
+        {
+          label: "Materiales Borrados",
+          href: "/gestion/materiales-inactivos",
+          iconSrc: materials,
+        },
       ],
     },
     {

@@ -12,8 +12,9 @@ import { useFiltersCategoriesContext } from "../context/FiltersCategoriesContext
 import FilterField from "../../Materials/Table/components/filters/FilterField";
 import SearchIcon from "@mui/icons-material/Search";
 import { useMaterialsContext } from "../../Materials/Table/context/MaterialsContextProps";
-
-
+import CustomButton from "../../../commons/buttons-commons/CustomButton";
+import reset from '../../../public/reset.png'
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 
 const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
   const { isTablet } = useScreenSize();
@@ -24,6 +25,13 @@ const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
   };
 
   const { name, setName, clearFilters } = useFiltersCategoriesContext();
+  const clearAllFilters = () => {
+    clearFilters();
+    handleFilter({
+      name: "",
+     
+    });
+  };
 
   // Function to handle changes to any filter
   const handleFilterChange = (field: string, value: any) => {
@@ -47,7 +55,6 @@ const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
     <Box sx={{ padding: "10px 16px" }}>
       {/* Contenedor general para los filtros y select */}
       <Grid container spacing={2} sx={{ alignItems: "center" }}>
-        
         {/* Selector de items por página alineado a la izquierda */}
         <Grid item>
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -69,7 +76,15 @@ const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
         </Grid>
 
         {/* Buscador alineado al lado derecho */}
-        <Grid item xs sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+        <Grid
+          item
+          xs
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
           <Typography variant="body1" sx={{ mr: 2 }}>
             Buscar
           </Typography>
@@ -81,7 +96,14 @@ const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
             sx={{
               display: "flex",
               alignItems: "center", // Alineación vertical
+              mr:2
             }}
+          />
+          <ImageToIcon
+          icon={reset}
+            w={30} h={30}
+            onClick={clearAllFilters}
+            sx={{pt:0.5, cursor:'pointer'}}
           />
         </Grid>
       </Grid>

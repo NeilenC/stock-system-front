@@ -13,34 +13,25 @@ import {
   ActivityColor,
   ActivityState,
 } from "../../commons/activities-commons/DrawerBooking/enums";
-import theme from "../../themes/theme";
 import ModalComponent from "../../commons/modals/ModalComponent";
 import ActivityEditForm from "./Activities-table/components/ActivityEditForm";
-interface LastActivitiesProps {
+
+interface NextActivities {
   activities: Array<any>;
 }
-const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
+const NextActivities: React.FC<NextActivities> = ({ activities }) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
 
-  const handleOpenEditModal = (activity: any) => {
-    setSelectedActivity(activity);
-    setEditModalOpen(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setEditModalOpen(false);
-    setSelectedActivity(null);
-  };
 
   const getNormalizedState = (state: string): string => {
     return state
       .trim()
-      .normalize("NFD") // Descompone caracteres con acento
-      .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-      .replace(/[^a-zA-Z0-9\s]/g, "") // Elimina caracteres especiales como /
+      .normalize("NFD") 
+      .replace(/[\u0300-\u036f]/g, "") 
+      .replace(/[^a-zA-Z0-9\s]/g, "") 
       .toUpperCase()
-      .replace(/\s+/g, "_"); // Reemplaza espacios con guiones bajos
+      .replace(/\s+/g, "_"); 
   };
 
   return (
@@ -55,14 +46,16 @@ const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
         {/* Contenedor de las actividades */}
         <Grid
           container
-          sx={{ paddingInline: "20px", maxWidth: "1300px", pt: 3 }}
+          sx={{ paddingInline: "20px", maxWidth: "1300px", pt: 3}}
         >
           {activities.map((activity: any, index: any) => (
-            <Grid item xs={12} sm={6} md={4} key={activity.id}>
+            <Grid item xs={12} sm={6} md={4} key={activity.id} >
               <Card
                 sx={{
                   maxWidth: "350px",
-                  bgcolor: theme.palette.secondary.contrastText,
+                  bgcolor: 'white',
+                 borderRadius:'15px ' 
+
                 }}
               >
                 <CardContent>

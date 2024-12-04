@@ -41,7 +41,6 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         <ImageToIcon icon={icon} w={40} h={40} />
       </Box>
     )}
-
         <Grid item marginLeft="16px">
           <Typography
             variant="h5"
@@ -61,7 +60,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center", // Center vertically
+                alignItems: "center", 
               }}
             >
               <ImageToIcon icon={secondaryIcon} w={18} h={18} />

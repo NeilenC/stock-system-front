@@ -155,7 +155,7 @@ const MainComponent = () => {
           }}
         >
           <MaterialsTable
-            initialMaterials={materials}
+            // initialMaterials={materials}
           />
         </Box>
       </Box>

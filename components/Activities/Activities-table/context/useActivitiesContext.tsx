@@ -10,7 +10,7 @@ interface Sector {
   name: string;
 }
 
-export interface FiltersState {
+export interface ActivityFiltersState {
   activity_name: string;
   type_activity: string;
   client_email: string;
@@ -24,12 +24,14 @@ export interface FiltersState {
 }
 
 type ActivityContextType = {
-  activities: FiltersState[];
-  currentActivities: FiltersState[];
-  addActivity: (material: FiltersState) => void;
-  setActivities: React.Dispatch<React.SetStateAction<FiltersState[]>>;
+  activities: ActivityFiltersState[];
+  inactiveActivities: ActivityFiltersState[];
+  currentActivities: ActivityFiltersState[];
+  addActivity: (material: ActivityFiltersState) => void;
+  setActivities: React.Dispatch<React.SetStateAction<ActivityFiltersState[]>>;
   // addActiv: (material: FiltersState) => void;
   fetchActivities: () => void;
+  fetchInactiveActivities:  () => void;
   handleFilter: (filter: any) => void;
   handlePageChange: (page: number) => void;
   currentPage: number;
@@ -59,7 +61,8 @@ const ActivityContext = createContext<ActivityContextType | undefined>(
 export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [activities, setActivities] = useState<FiltersState[]>([]);
+  const [activities, setActivities] = useState<ActivityFiltersState[]>([]);
+  const [inactiveActivities, setInactiveActivities] = useState<ActivityFiltersState[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilters);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -82,11 +85,26 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const fetchInactiveActivities = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/inactive`
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+      setInactiveActivities(data);
+    } catch (error) {
+      console.error("Failed to fetch materials:", error);
+    }
+  };
+
   useEffect(() => {
     fetchActivities();
+    fetchInactiveActivities()
   }, []);
 
-  const addActivity = (activity: FiltersState) => {
+  const addActivity = (activity: ActivityFiltersState) => {
     setActivities((prevActivities) => [...prevActivities, activity]);
   };
 
@@ -219,7 +237,9 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({
     <ActivityContext.Provider
       value={{
         activities,
+        inactiveActivities,
         currentActivities,
+        fetchInactiveActivities,
         fetchActivities,
         setActivities,
         addActivity,

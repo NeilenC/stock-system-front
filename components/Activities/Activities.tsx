@@ -16,7 +16,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import DrawerBooking from "../../commons/activities-commons/DrawerBooking/DrawerSections/DrawerBooking";
-import LastActivities from "./NextActivities";
+import NextActivities from "./NextActivities";
 import TableActivities from "./TableActivities";
 import { useActivitiesContext } from "./Activities-table/context/useActivitiesContext";
 
@@ -67,7 +67,7 @@ const Activities = () => {
             No hay actividades disponibles.
           </Typography>
         ) : (
-          <LastActivities activities={activities.slice(0, 3)} />
+          <NextActivities activities={activities.slice(0, 3)} />
         )}
       </Box>
       <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex',}}>

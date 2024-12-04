@@ -16,6 +16,7 @@ import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionCompo
 import categotiesIcon from "../../../public/category_search.png";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import ModalCategory from "../../Materials/Modal/ModalCategoryCreate";
+import { useFiltersCategoriesContext } from "../context/FiltersCategoriesContext";
 
 const initialFormData = {
   name: "",
@@ -34,6 +35,7 @@ const CategoriesComponent = () => {
     totalItems,
     fetchCategories,
   } = useCategoriesContext();
+
   const [showToast, setShowToast] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -53,6 +55,7 @@ const CategoriesComponent = () => {
     bgcolor: theme.palette.success.light,
     color: "",
   });
+
 
   const showToastMessage = (
     messageLeft: string,
@@ -131,9 +134,10 @@ const CategoriesComponent = () => {
           }}
         >
         <FiltersCategories handleFilter={handleFilter} />
+
+
         <Grid container>
           <HeaderCategories />
-          
           <Box
             sx={{
               height: "450px",
@@ -158,7 +162,7 @@ const CategoriesComponent = () => {
                 sx={{ p: 5, display: "flex", justifyContent: "center" }}
               >
                 {" "}
-                No se encontraron Categoryes{" "}
+                No se encontraron Categorías{" "}
               </Typography>
             )}
           </Box>

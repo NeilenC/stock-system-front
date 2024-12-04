@@ -30,8 +30,8 @@ const colors = {
       contrastText: '#757575',
     },
     success: {
-      light: '#00A830',
-      main: '#00A830',
+      light: '#75e00b',
+      main: '#75e00b',
       dark: '#388e3c',
       contrastText: '#fff',
     },

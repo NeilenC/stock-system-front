@@ -57,11 +57,11 @@ const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
                   variant="outlined"
                   size="small" // Tamaño pequeño
                   onClick={() => onPageChange(1)}
-                  sx={{ mx: 1 }} // Separación horizontal entre botones
+                  sx={{ mx: 1 , bgcolor:'primary.main', color:'primary.dark',width:'10px'}} // Separación horizontal entre botones
                 >
-                  1
+                  1 ...
                 </Button>
-                {start > 2 && <Typography sx={{ mx: 1 }}>...</Typography>}
+                {start > 2 && <Typography sx={{ mx: 1 }}></Typography>}
               </>
             )}
 
@@ -102,9 +102,9 @@ const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
                   variant="outlined"
                   size="small" // Tamaño pequeño
                   onClick={() => onPageChange(count)}
-                  sx={{ mx: 1 }} // Separación horizontal entre botones
+                  sx={{ mx: 1, bgcolor:'primary.main', color:'primary.dark', width:'10px' }} // Separación horizontal entre botones
                 >
-                  {count}
+                  ... {count}
                 </Button>
               </>
             )}
