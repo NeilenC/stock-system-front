@@ -4,7 +4,7 @@ import { FormLabelComponent } from "../../../commons/styled-components/CustomTex
 import { CustomTextFieldMaterial } from "../StyledMaterial";
 import theme from "../../../themes/theme";
 import { useMaterialStore } from "../../../zustand/materialStore";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import add from "../../../public/add.png";
 import CreateCategoryForm from "./ModalCategoryCreate";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
@@ -89,7 +89,7 @@ const CreateMaterialForm = ({
           >
             <Tooltip title="Agregar categoría" arrow>
             <span>
-              <IconToImage
+              <ImageToIcon
                 icon={add}
                 w={24}
                 h={24}

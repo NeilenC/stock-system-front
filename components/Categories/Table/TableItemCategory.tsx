@@ -8,7 +8,7 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import edit from "../../../public/edit.png";
 import search from "../../../public/search.png";
 import deleteicon from "../../../public/delete.png";
@@ -84,7 +84,7 @@ console.log("category", category)
 
       {/* Íconos de Editar y Eliminar */}
       <Grid item xs={1} sm={0.5} sx={{ cursor: "pointer" }}>
-        <IconToImage
+        <ImageToIcon
           icon={deleteicon}
           w={20}
           h={20}
@@ -100,7 +100,7 @@ console.log("category", category)
         sm={0.1}
         sx={{ cursor: "pointer", position: "relative" }}
       >
-        <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
+        <ImageToIcon w={20} h={20} icon={edit} onClick={handleEditClick} />
         {/* Menú para editar */}
         <Menu
           anchorEl={anchorEl}

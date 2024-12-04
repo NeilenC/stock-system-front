@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import useEventStore from "../activity-hook/useEventStore";
 import email from "../../../../public/drawer/email.png";
 import phone from "../../../../public/drawer/phone.png";
-import IconToImage from "../../../styled-components/IconImages";
+import ImageToIcon from "../../../styled-components/IconImages";
 import theme from "../../../../themes/theme";
 
 const ClientData: React.FC = () => {
@@ -230,7 +230,7 @@ const ClientData: React.FC = () => {
                 // InputProps={{
                 //   startAdornment: (
                 //     <InputAdornment position="start">
-                //       <IconToImage icon={phone} w={20} h={20} />
+                //       <ImageToIcon icon={phone} w={20} h={20} />
                 //     </InputAdornment>
                 //   ),
                 // }}
@@ -250,7 +250,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <IconToImage icon={phone} w={20} h={20} />
+                      <ImageToIcon icon={phone} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -270,7 +270,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <IconToImage icon={email} w={20} h={20} />
+                      <ImageToIcon icon={email} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -317,7 +317,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <IconToImage icon={phone} w={20} h={20} />
+                      <ImageToIcon icon={phone} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -337,7 +337,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <IconToImage icon={email} w={20} h={20} />
+                      <ImageToIcon icon={email} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -378,7 +378,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" >
-                      <IconToImage icon={phone} w={20} h={20} />
+                      <ImageToIcon icon={phone} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -396,7 +396,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" >
-                      <IconToImage icon={email} w={20} h={20} />
+                      <ImageToIcon icon={email} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -437,7 +437,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" >
-                      <IconToImage icon={phone} w={20} h={20} />
+                      <ImageToIcon icon={phone} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}
@@ -455,7 +455,7 @@ const ClientData: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" >
-                      <IconToImage icon={email} w={20} h={20} />
+                      <ImageToIcon icon={email} w={20} h={20} />
                     </InputAdornment>
                   ),
                 }}

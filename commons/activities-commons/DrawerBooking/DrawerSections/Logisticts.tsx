@@ -37,7 +37,7 @@ import useSectors, {
   SectorActivity,
   SectorProps,
 } from "../../../../hooks/useSectors";
-import IconToImage from "../../../styled-components/IconImages";
+import ImageToIcon from "../../../styled-components/IconImages";
 import { Activity } from "../../../../zustand/activityStore";
 interface SectorOption {
   label: string;
@@ -274,7 +274,7 @@ const LogisticsSection: React.FC = () => {
                   {/* Add Sector Button */}
                   <Tooltip title="Agregar Sector" arrow>
                     <span>
-                      <IconToImage
+                      <ImageToIcon
                         icon={add}
                         w={24}
                         h={24}
@@ -357,7 +357,7 @@ const LogisticsSection: React.FC = () => {
                               />
 
                               <Tooltip title="Eliminar sector" arrow>
-                                <IconToImage
+                                <ImageToIcon
                                   icon={removeIcon}
                                   w={20}
                                   h={20}

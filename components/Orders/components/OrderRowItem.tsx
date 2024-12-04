@@ -5,7 +5,7 @@ import deleteicon from "../../../public/delete.png";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import { useOrderContext } from "../context/useOrderContext";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import OrderEditForm from "./OrderEditForm";
 import { useOrderStore } from "../../../zustand/orderStore";
@@ -64,7 +64,7 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
       </Grid>
       {/* Íconos de Editar y Eliminar */}
       <Grid item xs={3} sm={0.3} sx={{ cursor: "pointer" }}>
-        <IconToImage
+        <ImageToIcon
           icon={deleteicon}
           w={20}
           h={20}
@@ -82,7 +82,7 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
         sm={0.1}
         sx={{ cursor: "pointer", position: "relative" }}
       >
-        <IconToImage w={20} h={20} icon={edit} onClick={() => <></>} />
+        <ImageToIcon w={20} h={20} icon={edit} onClick={() => <></>} />
         {/* Menú para editar */}
         <Menu
           anchorEl={anchorEl}

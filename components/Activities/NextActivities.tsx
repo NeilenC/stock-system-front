@@ -7,16 +7,32 @@ import {
   Chip,
   Divider,
   Box,
+  Button,
 } from "@mui/material";
 import {
   ActivityColor,
   ActivityState,
 } from "../../commons/activities-commons/DrawerBooking/enums";
 import theme from "../../themes/theme";
+import ModalComponent from "../../commons/modals/ModalComponent";
+import ActivityEditForm from "./Activities-table/components/ActivityEditForm";
 interface LastActivitiesProps {
   activities: Array<any>;
 }
 const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<any>(null);
+
+  const handleOpenEditModal = (activity: any) => {
+    setSelectedActivity(activity);
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedActivity(null);
+  };
+
   const getNormalizedState = (state: string): string => {
     return state
       .trim()
@@ -36,13 +52,11 @@ const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
           alignItems: "flex-start",
         }}
       >
-        {/* Título alineado dentro del contenedor */}
-        {/* <Typography variant="h5" fontWeight="bold" sx={{ p: "10px 20px" }}>
-          Próximos Eventos
-        </Typography> */}
-
         {/* Contenedor de las actividades */}
-        <Grid container sx={{ paddingInline: "20px", maxWidth: "1300px" , pt:3}}>
+        <Grid
+          container
+          sx={{ paddingInline: "20px", maxWidth: "1300px", pt: 3 }}
+        >
           {activities.map((activity: any, index: any) => (
             <Grid item xs={12} sm={6} md={4} key={activity.id}>
               <Card
@@ -52,11 +66,24 @@ const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {activity.activity_name}
-                  </Typography>
-
-                  <Divider style={{ marginBottom: "10px" }} />
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {activity.activity_name}
+                    </Typography>
+                    <Button
+                      sx={{ bgcolor: "secondary.main", width: "30px" }}
+                      onClick={() => {
+                        setSelectedActivity(activity.id);
+                        setEditModalOpen(true);
+                      }}
+                    >
+                      Editar
+                      {/* <ImageToIcon icon={edit} w={20} h={20} /> */}
+                    </Button>
+                  </Box>
+                  {/* <Divider style={{ marginBottom: "10px" }} /> */}
 
                   <Chip
                     label={
@@ -134,9 +161,19 @@ const NextActivities: React.FC<LastActivitiesProps> = ({ activities }) => {
               </Card>
             </Grid>
           ))}
-
         </Grid>
-          <Divider sx={{width:1, paddingBlock:3,}}/>
+        <Divider sx={{ width: 1, paddingBlock: 3 }} />
+        {isEditModalOpen && (
+          <ModalComponent
+            title="Editar Actividad"
+            onSubmit={() => {}}
+            isOpen={isEditModalOpen}
+            handleClose={() => setEditModalOpen(false)}
+            textButton="Guardar"
+          >
+            <ActivityEditForm activityId={selectedActivity} />
+          </ModalComponent>
+        )}
       </Box>
     </>
   );

@@ -16,7 +16,7 @@ import {
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import theme from "../../themes/theme";
-import IconToImage from "../../commons/styled-components/IconImages";
+import ImageToIcon from "../../commons/styled-components/IconImages";
 import edit from "../../public/edit.png";
 import deleteicon from "../../public/delete.png";
 import { useState } from "react";
@@ -154,7 +154,7 @@ const SectorItem = ({
             }}
           >
             <Box sx={{ cursor: "pointer", pt: 0.5 }}>
-              <IconToImage
+              <ImageToIcon
                 icon={deleteicon}
                 w={25}
                 h={25}
@@ -171,7 +171,7 @@ const SectorItem = ({
                 pt: 0.5,
               }}
             >
-              <IconToImage
+              <ImageToIcon
                 w={25}
                 h={25}
                 icon={edit}

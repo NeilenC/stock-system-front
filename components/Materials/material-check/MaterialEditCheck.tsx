@@ -5,7 +5,7 @@ import theme from "../../../themes/theme";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import { useState } from "react";
 import AdjustStock from "../Table/AdjustStock";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import edit from "../../../public/edit.png";
 
 const MaterialEditCheck = ({
@@ -83,7 +83,7 @@ const MaterialEditCheck = ({
           sm={0.1}
           sx={{ cursor: "pointer", position: "relative" }}
         >
-          <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
+          <ImageToIcon w={20} h={20} icon={edit} onClick={handleEditClick} />
 
           <Menu
             anchorEl={anchorEl}

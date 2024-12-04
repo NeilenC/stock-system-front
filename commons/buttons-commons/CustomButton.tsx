@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Box } from "@mui/material";
 import { StaticImageData } from "next/image";
 import theme from "../../themes/theme";
-import IconToImage from "../styled-components/IconImages";
+import ImageToIcon from "../styled-components/IconImages";
 
 interface CustomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -39,7 +39,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   >
     {icon && (
       <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
-        <IconToImage icon={icon} w={text === 'Exportar a Excel' ? 27 : 20} h={text === 'Exportar a Excel' ? 27 : 20} />
+        <ImageToIcon icon={icon} w={text === 'Exportar a Excel' ? 27 : 20} h={text === 'Exportar a Excel' ? 27 : 20} />
       </Box>
     )}
     <Box sx={{ display: "flex", alignItems: "center", marginLeft: "4px" }}>

@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import TextWithPopover from "./components/TextWidthPopOver";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import edit from "../../../public/edit.png";
 import search from "../../../public/search.png";
 import deleteicon from "../../../public/delete.png";
@@ -113,7 +113,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
           onMouseEnter={handleIconMouseEnter}
           // onMouseLeave={handleIconMouseLeave}
         >
-          <IconToImage w={20} h={20} icon={photo} onClick={handleIconClick} />
+          <ImageToIcon w={20} h={20} icon={photo} onClick={handleIconClick} />
 
           {/* Modal de imagen */}
           <Modal
@@ -185,7 +185,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
           onMouseEnter={handleIconMouseEnter}
           // onMouseLeave={handleIconMouseLeave}
         >
-          <IconToImage
+          <ImageToIcon
             w={20}
             h={20}
             icon={notphoto}
@@ -241,7 +241,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
 
       {/* Íconos de Editar y Eliminar */}
       <Grid item xs={1} sm={0.3} sx={{ cursor: "pointer" }}>
-        <IconToImage
+        <ImageToIcon
           icon={deleteicon}
           w={20}
           h={20}
@@ -249,7 +249,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
         />
       </Grid>
       <Grid item xs={1} sm={0.2} sx={{ cursor: "pointer" }}>
-        <IconToImage
+        <ImageToIcon
           icon={search}
           w={20}
           h={20}
@@ -262,7 +262,7 @@ const TableRowItem = ({ material, openDeleteModal, onEdit, index }: any) => {
         sm={0.1}
         sx={{ cursor: "pointer", position: "relative" }}
       >
-        <IconToImage w={20} h={20} icon={edit} onClick={handleEditClick} />
+        <ImageToIcon w={20} h={20} icon={edit} onClick={handleEditClick} />
         {/* Menú para editar */}
         <Menu
           anchorEl={anchorEl}

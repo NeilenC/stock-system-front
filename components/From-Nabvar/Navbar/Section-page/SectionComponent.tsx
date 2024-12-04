@@ -1,7 +1,7 @@
 import { SectionComponentProps } from "./model";
 import { Box, Grid, Typography } from "@mui/material";
 import theme from "../../../../themes/theme";
-import IconToImage from "../../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../../commons/styled-components/IconImages";
 import { useRouter } from "next/router";
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
@@ -38,7 +38,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           cursor: isId ? 'pointer' : 'default',
         }}
       >
-        <IconToImage icon={icon} w={40} h={40} />
+        <ImageToIcon icon={icon} w={40} h={40} />
       </Box>
     )}
 
@@ -64,7 +64,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                 alignItems: "center", // Center vertically
               }}
             >
-              <IconToImage icon={secondaryIcon} w={18} h={18} />
+              <ImageToIcon icon={secondaryIcon} w={18} h={18} />
             </Box>
           )}
         </Grid>

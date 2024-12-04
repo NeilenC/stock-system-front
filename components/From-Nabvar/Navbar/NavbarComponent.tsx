@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import theme from "../../../themes/theme";
 import { useRouter } from "next/router";
 import { useUserStore } from "../../../zustand/useAuthStore";
@@ -176,7 +176,7 @@ const NavbarComponent = () => {
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconToImage icon={subOption.iconSrc} w={25} h={25} />
+            <ImageToIcon icon={subOption.iconSrc} w={25} h={25} />
             <Typography
               variant="body2"
               sx={{ fontWeight: 500, fontSize: "16px", ml: 1 }}
@@ -196,7 +196,7 @@ const NavbarComponent = () => {
       <Box display="flex" alignItems="center" sx={{ width: "100%" }}>
         {/* Logo Section */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconToImage icon={logo.src} w={200} h={60} />
+          <ImageToIcon icon={logo.src} w={200} h={60} />
         </Box>
 
         {/* Menu Options */}
@@ -228,14 +228,14 @@ const NavbarComponent = () => {
                     }}
                     startIcon={
                       option.label === username ? (
-                        <IconToImage
+                        <ImageToIcon
                           icon={option.iconSrc}
                           w={38}
                           h={38}
                           sx={{ mt: 1, mr: 0.5 }}
                         />
                       ) : (
-                        <IconToImage
+                        <ImageToIcon
                           icon={option.iconSrc}
                           w={30}
                           h={30}
@@ -302,7 +302,7 @@ const NavbarComponent = () => {
                       width: 1,
                     }}
                     startIcon={
-                      <IconToImage
+                      <ImageToIcon
                         icon={option.iconSrc}
                         w={26}
                         h={26}

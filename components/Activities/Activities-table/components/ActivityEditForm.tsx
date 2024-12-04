@@ -29,7 +29,7 @@ import {
   CustomAutocomplete,
   StyledSelect,
 } from "../../../../commons/activities-commons/DrawerBooking/DrawerSections/CustomTextFields";
-import IconToImage from "../../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../../commons/styled-components/IconImages";
 
 const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
@@ -325,7 +325,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
               {/* Botón de agregar sector con Tooltip */}
               <Tooltip title="Agregar Sector" arrow>
                 <span>
-                  <IconToImage
+                  <ImageToIcon
                     icon={add}
                     w={24}
                     h={24}
@@ -377,7 +377,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                         />
 
                         <Tooltip title="Eliminar sector">
-                          <IconToImage
+                          <ImageToIcon
                             icon={removeIcon}
                             w={20}
                             h={20}

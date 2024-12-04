@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import IconToImage from './styled-components/IconImages';
+import ImageToIcon from './styled-components/IconImages';
 import cancel from '../public/close-white.png'
 import { Box, Button, Typography } from '@mui/material';
 interface ToastProps {
@@ -40,7 +40,7 @@ const Toast: React.FC<ToastProps> = ({ messageLeft, messageRight, color,bgcolor,
     <Typography variant='body1'>{messageLeft}</Typography>
     {messageRight != "" ? 
     <Button sx={{bgcolor:bgcolor, maxWidth:'128px', color: color}} onClick={()=> onClose()}>{messageRight}</Button> :
-    <IconToImage icon={cancel} w={25} h={25} onClick={()=> onClose()}/>
+    <ImageToIcon icon={cancel} w={25} h={25} onClick={()=> onClose()}/>
     }
   </Box>
   

@@ -18,7 +18,7 @@ import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import calendar from "../../../../public/calendar.png";
-import IconToImage from "../../../styled-components/IconImages";
+import ImageToIcon from "../../../styled-components/IconImages";
 import CustomDateTimePicker from "../../../styled-components/CustomeDateTimePicker";
 import { ActivityState } from "../enums";
 

@@ -12,7 +12,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Category } from "./materialsProps";
 import { useState } from "react";
 import { Button, IconButton } from "rsuite";
-import IconToImage from "../../commons/styled-components/IconImages";
+import ImageToIcon from "../../commons/styled-components/IconImages";
 import search from "../../public/search.png";
 import { CustomTextFieldMaterial } from "./StyledMaterial";
 import theme from "../../themes/theme";

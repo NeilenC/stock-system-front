@@ -10,7 +10,7 @@ import {
 import ModalButtons from "../../../commons/modals/ModalButtons";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
 import { useUserStore } from "../../../zustand/useAuthStore";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import stock from "../../../public/stock.png";
 import useSectors from "../../../hooks/useSectors";
 
@@ -99,7 +99,7 @@ const AdjustStock = ({
           justifyContent="center"
           sx={{ pt: 2 }}
         >
-          <IconToImage icon={stock} w={20} h={20} />
+          <ImageToIcon icon={stock} w={20} h={20} />
           <Typography sx={{ fontSize: "18px", pb: 1.5 }}>
             {adjustmentType === "add" ? "Agregar Stock" : "Remover Stock"}
           </Typography>

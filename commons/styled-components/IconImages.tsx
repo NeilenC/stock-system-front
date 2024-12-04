@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 
 // Envuelve el componente con React.forwardRef
-const IconToImage = React.forwardRef<HTMLDivElement, { icon: any, w: number, h: number, onClick?: any , sx?:any}>(({ icon, w, h, onClick, sx }, ref) => {
+const ImageToIcon = React.forwardRef<HTMLDivElement, { icon: any, w: number, h: number, onClick?: any , sx?:any}>(({ icon, w, h, onClick, sx }, ref) => {
   return (
     <Box ref={ref} onClick={onClick} sx={sx}>
       <Image src={icon} alt="Icon" width={w} height={h} />
@@ -13,6 +13,6 @@ const IconToImage = React.forwardRef<HTMLDivElement, { icon: any, w: number, h: 
 });
 
 // Es importante asignar displayName para componentes con forwardRef
-IconToImage.displayName = "IconToImage";
+ImageToIcon.displayName = "ImageToIcon";
 
-export default IconToImage;
+export default ImageToIcon;

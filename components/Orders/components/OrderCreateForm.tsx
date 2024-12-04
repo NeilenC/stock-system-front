@@ -12,7 +12,7 @@ import { MaterialProps } from "../../Materials/materialsProps";
 import useSectors from "../../../hooks/useSectors";
 import { Activity, useActivityStore } from "../../../zustand/activityStore";
 import { IconButton } from "rsuite";
-import IconToImage from "../../../commons/styled-components/IconImages";
+import ImageToIcon from "../../../commons/styled-components/IconImages";
 import deleteicon from "../../../public/delete.png";
 
 interface OrderProps {
@@ -336,7 +336,7 @@ console.log("orderItems", orderItems)
               <strong>{storageSectors.find((s) => s.id === item.sectorId)?.name}</strong>, 
               Cantidad: <strong>{item.quantity}</strong>
             </Typography>
-            <IconToImage
+            <ImageToIcon
               icon={deleteicon}
               onClick={() => handleDeleteItem(index)}
               h={20}
