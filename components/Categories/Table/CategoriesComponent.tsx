@@ -37,17 +37,13 @@ const CategoriesComponent = () => {
   } = useCategoriesContext();
 
   const [showToast, setShowToast] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false); // Estado de carga
-  const [selectedCategory, setSelectedCategory] =
-    useState<CategoryProps | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryProps | null>(null);
 
-    const handleItemsPerPageChange = (event: any) => {
-      const value = parseInt(event.target.value, 10); // 
-      updateItemsPerPage(value); 
-    };
 
   const [toastProps, setToastProps] = useState({
     messageLeft: "",
@@ -57,15 +53,6 @@ const CategoriesComponent = () => {
   });
 
 
-  const showToastMessage = (
-    messageLeft: string,
-    messageRight: string,
-    bgcolor: string,
-    color: string
-  ) => {
-    setToastProps({ messageLeft, messageRight, bgcolor, color });
-    setShowToast(true);
-  };
 
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
@@ -76,12 +63,12 @@ const CategoriesComponent = () => {
     fetchCategories();
   };
 
-  const handleEdit = (categoryId: number) => {
-    setCategoryId(categoryId);
-    // setSelectedCategory(category); // Establecer el Category seleccionado
-
+  const handleEdit = (category: CategoryProps) => {
+    // setCategoryId(category.id);
+    setSelectedCategory(category)
     setIsEditModalOpen(true);
   };
+  console.log("selectedCategory", selectedCategory)
 
   const handleDelete = (Category: any) => {
     setCategoryId(Category.id);
@@ -154,6 +141,7 @@ const CategoriesComponent = () => {
                   index={index}
                   onEdit={handleEdit}
                   openDeleteModal={() => handleDelete(category)}
+                  setOpenModalEdit={setOpenModalEdit}
                 />
               ))
             ) : (
@@ -197,7 +185,14 @@ const CategoriesComponent = () => {
         )}
       </Box>
 </Box>
-
+{openModalEdit && (
+    <ModalCategory
+      isOpen={openModalEdit}
+      onClose={() => setOpenModalEdit(false)}
+      categoryToEdit={selectedCategory}
+      // isEditSucces={setIsEditSuccess}
+    />
+  )}
     </>
   );
 };

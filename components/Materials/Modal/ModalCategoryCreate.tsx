@@ -21,28 +21,28 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 300, // Ajusta el ancho según sea necesario
-  height: "auto", // Cambia a auto para permitir que el contenido ajuste la altura
+  width: 300, 
+  height: "auto", 
   bgcolor: "background.paper",
   border: "1px solid #0000001A",
   borderRadius: "20px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  padding: "0", // Elimina el padding para el contenedor
+  padding: "0", 
 };
 
 const ModalCategory = ({
   isOpen,
   onClose,
   onCreateSuccess,
-  categoryToEdit,  // Nuevo prop para la categoría que se va a editar
+  categoryToEdit, 
   isEditSucces
 }: {
   isOpen: boolean;
   onClose: () => void;
   onCreateSuccess?: () => void;
-  categoryToEdit?: any;  // Si está presente, indica que es un modal de edición
+  categoryToEdit?: any;  
   isEditSucces?: any
 }) => {
   const [categoryName, setCategoryName] = useState("");
@@ -71,6 +71,8 @@ const ModalCategory = ({
     setToastProps({ messageLeft, messageRight, bgcolor, color });
     setShowToast(true);
   };
+
+
   useEffect(() => {
     if (isOpen) {
       fetchCategories();
@@ -79,8 +81,6 @@ const ModalCategory = ({
       }
     }
   }, [isOpen, categoryToEdit]);
-
-console.log("categorytoedit", categoryToEdit)
 
 
   const handleChange = (event: any) => {
@@ -98,11 +98,7 @@ console.log("categorytoedit", categoryToEdit)
     }
   };
 
-  const handleCreateOrUpdateCategory = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  
+  const handleCreateCategory = async () => {
     // Verificar si la categoría ya existe antes de proceder
     if (categories.includes(categoryName)) {
       setError(true);
@@ -112,42 +108,9 @@ console.log("categorytoedit", categoryToEdit)
     const body = JSON.stringify({ category_name: categoryName });
   
     try {
-      if (categoryToEdit) {
-        // Si estamos editando, hacer una solicitud de actualización
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/materials-category/${categoryToEdit.id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: body,
-          }
-        );
-
-        if (response.ok) {
-          setSnackbarMessage("Categoría actualizada exitosamente.");
-          setSnackbarSeverity("success");
-          isEditSucces(true)
-          showToastMessage(
-            "Categoría actualizada exitosamente.",
-            "",
-            theme.palette.success.light,
-            "white"
-          );
-        } else {
-          const errorData = await response.json();
-          const backendMessage =
-            "Ya existe una categoría con ese nombre";
-          setSnackbarMessage(backendMessage);
-          setSnackbarSeverity("error");
-        }
-      } else {
-
-        // Si estamos creando, hacer una solicitud de creación
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
-        { 
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -155,7 +118,7 @@ console.log("categorytoedit", categoryToEdit)
           body: body,
         }
       );
-
+  
       if (response.ok) {
         showToastMessage(
           "Categoría creada exitosamente.",
@@ -163,6 +126,7 @@ console.log("categorytoedit", categoryToEdit)
           theme.palette.success.light,
           "white"
         );
+        if (onCreateSuccess) onCreateSuccess();
       } else {
         // Manejo del caso donde la categoría ya existe
         showToastMessage(
@@ -172,20 +136,78 @@ console.log("categorytoedit", categoryToEdit)
           "white"
         );
       }
+  
+      await fetchCategories();
+      onClose();
+    } catch (error) {
+      setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  
+    setCategoryName("");
+  };
+  
+  const handleUpdateCategory = async () => {
+
+    if (categories.includes(categoryName)) {
+      setError(true);
+      return;
     }
 
-    fetchCategories();
-    onClose();
-    if (onCreateSuccess) onCreateSuccess();
-  } catch (error) {
-    setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
-    setSnackbarSeverity("error");
-  }
-
-  setCategoryName("");
-  setOpenSnackbar(true);
-  setError(false);
+    
+    if (!categoryToEdit) return;
+    const body = JSON.stringify({ category_name: categoryName });
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials-category/${categoryToEdit.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        }
+      );
+  
+      if (response.ok) {
+        showToastMessage(
+          "Categoría actualizada exitosamente.",
+          "",
+          theme.palette.success.light,
+          "white"
+        );
+        if (isEditSucces) isEditSucces(true);
+      } else {
+        const errorData = await response.json();
+        const backendMessage = "Ya existe una categoría con ese nombre";
+        setSnackbarMessage(backendMessage);
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+        
+      }
+  
+      await fetchCategories();
+      onClose();
+    } catch (error) {
+      setSnackbarMessage("Ya existe una categoría con ese nombre.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  
+    setCategoryName("");
   };
+  
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (categoryToEdit) {
+      await handleUpdateCategory();
+    } else {
+      await handleCreateCategory();
+    }
+  };
+  
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false); 
@@ -250,7 +272,7 @@ console.log("categorytoedit", categoryToEdit)
             />
             <CustomButton
               text={categoryToEdit ? "Actualizar" : "Crear"}
-              onClick={handleCreateOrUpdateCategory}
+              onClick={handleSubmit}
             />
           </Box>
 

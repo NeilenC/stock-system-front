@@ -9,7 +9,6 @@ import {
   MenuItem,
   Stack,
   Switch,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -26,10 +25,10 @@ import removeIcon from "../../../../public/close-black.png";
 import add from "../../../../public/add.png";
 import useSectors, { SectorProps } from "../../../../hooks/useSectors";
 import {
-  CustomAutocomplete,
   StyledSelect,
 } from "../../../../commons/activities-commons/DrawerBooking/DrawerSections/CustomTextFields";
 import ImageToIcon from "../../../../commons/styled-components/IconImages";
+import { isDateOverlap } from "../../functions";
 
 const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
@@ -37,14 +36,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
     useActivityStore();
   const { sectorsToRent } = useSectors();
 
-  const isDateOverlap = (
-    start1: Date,
-    end1: Date,
-    start2: Date,
-    end2: Date
-  ) => {
-    return start1 <= end2 && start2 <= end1;
-  };
+
 
   const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
     //lista de IDs de los sectores ya ocupados en la actividad
@@ -296,9 +288,9 @@ console.log("sector", sector)
                   displayEmpty
                   fullWidth
                   inputProps={{
-                    "aria-hidden": undefined, // Asegura que aria-hidden no se aplique
+                    "aria-hidden": undefined, 
                   }}
-                  onChange={(e: any) => setSelectedSector(e.target.value)} // Captura el valor del sector seleccionado
+                  onChange={(e: any) => setSelectedSector(e.target.value)} 
                 >
                   {availableSectors.map((sector, index) => (
                     <MenuItem key={index} value={sector.id}>

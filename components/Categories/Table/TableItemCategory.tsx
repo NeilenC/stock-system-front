@@ -17,14 +17,14 @@ import ModalComponent from "../../../commons/modals/ModalComponent";
 import ModalCategory from "../../Materials/Modal/ModalCategoryCreate";
 import { useMaterialStore } from "../../../zustand/materialStore";
 
-const TableItemCategory = ({ category, onEdit, index }: any) => {
+const TableItemCategory = ({ category, onEdit, index, setOpenModalEdit }: any) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [modalCategoryDelete, setModalCategoryDelete] = useState(false);
   const [categoryId, setCategoryId] = useState<number>(0);
   const [categoryToEdit, setCategoryToEdit] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const  [openModalEdit, setOpenModalEdit] = useState(false);
+  // const  [openModalEdit, setOpenModalEdit] = useState(false);
   const [isEditSucces, setIsEditSuccess] = useState(false)
   const { fetchCategories } = useMaterialStore();
   
@@ -112,7 +112,7 @@ useEffect(()=> {
         >
           <MenuItem
             onClick={() => {
-              setCategoryToEdit(category); // Set the category ID to edit
+              onEdit(category); 
               setOpenModalEdit(true);
               handleMenuClose();
             }}
@@ -146,14 +146,7 @@ useEffect(()=> {
         </ModalComponent>
       )}
 
-{openModalEdit && (
-    <ModalCategory
-      isOpen={openModalEdit}
-      onClose={() => setOpenModalEdit(false)}
-      categoryToEdit={categoryToEdit}
-      isEditSucces={setIsEditSuccess}
-    />
-  )}
+
     </Grid>
   );
 };

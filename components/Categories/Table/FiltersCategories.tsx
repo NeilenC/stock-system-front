@@ -15,12 +15,14 @@ import { useMaterialsContext } from "../../Materials/Table/context/MaterialsCont
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import reset from '../../../public/reset.png'
 import ImageToIcon from "../../../commons/styled-components/IconImages";
+import { useCategoriesContext } from "../context/CategoriesContext";
 
 const FiltersCategories = ({ handleFilter }: { handleFilter: any }) => {
   const { isTablet } = useScreenSize();
-  const { itemsPerPage, updateItemsPerPage } = useMaterialsContext();
+  const { itemsPerPage, updateItemsPerPage } = useCategoriesContext();
   const handleItemsPerPageChange = (event: any) => {
-    const value = parseInt(event.target.value, 10); //
+    const value = parseInt(event.target.value, 10);
+    console.log("value ", value)
     updateItemsPerPage(value);
   };
 

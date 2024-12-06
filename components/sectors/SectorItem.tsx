@@ -104,7 +104,7 @@ const SectorItem = ({
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "start", // Puedes cambiar esto a "center" si quieres centrar el texto
+          alignItems: "start",
           paddingInline: "16px",
           paddingBlock: "8px",
           borderLeft: "7px solid #E1E6EF",
@@ -112,19 +112,22 @@ const SectorItem = ({
           borderBottom: "1px solid #E1E6E0",
           cursor: "pointer",
         }}
-        onClick={onToggle}
       >
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center", // Centrar verticalmente
+            alignItems: "center",
             width: "100%",
             height: "100%",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton size="small" sx={{ p: 0, justifyContent: "center" }}>
+            <IconButton
+              size="small"
+              sx={{ p: 0, justifyContent: "center" }}
+              onClick={onToggle}
+            >
               {open ? (
                 <ArrowDropDownIcon sx={{ color: theme.palette.primary.dark }} />
               ) : (
@@ -184,6 +187,7 @@ const SectorItem = ({
               >
                 <MenuItem
                   onClick={(e) => {
+                    !onToggle;
                     e.stopPropagation();
                     onEditSector(sector.id);
                     handleMenuClose();

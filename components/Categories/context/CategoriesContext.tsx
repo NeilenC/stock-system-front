@@ -105,7 +105,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentPage(page);
     }
   };
-console.log("itemsperpage", itemsPerPage)
+
   return (
     <CategoriesContext.Provider
       value={{

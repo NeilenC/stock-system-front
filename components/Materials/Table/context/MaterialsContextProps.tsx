@@ -57,6 +57,7 @@ export const MaterialsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Add a function to update items per page
   const updateItemsPerPage = (items: number) => {
+    console.log("itemsperpage context", items)
     setItemsPerPage(items);
   };
 
