@@ -56,6 +56,39 @@ const MaterialsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [materialId, setMaterialId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false); // Estado de carga
+
+  const [formErrors, setFormErrors] = useState<any>({});
+
+  const handleValidation = () => {
+    const newErrors: any = {};
+
+    // Validación de campos básicos
+    newErrors.name = formData.name ? "" : " * ";
+    newErrors.code = formData.code ? "" : " * ";
+    newErrors.category = formData.category ? "" : " * ";
+    newErrors.description = formData.description ? "" : " * ";
+    newErrors.actual_stock = formData.actual_stock ? "" : " * ";
+    newErrors.observations = formData.observations ? "" : " * ";
+    newErrors.price = formData.price ? "" : " * ";
+
+    // Validación de sector_id
+    newErrors.sector_id = formData.distribution_stock[0].sector_id ? "" : " * ";
+
+    // Validación de cada campo dentro de `distribution_stock`
+    newErrors.distribution_stock = formData.distribution_stock.map(
+      (item: any, index: number) => ({
+        sector_id: item.sector_id ? "" : " * ",
+        storaged_stock: item.storaged_stock ? "" : " * ",
+      })
+    );
+
+    // Actualizamos el estado de errores
+    setFormErrors(newErrors);
+
+    // Retornamos `true` si no hay errores, `false` si existe al menos uno
+    return Object.values(newErrors).every((fieldError: any) => !fieldError);
+  };
+
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialProps | null>(null);
   const [toastProps, setToastProps] = useState({
@@ -81,7 +114,7 @@ const MaterialsTable = () => {
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
     setFormData(initialFormData);
-
+    setFormErrors({});
   };
 
   const handleEdit = (materialId: number) => {
@@ -150,42 +183,40 @@ const MaterialsTable = () => {
       if (!selectedMaterial || !materialId) {
         return;
       }
-  
+
       const { id, is_active, category, image_url, ...rest } = material;
-  
+
       const updatedMaterial = {
         ...rest,
-        category: category?.id, 
+        category: category?.id,
         image_url,
-        
       };
 
       const formData = new FormData();
-  
+
       Object.entries(updatedMaterial).forEach(([key, value]) => {
         if (value !== null) {
           formData.append(key, value as any);
         }
       });
- 
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/${materialId}`,
         {
           method: "PATCH",
-          body: formData, 
+          body: formData,
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Error updating material");
       }
-  
+
       setShowToast(true);
-  
+
       await fetchMaterials();
-  
-      setIsEditModalOpen(false); 
+
+      setIsEditModalOpen(false);
       showToastMessage(
         "Material actualizado con éxito",
         "",
@@ -202,9 +233,15 @@ const MaterialsTable = () => {
       );
     }
   };
-  
 
   const handleCreateMaterial = async (formData: any) => {
+    const errors = handleValidation();
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors); // Mostrar los errores en el estado
+      return; // No enviar el formulario si hay errores
+    }
+
     const formD = new FormData();
     formD.append("name", formData.name);
     formD.append("description", formData.description);
@@ -246,21 +283,14 @@ const MaterialsTable = () => {
       if (response.ok) {
         setOpenModalCreate(false);
         setFormData(initialFormData);
+        setFormErrors({});
+
         await fetchMaterials();
         showToastMessage(
           "Material creado con éxito",
           "",
           theme.palette.success.light,
           "white"
-        );
-      } else {
-       
-        const errorResponse = await response.json();
-        showToastMessage(
-          `Error al crear el material: ${errorResponse.message}`,
-          "Intente de nuevo",
-          theme.palette.error.light,
-          "black"
         );
       }
     } catch (error) {
@@ -269,7 +299,7 @@ const MaterialsTable = () => {
         "Error al crear el material",
         "Intente de nuevo",
         theme.palette.error.light,
-        "black"
+        "white"
       );
     }
   };
@@ -278,17 +308,40 @@ const MaterialsTable = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
+  
+    // Aquí limpiamos el error si el campo ya está completado
+    let newFormErrors = { ...formErrors };
     setFormData((prev) => {
+  
+      // Validamos si el campo debe limpiarse
+      if (name === "name" && value.trim() !== "") {
+        newFormErrors = { ...newFormErrors, name: "" }; // Limpia el error si 'name' no está vacío
+      }
+      if (name === "category" && value) {
+        newFormErrors = { ...newFormErrors, category: "" }; // Limpia el error si 'category' está seleccionado
+      }
+      if (name === "description" && value.trim() !== "") {
+        newFormErrors = { ...newFormErrors, description: "" }; // Limpia el error si 'description' no está vacío
+      }
+      if (name === "code" && value.trim() !== "") {
+        newFormErrors = { ...newFormErrors, code: "" }; // Limpia el error si 'code' no está vacío
+      }
+      if (name === "storaged_stock" && value !== "") {
+        newFormErrors = { ...newFormErrors, storaged_stock: "" }; // Limpia el error si 'storaged_stock' está correctamente completado
+      }
+      if (name === "distribution_stock.sector_id" && value !== "") {
+        newFormErrors = { ...newFormErrors, sector_id: "" }; // Limpia el error si 'sector_id' está seleccionado
+      }
+  
+      // Manejo de otros campos en la estructura 'distribution_stock'
       if (name.startsWith("distribution_stock.")) {
         const index = 0; // Suponiendo que solo tienes un objeto en el array
         const fieldName = name.split(".")[1]; // Obtiene el nombre del campo
-
+  
         return {
           ...prev,
           distribution_stock: prev.distribution_stock.map((item, idx) => {
             if (idx === index) {
-              // Asignación de valores correctos y asegurándonos de que sean números
               if (fieldName === "sector_id") {
                 return {
                   ...item,
@@ -307,14 +360,17 @@ const MaterialsTable = () => {
           }),
         };
       }
-
+  
       // Manejo del cambio de category
       return {
         ...prev,
         [name]: name === "category" ? Number(value) : value,
       };
     });
+  
+    setFormErrors(newFormErrors);  // Actualiza el estado de los errores
   };
+  
 
   const handleFileChange = (e: any) => {
     if (e.target.files) {
@@ -409,6 +465,7 @@ const MaterialsTable = () => {
               formData={formData}
               handleChange={handleChange}
               handleFileChange={handleFileChange}
+              formErrors={formErrors}
             />
           </ModalComponent>
         )}

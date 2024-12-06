@@ -21,8 +21,9 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
   const eventData = useEventStore.getState().eventData;
   const resetForm = useEventStore.getState().resetForm;
-  // const { eventData } = useEventStore();
-  const {fetchActivities} = useActivitiesContext()
+  const { fetchActivities } = useActivitiesContext();
+  const [errors, setErrors] = useState<Record<string, string>>({}); // Para almacenar errores por campo
+
   console.log("eventData", eventData);
   const [showToast, setShowToast] = useState(false);
   const [toastProps, setToastProps] = useState({
@@ -42,11 +43,10 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     setShowToast(true);
   };
 
-
   const handleClose = () => {
     setIsOpen(false);
-    resetForm()
-
+    resetForm();
+    setErrors({});
   };
   const clientIdFromStore = useEventStore(
     (state) => state.eventData.logistics.clientData.client.clientId
@@ -55,20 +55,6 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     (state) => state.eventData.logistics.detailsLogistics.sectors
   );
 
-  useEffect(() => {
-    // if (eventData?.logistics?.detailsLogistics?.sectors) {
-    //   console.log("SECTORES GLOBAL ACTUALIZADOS", eventData.logistics.detailsLogistics.sectors?.map(
-    //     (sector) => ({
-    //       sector_id: sector.sector_id, 
-    //       is_partially_rented: sector.is_partially_rented, 
-    //       square_meters_rented: sector.square_meters_rented || 0, 
-    //     })
-    //   ) );
-    // }
-  }, [eventData]);
-  
-
-  
   // Crea el payload que se ajusta a tu DTO `CreateMemoActivityDto`
   const createMemoActivityDto = {
     // //Datos del cliente
@@ -82,23 +68,42 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     initial_time: eventData.generalInfo.details.initialTime,
     opening_date: eventData.generalInfo.details.openingDate,
     opening_time: eventData.generalInfo.details.openingTime,
-    closing_date:eventData.generalInfo.details.closingDate,
+    closing_date: eventData.generalInfo.details.closingDate,
     closing_time: eventData.generalInfo.details.closingTime,
     end_date: eventData.generalInfo.details.endDate,
     end_time: eventData.generalInfo.details.endTime,
     state: eventData.generalInfo.details.state,
     sector_activities_ids: eventData.logistics.detailsLogistics.sectors?.map(
       (sector) => ({
-        sector_id: sector.sector_id, 
-        is_partially_rented: sector.is_partially_rented, 
-        square_meters_rented: sector.square_meters_rented || 0, 
+        sector_id: sector.sector_id,
+        is_partially_rented: sector.is_partially_rented,
+        square_meters_rented: sector.square_meters_rented || 0,
       })
-    ) ,
+    ),
     notes: eventData.logistics.detailsLogistics.notes,
-
-
   };
-console.log("createMemoActivityDto", createMemoActivityDto)
+
+  const validateCreateMemoActivityDto = (dto: typeof createMemoActivityDto) => {
+    const errors: Record<string, string> = {};
+
+    if (!dto.client_name) errors.client_name = "*";
+    if (!dto.client_email) errors.client_email = "*";
+    if (!dto.client_phone) errors.client_phone = "*";
+    if (!dto.activity_name) errors.activity_name = "*";
+    if (!dto.state) errors.state = "*";
+    if (!dto.type_activity) errors.type_activity = "*";
+    if (!dto.initial_date) errors.initial_date = "*";
+    if (!dto.opening_date) errors.opening_date = "*";
+    if (!dto.closing_date) errors.closing_date = "*";
+    if (!dto.end_date) errors.end_date = "*";
+    if (!dto.initial_time) errors.initial_time = "*";
+    if (!dto.sector_activities_ids?.length) {
+      errors.sector_activities_ids = "*";
+    }
+
+    return errors;
+  };
+
   // Función para enviar los datos al backend
   const [scrolling, setScrolling] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null); // Type the ref as HTMLDivElement
@@ -124,7 +129,20 @@ console.log("createMemoActivityDto", createMemoActivityDto)
   }, []);
 
   const handleConfirmBooking = async () => {
+    const errors = validateCreateMemoActivityDto(createMemoActivityDto);
 
+    if (Object.keys(errors).length > 0) {
+      showToastMessage(
+        "Por favor, completa los campos obligatorios.",
+        "",
+        theme.palette.error.light,
+        "white"
+      );
+
+      // Aquí puedes actualizar el estado de errores en los componentes específicos
+      setErrors(errors); // Usa `setErrors` de cada sección
+      return;
+    }
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity`,
@@ -145,9 +163,10 @@ console.log("createMemoActivityDto", createMemoActivityDto)
           }`
         );
       }
-      await fetchActivities()
-      handleClose()
-      resetForm()
+      setErrors({}); 
+      await fetchActivities();
+      handleClose();
+      resetForm();
       showToastMessage(
         "¡ Creaste una nueva Actividad !",
         "",
@@ -164,14 +183,14 @@ console.log("createMemoActivityDto", createMemoActivityDto)
       );
     }
   };
-
+  console.log("errorrs", errors);
   return (
     <Drawer
       anchor="right"
       open={isOpen}
       onClose={handleClose}
       BackdropProps={{
-        onClick: (e) => e.stopPropagation(), 
+        onClick: (e) => e.stopPropagation(),
       }}
       sx={{
         flexShrink: 0,
@@ -246,16 +265,16 @@ console.log("createMemoActivityDto", createMemoActivityDto)
         }}
       >
         {/* Sección: Información General */}
-        <GeneralInfoContent />
+        <GeneralInfoContent inputErrors={errors} />
 
         {/* Sección: Logística del Evento */}
-        <LogisticsSection />
+        <LogisticsSection  inputErrors={errors} />
 
         {/* Detalles Operativos del Evento */}
         {/* <OperationalDetails /> */}
 
         {/* Información del cliente */}
-        <ClientData />
+        <ClientData  inputErrors={errors} />
       </Box>
 
       {/* Botón Fijo en la parte inferior */}

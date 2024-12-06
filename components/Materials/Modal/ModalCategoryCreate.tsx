@@ -5,6 +5,8 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import CustomButton from "../../../commons/buttons-commons/CustomButton";
 import { CustomTextField, FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
 import { useMaterialStore } from "../../../zustand/materialStore";
+import theme from "../../../themes/theme";
+import Toast from "../../../commons/Toast";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -52,7 +54,23 @@ const ModalCategory = ({
     "success"
   );
   const [error, setError] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastProps, setToastProps] = useState({
+    messageLeft: "",
+    messageRight: "",
+    bgcolor: theme.palette.success.light,
+    color: "",
+  });
 
+  const showToastMessage = (
+    messageLeft: string,
+    messageRight: string,
+    bgcolor: string,
+    color: string
+  ) => {
+    setToastProps({ messageLeft, messageRight, bgcolor, color });
+    setShowToast(true);
+  };
   useEffect(() => {
     if (isOpen) {
       fetchCategories();
@@ -111,49 +129,62 @@ console.log("categorytoedit", categoryToEdit)
           setSnackbarMessage("Categoría actualizada exitosamente.");
           setSnackbarSeverity("success");
           isEditSucces(true)
+          showToastMessage(
+            "Categoría actualizada exitosamente.",
+            "",
+            theme.palette.success.light,
+            "white"
+          );
         } else {
           const errorData = await response.json();
           const backendMessage =
-            "Error al actualizar la categoría";
+            "Ya existe una categoría con ese nombre";
           setSnackbarMessage(backendMessage);
           setSnackbarSeverity("error");
         }
       } else {
-        // Si estamos creando, hacer una solicitud de creación
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: body,
-          }
-        );
-  
-        if (response.ok) {
-          setSnackbarMessage("Categoría creada exitosamente.");
-          setSnackbarSeverity("success");
-        } else {
-          const errorData = await response.json();
-          const backendMessage =
-            "Categoría existente";
-          setSnackbarMessage(backendMessage);
-          setSnackbarSeverity("error");
-        }
-      }
 
-      fetchCategories();
-      onClose();
-      if (onCreateSuccess) onCreateSuccess();
-    } catch (error) {
-      setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
-      setSnackbarSeverity("error");
+        // Si estamos creando, hacer una solicitud de creación
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials-category`,
+        { 
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        }
+      );
+
+      if (response.ok) {
+        showToastMessage(
+          "Categoría creada exitosamente.",
+          "",
+          theme.palette.success.light,
+          "white"
+        );
+      } else {
+        // Manejo del caso donde la categoría ya existe
+        showToastMessage(
+          "Categoría existente",
+          "",
+          theme.palette.error.light,
+          "white"
+        );
+      }
     }
-  
-    setCategoryName("");
-    setOpenSnackbar(true);
-    setError(false); 
+
+    fetchCategories();
+    onClose();
+    if (onCreateSuccess) onCreateSuccess();
+  } catch (error) {
+    setSnackbarMessage("Error de red. Por favor, intenta de nuevo.");
+    setSnackbarSeverity("error");
+  }
+
+  setCategoryName("");
+  setOpenSnackbar(true);
+  setError(false);
   };
 
   const handleSnackbarClose = () => {
@@ -235,6 +266,15 @@ console.log("categorytoedit", categoryToEdit)
 
         </Box>
       </Modal>
+      {showToast && (
+        <Toast
+          messageLeft={toastProps.messageLeft}
+          messageRight={toastProps.messageRight}
+          bgcolor={toastProps.bgcolor}
+          color={toastProps.color}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,9 +1,13 @@
 import styled from "@emotion/styled";
-import { Autocomplete, Box, FormLabel, ListItem, ListItemText, Select, SelectProps, TextField } from "@mui/material";
+import { Autocomplete, Box, FormLabel, ListItem, ListItemText, Select, SelectProps, TextField, Typography } from "@mui/material";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import theme from "../../../../themes/theme";
 import { useState } from "react";
+interface FormLabelComponentProps {
+  children: React.ReactNode;
+  error?: boolean;
+}
 
 const FormLabelComponent = styled(FormLabel)(() => ({
     fontSize: '16px', // Tamaño de fuente
@@ -14,6 +18,36 @@ const FormLabelComponent = styled(FormLabel)(() => ({
       color: theme.palette.primary.contrastText, // Color del label cuando está enfocado
     },
   }));
+
+
+
+  export const FormLabelComponentWithError: React.FC<FormLabelComponentProps> = ({
+    children,
+    error = false,
+  }) => {
+    return (
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: "bold",
+          }}
+        >
+          {children}
+        </Typography>
+        {error && (
+          <Typography
+            sx={{
+              color: "red",
+              fontSize: "25px", 
+            }}
+          >
+            *
+          </Typography>
+        )}
+      </Box>
+    );
+};
 
   const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
   

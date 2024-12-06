@@ -40,13 +40,13 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
         textAlign: "center",
       }}
     >
-      <Grid item xs={2} sm={2} sx={{ mt: 0.7 }}>
+      <Grid item xs={12} sm={2} sx={{ mt: 0.7 }}>
         {formattedcreateAt}
       </Grid>
-      <Grid item xs={2} sm={1.2} sx={{ mt: 0.7 }}>
+      <Grid item xs={12} sm={2} sx={{ mt: 0.7 }}>
         {order.activity.activity_name}
       </Grid>
-      <Grid item xs={2} sm={2}>
+      <Grid item xs={12} sm={2}>
         <Box
           sx={{
             borderRadius: "20px",
@@ -54,16 +54,14 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
             mb: 1,
           }}
         >
-          {" "}
           {order.state}
         </Box>
       </Grid>
-
-      <Grid item xs={2} sm={1.1} sx={{ mt: 0.7 }}>
+      <Grid item xs={12} sm={3} sx={{ mt: 0.7 }}>
         {order.responsible}
       </Grid>
       {/* Íconos de Editar y Eliminar */}
-      <Grid item xs={3} sm={0.3} sx={{ cursor: "pointer" }}>
+      <Grid item xs={12} sm={0.5} sx={{ cursor: "pointer" }}>
         <ImageToIcon
           icon={deleteicon}
           w={20}
@@ -75,14 +73,10 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
           }}
         />
       </Grid>
-
-      <Grid
-        item
-        xs={1}
-        sm={0.1}
-        sx={{ cursor: "pointer", position: "relative" }}
-      >
+      <Grid item xs={12} sm={1} sx={{ cursor: "pointer", position: "relative" }}>
         <ImageToIcon w={20} h={20} icon={edit} onClick={() => <></>} />
+
+        
         {/* Menú para editar */}
         <Menu
           anchorEl={anchorEl}
@@ -115,6 +109,7 @@ const OrderRowItem = ({ order, onEdit, index }: any) => {
       )}
     </Grid>
   );
+  
 };
 
 export default OrderRowItem;

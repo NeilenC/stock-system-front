@@ -33,7 +33,8 @@ import ImageToIcon from "../../../../commons/styled-components/IconImages";
 
 const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
-  const { activityToUpdate, setActivity, fetchActivityById } =  useActivityStore();
+  const { activityToUpdate, setActivity, fetchActivityById } =
+    useActivityStore();
   const { sectorsToRent } = useSectors();
 
   const isDateOverlap = (
@@ -47,53 +48,49 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
 
   const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
     //lista de IDs de los sectores ya ocupados en la actividad
-    const occupiedSectorIds = activityToUpdate?.sector_activities_ids.map(
-      (sectorInActivity) => sectorInActivity.sector.id
-    ) || [];
-  
+    const occupiedSectorIds =
+      activityToUpdate?.sector_activities_ids.map(
+        (sectorInActivity) => sectorInActivity.sector.id
+      ) || [];
+
     // Verificar si el sector actual no está en la lista de sectores ocupados
     return !occupiedSectorIds.includes(sector.id);
   });
-  
-  
+
   const availableSectors = useMemo(() => {
     if (activityToUpdate) {
       return filteredSectors.filter((sector: SectorProps) => {
         if (sector.sector_activities_ids?.length) {
-            const sectorActivities = sector.sector_activities_ids;
-  
-            // Verifica si alguna actividad tiene solapamiento y si está parcialmente alquilada
-            const isOverlappingAndPartiallyRented = sectorActivities.some((activity) =>
+          const sectorActivities = sector.sector_activities_ids;
+
+          // Verifica si alguna actividad tiene solapamiento y si está parcialmente alquilada
+          const isOverlappingAndPartiallyRented = sectorActivities.some(
+            (activity) =>
               isDateOverlap(
-                new Date(activityToUpdate.initial_date), 
-                new Date(activityToUpdate.end_date), 
-                new Date(activity.activity.initial_date), 
-                new Date(activity.activity.end_date) 
+                new Date(activityToUpdate.initial_date),
+                new Date(activityToUpdate.end_date),
+                new Date(activity.activity.initial_date),
+                new Date(activity.activity.end_date)
               ) && activity.is_partially_rented
-            );
-            return !isOverlappingAndPartiallyRented
-        } 
-        return true
-      })
+          );
+          return !isOverlappingAndPartiallyRented;
+        }
+        return true;
+      });
     } else {
-      return sectorsToRent
+      return filteredSectors;
     }
-  }, [activityToUpdate, sectorsToRent])
+  }, [activityToUpdate, sectorsToRent]);
 
-  console.log("availableSectors",availableSectors)
-  const sectorOptions = availableSectors.map((sector) => ({
-    label: sector.name ,
-    id: sector.id,
-  }));
-
-  const selectedSectors = 
+  const selectedSectors =
     activityToUpdate?.sector_activities_ids?.map((sectorActivity) => ({
       sector_id: sectorActivity.sector.id,
       label: sectorActivity.sector?.name || sectorActivity.name,
-      is_partially_rented: sectorActivity.is_partially_rented ,
+      is_partially_rented: sectorActivity.is_partially_rented,
+      toggle_partially_rented: sectorActivity.toggle_partially_rented,
       square_meters_rented: sectorActivity.square_meters_rented,
     })) || [];
-
+  console.log("selectedSectors", selectedSectors);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,49 +98,45 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   };
 
   const handleSectorChange = (sector_id: number | null) => {
-    // console.log("sector_id", sector_id)
     if (!sector_id) return;
 
-    const sector = sectorOptions.find((option) => option.id === sector_id);
-
+    const sector = availableSectors.find((option) => option.id === sector_id);
+console.log("sector", sector)
     if (sector) {
-      const isSectorAlreadyAdded = activityToUpdate?.sector_activities_ids?.some(
-        (s) => s.sector.id === sector.id
-      );
+      const isSectorAlreadyAdded =
+        activityToUpdate?.sector_activities_ids?.some(
+          (s) => s.sector.id === sector.id
+        );
 
       if (!isSectorAlreadyAdded) {
         const updatedSectors = [
           ...(activityToUpdate?.sector_activities_ids || []),
           {
-            is_partially_rented : false,
-            square_meters_rented: 0, 
+            is_partially_rented: false,
+            square_meters_rented: 0,
+            toggle_partially_rented: false,
             sector: {
-            id: sector.id,
-            name: sector.label,
-          }},
+              id: sector.id,
+              name: sector.name,
+            },
+          },
         ];
-
 
         const newActivity = {
           ...activityToUpdate,
           sector_activities_ids: updatedSectors,
         };
-        // console.log("newActivity", newActivity);
 
-        setActivity(newActivity); // Llamada al setter
-        setSelectedSector(null); // Reinicia el selector después de agregar
-
-        setSelectedSector(null); // Reinicia el selector después de agregar
+        setActivity(newActivity);
+        setSelectedSector(null);
+        setSelectedSector(null);
       }
     }
   };
 
-
   const handleRemoveSector = (sectorId: number) => {
-    const d = activityToUpdate?.sector_activities_ids
-    const updatedSectors = d?.filter(
-      (sector) => sector.sector.id !== sectorId
-    );
+    const d = activityToUpdate?.sector_activities_ids;
+    const updatedSectors = d?.filter((sector) => sector.sector.id !== sectorId);
     setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
   };
 
@@ -152,18 +145,13 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
     field: string,
     value: any
   ) => {
-
-
     const updatedSectors =
       activityToUpdate?.sector_activities_ids?.map((sector) =>
         sector.sector.id === sectorId ? { ...sector, [field]: value } : sector
       ) || [];
 
-      setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
-      
-    };
-    // console.log("sectorId", activityToUpdate?.sector_activities_ids)
-  
+    setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
+  };
 
   // Formatear fechas
   const handleDateChange = (keyDate: string, date: Date | null) => {
@@ -195,9 +183,8 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
           />
         </Grid>
 
-
-           {/** Fecha Inicial */}
-           <Grid item xs={12} sm={6}>
+        {/** Fecha Inicial */}
+        <Grid item xs={12} sm={6}>
           <FormLabelComponent>Fecha Inicial</FormLabelComponent>
           <CustomDateTimePicker
             value={
@@ -289,7 +276,6 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
           />
         </Grid>
 
-
         <Grid item xs={12}>
           <FormLabelComponent>Áreas Arrendadas</FormLabelComponent>
           <Stack spacing={2} direction="column" alignItems="flex-start">
@@ -314,9 +300,9 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                   }}
                   onChange={(e: any) => setSelectedSector(e.target.value)} // Captura el valor del sector seleccionado
                 >
-                  {sectorOptions.map((sector, index) => (
+                  {availableSectors.map((sector, index) => (
                     <MenuItem key={index} value={sector.id}>
-                      {sector.label}
+                      {sector.name}
                     </MenuItem>
                   ))}
                 </StyledSelect>
@@ -351,11 +337,14 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                   <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Areas Seleccionadas
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    Ocupación total / parcial
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", mr: 5 }}
+                  >
+                    Ocupación
                   </Typography>
                 </Box>
-                <List sx={{ width: "100%" }}>
+                <List sx={{ width: "100%", bgcolor: "primary.light" }}>
                   {selectedSectors.map((sector, index) => (
                     <ListItem
                       key={index}
@@ -365,15 +354,37 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
+                        <Typography variant="body1">
+                          {" "}
+                          {sector.is_partially_rented ||
+                          sector.toggle_partially_rented
+                            ? "Parcial"
+                            : "Total"}
+                        </Typography>
                         <Switch
-                           checked={sector.is_partially_rented || false} 
+                          checked={
+                            sector.is_partially_rented ||
+                            sector.toggle_partially_rented
+                          }
                           onChange={(e) =>
                             handleSectorDetailChange(
                               sector.sector_id,
-                              "is_partially_rented",
+                              "toggle_partially_rented",
                               e.target.checked
                             )
                           }
+                          sx={{
+                            "& .MuiSwitch-switchBase.Mui-checked": {
+                              color: "white",
+                            },
+                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                              {
+                                backgroundColor: "secondary.main",
+                              },
+                            "& .MuiSwitch-track": {
+                              backgroundColor: "gray",
+                            },
+                          }}
                         />
 
                         <Tooltip title="Eliminar sector">
@@ -394,7 +405,6 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
           </Stack>
         </Grid>
 
-     
         <Grid item xs={12} sm={6}>
           <FormLabelComponent>Tipo de Actividad</FormLabelComponent>
           <CustomTextFieldMaterial
@@ -420,10 +430,9 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
             fullWidth
             margin="dense"
             name="state"
-            value={activityToUpdate?.state || ""}
+            value={activityToUpdate?.state}
             onChange={handleInputChange}
             select
-            
           >
             {Object.values(ActivityState).map((state, index) => (
               <MenuItem key={index} value={state}>

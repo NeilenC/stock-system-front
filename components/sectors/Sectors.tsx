@@ -33,6 +33,7 @@ const Sectors = ({ salas = [], setSalas }: { salas: any[] , setSalas:any}) => {
     setEditingSectorId(sectorId);
     setIsEditModalOpen(true);
   };
+  
   const handleUpdateSector = async () => {
     if (editingSectorId) {
       try {

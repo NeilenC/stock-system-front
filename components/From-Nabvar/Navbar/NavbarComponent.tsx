@@ -104,7 +104,7 @@ const NavbarComponent = () => {
           iconSrc: orderlist,
         },
         {
-          label: "Materiales Borrados",
+          label: "Materiales Eliminados",
           href: "/gestion/materiales-inactivos",
           iconSrc: materials,
         },

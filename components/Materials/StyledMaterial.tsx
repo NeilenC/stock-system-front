@@ -6,10 +6,9 @@ const CustomTextFieldMaterial = styled(TextField)(({ theme }) => ({
   width: '100%',
   "& .MuiOutlinedInput-root": {
     height: "45px",
-    boxSizing: 'border-box', // Asegura consistencia en el tamaño
+    boxSizing: 'border-box', 
     "& input": {
       padding: "8px",
-      color: '#191B26',
     },
     "& fieldset": {
       borderColor: "#E1E6EF",

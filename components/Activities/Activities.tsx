@@ -31,7 +31,7 @@ const Activities = () => {
     updateItemsPerPage(value); 
   };
 
-
+const nextConfirmedActivities = activities.filter((act) => act.state === 'Confirmado')
   useEffect(() => {
     if (activities && activities.length > 0) {
       setLoading(false);
@@ -67,10 +67,10 @@ const Activities = () => {
             No hay actividades disponibles.
           </Typography>
         ) : (
-          <NextActivities activities={activities.slice(0, 3)} />
+          <NextActivities activities={nextConfirmedActivities.slice(0, 3)} />
         )}
       </Box>
-      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex',}}>
+      <Box sx={{ p: "10px 0px 0px  16px" , display:'flex',}}>
         <Select
           labelId="items-per-page-label"
           value={itemsPerPage}

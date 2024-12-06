@@ -103,10 +103,13 @@ const StockCheck = () => {
         sx={{
           padding: "20px 40px",
           backgroundColor: theme.palette.primary.main,
+          maxHeight:'100px',
+          zIndex:0,
+
         }}
       >
         {/* Input for searching material codes and names */}
-        <Grid container spacing={2} sx={{ marginBottom: 2 }}>
+        <Grid container spacing={2} sx={{ marginBottom: 2 , }}>
           <Grid item xs={12} sm={6}>
           <FormLabelComponent>
             Código
@@ -150,7 +153,6 @@ const StockCheck = () => {
             </FormLabelComponent>
           </Grid>
         </Grid>
-
         {/* Filtered materials list */}
         {(codeInputValue.trim() !== "" || nameInputValue.trim() !== "") &&
           filteredMaterials.length > 0 && (
@@ -158,12 +160,17 @@ const StockCheck = () => {
               sx={{
                 border: "1px solid #ccc",
                 borderRadius: "8px",
-                maxHeight: "200px",
+                maxHeight: "400px",
                 overflowY: "auto",
                 boxShadow: 1,
                 marginBottom: 2,
+                bgcolor:'white',
+                p:0,
+                zIndex:1,
+
               }}
             >
+
               {filteredMaterials.map((material, index) => (
                 <Box key={index}>
                   <ListItem
@@ -181,7 +188,6 @@ const StockCheck = () => {
             </List>
           )}
 
-        {/* Show message when no materials are found */}
         {/* {(codeInputValue.trim() !== "" || nameInputValue.trim() !== "") && filteredMaterials.length === 0 && (
     <Typography variant="body2" sx={{ marginTop: 1, color: "gray" }}>
       No se encontraron materiales con los filtros aplicados.
@@ -203,21 +209,14 @@ const StockCheck = () => {
               <TableContainer
                 component={Paper}
                 sx={{
-                  boxShadow: 3,
-                  borderRadius: "8px",
                   overflow: "hidden",
-                  maxHeight: 400,
-                  position: "relative",
+                  maxHeight: 600,
+
                 }}
               >
                 <Table sx={{ minWidth: 650 }}>
                   <TableHead
-                    sx={{
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "#f4f4f4",
-                      zIndex: 1,
-                    }}
+                  
                   >
                     <TableRow>
                       <TableCell
@@ -231,8 +230,6 @@ const StockCheck = () => {
                       </TableCell>
                       <TableCell
                         sx={{
-                          fontWeight: "bold",
-                          color: "#333",
                           backgroundColor: "#f4f4f4",
                         }}
                       >
@@ -252,16 +249,13 @@ const StockCheck = () => {
                           sx={{
                             color: "#555",
                             padding: "12px",
-                            fontWeight: "600",
                           }}
                         >
                           {stock.sector_id.name}
                         </TableCell>
                         <TableCell
                           sx={{
-                            color: "#555",
                             padding: "12px",
-                            fontWeight: "600",
                           }}
                         >
                           {stock.storaged_stock}

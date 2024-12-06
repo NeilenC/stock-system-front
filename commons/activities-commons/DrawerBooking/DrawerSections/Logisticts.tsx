@@ -1,18 +1,13 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
 import {
-  Autocomplete,
   Box,
-  Button,
   Collapse,
   FormControl,
-  IconButton,
-  InputLabel,
   List,
   ListItem,
   ListItemText,
   MenuItem,
-  Select,
   SelectChangeEvent,
   Switch,
   TextField,
@@ -20,10 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  CustomAutocomplete,
-  CustomSelect,
-  CustomTextField,
-  FormLabelComponent,
+  FormLabelComponentWithError,
   StyledSelect,
 } from "./CustomTextFields";
 import useEventStore from "../activity-hook/useEventStore";
@@ -31,20 +23,21 @@ import theme from "../../../../themes/theme";
 
 import add from "../../../../public/add.png";
 import removeIcon from "../../../../public/close-black.png";
-// import { SelectPicker, Stack } from 'rsuite';
 import { Stack } from "@mui/material";
 import useSectors, {
   SectorActivity,
   SectorProps,
 } from "../../../../hooks/useSectors";
 import ImageToIcon from "../../../styled-components/IconImages";
-import { Activity } from "../../../../zustand/activityStore";
+import { ComponentsProps } from "./GeneralInfo";
+
+
 interface SectorOption {
   label: string;
-  value: number; // o el tipo adecuado según tu base de datos
+  value: number;
 }
 
-const LogisticsSection: React.FC = () => {
+const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
   const {
     eventData,
     setLogisticsAssembly,
@@ -55,7 +48,6 @@ const LogisticsSection: React.FC = () => {
 
   const initialDate = eventData.generalInfo.details.initialDate;
   const endDate = eventData.generalInfo.details.endDate;
-
   const [openLogistics, setOpenLogistics] = useState(true);
   const [openDetalles, setOpenDetalles] = useState(true);
   const [openDesarme, setOpenDesarme] = useState(true);
@@ -77,10 +69,8 @@ const LogisticsSection: React.FC = () => {
     return !isSectorInGlobalState;
   });
 
-  console.log(
-    "ESTADO DE SECTORS",
-    eventData.logistics.detailsLogistics.sectors
-  );
+  
+
   // Función para verificar si hay intersección entre rangos de fechas
   const isDateOverlap = (
     start1: Date,
@@ -96,9 +86,9 @@ const LogisticsSection: React.FC = () => {
       return filteredSectors.filter((sector: SectorProps) => {
         if (sector.sector_activities_ids?.length) {
           const sectorActivities = sector.sector_activities_ids;
-          console.log("sectorActivitiess", sectorActivities);
+
           // Verifica si alguna actividad tiene solapamiento y si está parcialmente alquilada
-          const isOverlappingAndPartiallyRented = sectorActivities.some(
+          const isOverlapAndFullyRented = sectorActivities.some(
             (activity) =>
               isDateOverlap(
                 new Date(initialDate),
@@ -107,7 +97,7 @@ const LogisticsSection: React.FC = () => {
                 new Date(activity.activity.end_date)
               ) && !activity.is_partially_rented
           );
-          return !isOverlappingAndPartiallyRented;
+          return !isOverlapAndFullyRented;
         }
         return true;
       });
@@ -115,29 +105,36 @@ const LogisticsSection: React.FC = () => {
       return filteredSectors;
     }
   }, [initialDate, endDate, filteredSectors]);
-  console.log("availableSectors", availableSectors);
 
-  const sectorOptions: SectorOption[] = availableSectors.map((sector) => ({
-    label: sector.name,
-    value: sector.id,
-  }));
 
   // Agregar un nuevo sector
   const handleAddSector = () => {
     if (selectedSector !== null) {
-      const selected = sectorOptions.find(
-        (sector) => sector.value === selectedSector
+      const selected = availableSectors.find(
+        (sector) => sector.id === selectedSector
       );
       if (
         selected &&
         !eventData.logistics.detailsLogistics.sectors.some(
-          (s) => s.sector_id === selected.value
+          (s) => s.sector_id === selected.id
         )
       ) {
+
+        const isOverlapAndPartiallyRented = selected.sector_activities_ids.some(
+          (activity) =>
+            isDateOverlap(
+              new Date(initialDate),
+              new Date(endDate),
+              new Date(activity.activity.initial_date),
+              new Date(activity.activity.end_date)
+            ) && activity.is_partially_rented
+        );
+
         const updatedSector = {
-          sector_id: selected.value,
-          name: selected.label,
-          is_partially_rented: false,
+          sector_id: selected.id,
+          name: selected.name,
+          is_partially_rented: isOverlapAndPartiallyRented,
+          toggle_partially_rented: false,
           square_meters_rented: 0,
         };
 
@@ -151,7 +148,6 @@ const LogisticsSection: React.FC = () => {
     }
   };
 
-  // Eliminar un sector
   const handleRemoveSector = (sectorId: number) => {
     const updatedSectors = eventData.logistics.detailsLogistics.sectors.filter(
       (sector) => sector.sector_id !== sectorId
@@ -160,42 +156,26 @@ const LogisticsSection: React.FC = () => {
   };
 
   // Alternar `isParciallyRented` de un sector
-  const handleToggleChange = (sectorId: number) => {
+  const handleToggleChange = (sectorId: number, togglePartiallyRented: boolean) => {
     // Mapeamos los sectores en el estado global
     const updatedSectors = eventData.logistics.detailsLogistics.sectors.map(
       (sector) => {
-        // Verificamos si el sector está en availableSectors y su is_partially_rented es true
-        if (
-          availableSectors.some(
-            (availableSector) => availableSector.id === sectorId
-          ) &&
-          !sector.is_partially_rented
-        ) {
-          // Si el sector está en availableSectors, lo marcamos como 'true'
-          return { ...sector, is_partially_rented: true };
-        }
-
         // Si el sector no está en availableSectors, lo manejamos con la lógica original
         return sector.sector_id === sectorId
-          ? { ...sector, is_partially_rented: !sector.is_partially_rented }
+          ? { ...sector, toggle_partially_rented: togglePartiallyRented }
+
           : sector;
       }
     );
 
-    // Actualizamos el estado con los sectores modificados
     setSectors(updatedSectors);
   };
 
   const handleSectorChange = (event: SelectChangeEvent<unknown>) => {
+    console.log(' seleccioandno', event.target.value)
     setSelectedSector(event.target.value as number);
   };
 
-  const handleInputChangeAssembly = (
-    key: keyof typeof eventData.logistics.assembly,
-    value: string
-  ) => {
-    setLogisticsAssembly(key, value); // Adjust to use the appropriate setter method
-  };
 
   const handleInputChangeDetails = (
     key: keyof typeof eventData.logistics.detailsLogistics,
@@ -204,13 +184,7 @@ const LogisticsSection: React.FC = () => {
     setLogisticsDetails(key, value); // Adjust to use the appropriate setter method
   };
 
-  const handleInputChangeDismantling = (
-    key: keyof typeof eventData.logistics.dismantling,
-    value: string
-  ) => {
-    setLogisticsDismantling(key, value); // Adjust to use the appropriate setter method
-  };
-
+ 
   return (
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
@@ -222,163 +196,186 @@ const LogisticsSection: React.FC = () => {
         />
         <Collapse in={openDetalles}>
           <Box>
-            <FormLabelComponent>
+            <FormLabelComponentWithError error={!!inputErrors.sector_activities_ids}>
               Areas Arrendadas
-              <Stack spacing={2} direction="column" alignItems="flex-start">
-                {/* Container for Select and Add Button in the same line */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                    width: "100%",
-                  }}
-                >
-                  {/* Select for choosing sectors */}
-                  <FormControl fullWidth>
-                    <StyledSelect
-                      labelId="sector-select-label"
-                      value={selectedSector || ""}
-                      onChange={handleSectorChange}
-                      displayEmpty
-                      fullWidth
-                      inputProps={{
-                        "aria-hidden": undefined, // Ensure aria-hidden is not applied
-                      }}
-                    >
-                      {sectorOptions.map((sector, index) => {
-                        // Find the sector object from the available sectors
-                        const sectorData = availableSectors.find(
-                          (s) => s.id === sector.value
-                        );
+            </FormLabelComponentWithError>
 
-                        return (
-                          <MenuItem
-                            key={index}
-                            value={sector.value}
-                            disabled={!initialDate && !endDate}
-                            sx={{
-                              backgroundColor: sectorData
-                                ?.sector_activities_ids?.map((sec) => {console.log(sec?.is_partially_rented)} )
-                                ?  "transparent"
-                                : "primary.light",
-                            }}
-                          >
-                            {sector.label}
-                          </MenuItem>
-                        );
-                      })}
-                    </StyledSelect>
-                  </FormControl>
-
-                  {/* Add Sector Button */}
-                  <Tooltip title="Agregar Sector" arrow>
-                    <span>
-                      <ImageToIcon
-                        icon={add}
-                        w={24}
-                        h={24}
-                        onClick={handleAddSector}
-                        sx={{
-                          alignItems: "center",
-                          cursor: "pointer",
-                          opacity: selectedSector !== null ? 1 : 0.5,
-                        }}
-                      />
-                    </span>
-                  </Tooltip>
-                </Box>
-
-                {/* Section Header */}
-                {sectorsInGlobalState > 0 && (
-                  <Box
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
+            <Stack spacing={2} direction="column" alignItems="flex-start">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
+                <FormControl fullWidth>
+                  <StyledSelect
+                    labelId="sector-select-label"
+                    value={selectedSector || ""}
+                    onChange={handleSectorChange}
+                    displayEmpty
+                    fullWidth
+                    inputProps={{
+                      "aria-hidden": undefined, 
                     }}
                   >
-                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      Areas Seleccionadas
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      Ocupación total / parcial
-                    </Typography>
-                  </Box>
-                )}
+                    {availableSectors.map((sector, index) => {
 
-                {/* List of added sectors */}
-                <List
+                      const isPartiallyRented =
+                      sector?.sector_activities_ids?.some(
+                          (activity) =>
+                            isDateOverlap(
+                              new Date(initialDate),
+                              new Date(endDate),
+                              new Date(activity.activity.initial_date),
+                              new Date(activity.activity.end_date)
+                            ) && activity.is_partially_rented
+                        );
+
+                      return (
+                        <MenuItem
+                          key={index}
+                          value={sector.id}
+                          disabled={!initialDate && !endDate}
+                          sx={{
+                            backgroundColor: isPartiallyRented
+                              ? "#FFEB9A"
+                              : "background.paper",
+                            "&:hover": {
+                              backgroundColor: isPartiallyRented
+                                ? "#FFEB9A"
+                                : "action.hover",
+                            },
+                          }}
+                        >
+                          {sector.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </StyledSelect>
+                </FormControl>
+
+                {/* Add Sector Button */}
+                <Tooltip title="Agregar Sector" arrow>
+                  <span>
+                    <ImageToIcon
+                      icon={add}
+                      w={24}
+                      h={24}
+                      onClick={handleAddSector}
+                      sx={{
+                        alignItems: "center",
+                        cursor: "pointer",
+                        opacity: selectedSector !== null ? 1 : 0.5,
+                      }}
+                    />
+                  </span>
+                </Tooltip>
+              </Box>
+
+              {/* Section Header */}
+              {sectorsInGlobalState > 0 && (
+                <Box
                   sx={{
                     width: "100%",
-                    bgcolor: sectorsInGlobalState ? "primary.light" : null,
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {sectorsInGlobalState > 0 && (
-                    <List sx={{ width: "100%" }}>
-                      {eventData.logistics.detailsLogistics.sectors.map(
-                        (sector, index) => (
-                          <ListItem
-                            key={index}
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Areas Seleccionadas
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", mr: 5 }}
+                  >
+                    Ocupación
+                  </Typography>
+                </Box>
+              )}
+
+              {/* List of added sectors */}
+              <List
+                sx={{
+                  width: "100%",
+                  bgcolor: sectorsInGlobalState ? "primary.light" : null,
+                }}
+              >
+                {sectorsInGlobalState > 0 && (
+                  <List sx={{ width: "100%" }}>
+                    {eventData.logistics.detailsLogistics.sectors.map(
+                      (sector, index) => {
+                        console.log('sector.is_partially_rented', sector.is_partially_rented)
+                        return (
+                        <ListItem
+                          key={index}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <ListItemText
+                            primary={sector.name}
+                            sx={{ flexGrow: 1 }}
+                          />
+
+                          <Box
                             sx={{
                               display: "flex",
-                              justifyContent: "space-between",
+                              alignItems: "center",
+                              gap: 2,
                             }}
                           >
-                            <ListItemText
-                              primary={sector.name}
-                              sx={{ flexGrow: 1 }}
+                            <Typography variant="body1">
+                              {" "}
+                              {sector.is_partially_rented || sector.toggle_partially_rented ? "Parcial" : "Total"}
+                            </Typography>
+                            <Switch
+                              checked={sector.is_partially_rented || sector.toggle_partially_rented}
+                              disabled={sector.is_partially_rented}
+                              onChange={() =>
+                                handleToggleChange(
+                                  sector.sector_id,
+                                  !sector.toggle_partially_rented
+                                )
+                              }
+                              sx={{
+                                "& .MuiSwitch-switchBase.Mui-checked": {
+                                  color: "white",
+                                },
+                                "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                  {
+                                    backgroundColor: "secondary.main",
+                                  },
+                                "& .MuiSwitch-track": {
+                                  backgroundColor: "gray",
+                                },
+                              }}
                             />
 
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 2,
-                              }}
-                            >
-                              <Switch
-                                checked={sector.is_partially_rented}
-                                onChange={() =>
-                                  handleToggleChange(sector.sector_id)
+                            <Tooltip title="Eliminar sector" arrow>
+                              <ImageToIcon
+                                icon={removeIcon}
+                                w={20}
+                                h={20}
+                                onClick={() =>
+                                  handleRemoveSector(sector.sector_id)
                                 }
                                 sx={{
-                                  "& .MuiSwitch-switchBase.Mui-checked": {
-                                    color: "white",
-                                  },
-                                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                                    {
-                                      backgroundColor: "secondary.main",
-                                    },
-                                  "& .MuiSwitch-track": {
-                                    backgroundColor: "gray",
-                                  },
+                                  cursor: "pointer",
+                                  "&:hover": { color: "blue" },
                                 }}
                               />
-
-                              <Tooltip title="Eliminar sector" arrow>
-                                <ImageToIcon
-                                  icon={removeIcon}
-                                  w={20}
-                                  h={20}
-                                  onClick={() =>
-                                    handleRemoveSector(sector.sector_id)
-                                  }
-                                  sx={{
-                                    cursor: "pointer",
-                                    "&:hover": { color: "blue" },
-                                  }}
-                                />
-                              </Tooltip>
-                            </Box>
-                          </ListItem>
-                        )
+                            </Tooltip>
+                          </Box>
+                        </ListItem>
                       )}
-                    </List>
-                  )}
-                </List>
-              </Stack>
-            </FormLabelComponent>
+                    )}
+                  </List>
+                )}
+              </List>
+            </Stack>
 
             <TextField
               sx={{

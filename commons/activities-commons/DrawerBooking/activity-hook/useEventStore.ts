@@ -35,6 +35,7 @@ export interface EventData {
         sector_id: number; 
         name?: string;
         is_partially_rented: boolean; 
+        toggle_partially_rented: boolean;
         square_meters_rented: number; 
       }[];
       dateActivity: string;
@@ -122,7 +123,7 @@ interface EventStore {
     value: string | number
   ) => void;
   setSectors: (
-    sectors: { sector_id: number; is_partially_rented: boolean; square_meters_rented: number }[]
+    sectors: { sector_id: number; is_partially_rented: boolean; square_meters_rented: number, toggle_partially_rented:boolean }[]
   ) => void;
   resetForm: () => void;
 }
@@ -278,7 +279,7 @@ const useEventStore = create<EventStore>((set) => ({
     })),
 
     setSectors: (
-      sectors: { sector_id: number; is_partially_rented: boolean ; square_meters_rented: number}[]
+      sectors: { sector_id: number; is_partially_rented: boolean ; square_meters_rented: number; toggle_partially_rented: boolean}[]
     ) =>
       set((state) => ({
         eventData: {

@@ -5,8 +5,7 @@ const useScreenSize = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
-  const isTablet = screenSize.width <= 1024 && screenSize.height <= 768 || screenSize.width <= 768 && screenSize.height <= 1024;
+  const isTablet = screenSize.width <= 1024 && screenSize.height <= 768 || screenSize.width <= 836 && screenSize.height <= 1120;
 
   useEffect(() => {
     const handleResize = () => {

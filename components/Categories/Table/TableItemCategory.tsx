@@ -69,7 +69,7 @@ useEffect(()=> {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-console.log("category", category)
+
   return (
     <Grid
       container

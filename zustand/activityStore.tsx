@@ -25,6 +25,7 @@ export interface Activity {
   sector_activities_ids: {
     is_partially_rented: boolean; 
     square_meters_rented: number; 
+    toggle_partially_rented: boolean;
     name: string;
     sector: { 
     id: number; 
@@ -64,19 +65,7 @@ export const useActivityStore = create<ActivityStore>()(
       }
     },
 
-    
 
-    // fetchActivityById: async (id: number) => {
-    //   try {
-    //     const response = await fetch(
-    //       `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${id}`
-    //     );
-    //     const data: Activity = await response.json();
-    //     set({ activityToUpdate: data });
-    //   } catch (error) {
-    //     console.error("Error fetching activity by ID:", error);
-    //   }
-    // },
     fetchAllActivities: async () => {
       try {
         const response = await fetch(

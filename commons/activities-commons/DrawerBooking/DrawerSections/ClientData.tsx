@@ -1,20 +1,18 @@
-import {
-  Autocomplete,
-  Box,
-  Collapse,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Box, Collapse, InputAdornment } from "@mui/material";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
-import { CustomTextField, FormLabelComponent } from "./CustomTextFields";
-import { useEffect, useState } from "react";
+import {
+  CustomTextField,
+  FormLabelComponent,
+  FormLabelComponentWithError,
+} from "./CustomTextFields";
+import { useState } from "react";
 import useEventStore from "../activity-hook/useEventStore";
 import email from "../../../../public/drawer/email.png";
 import phone from "../../../../public/drawer/phone.png";
 import ImageToIcon from "../../../styled-components/IconImages";
-import theme from "../../../../themes/theme";
+import { ComponentsProps } from "./GeneralInfo";
 
-const ClientData: React.FC = () => {
+const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
   const {
     eventData,
     setClientData,
@@ -217,65 +215,62 @@ const ClientData: React.FC = () => {
               />
             </FormLabelComponent> */}
 
-            <FormLabelComponent>
-              Nombre del Cliente
-              <CustomTextField
-                placeholder="Ingrese nombre del cliente"
-                variant="outlined"
-                fullWidth
-                value={getSafeValue(
-                  eventData.logistics.clientData.client.clientName
-                )}
-                onChange={handleClientNameChange}
-                // InputProps={{
-                //   startAdornment: (
-                //     <InputAdornment position="start">
-                //       <ImageToIcon icon={phone} w={20} h={20} />
-                //     </InputAdornment>
-                //   ),
-                // }}
-              />
-            </FormLabelComponent>
-
-            <FormLabelComponent>
+            <FormLabelComponentWithError error={!!inputErrors.client_name}>
+              Nombre del Cliente{" "}
+            </FormLabelComponentWithError>
+            <CustomTextField
+              placeholder="Ingrese nombre del cliente"
+              variant="outlined"
+              fullWidth
+              value={getSafeValue(
+                eventData.logistics.clientData.client.clientName
+              )}
+              onChange={handleClientNameChange}
+              // InputProps={{
+              //   startAdornment: (
+              //     <InputAdornment position="start">
+              //       <ImageToIcon icon={phone} w={20} h={20} />
+              //     </InputAdornment>
+              //   ),
+              // }}
+            />
+            <FormLabelComponentWithError error={!!inputErrors.client_phone}>
               Teléfono
-              <CustomTextField
-                placeholder="Ingrese teléfono"
-                variant="outlined"
-                fullWidth
-                value={getSafeValue(
-                  eventData.logistics.clientData.client.phoneNumber
-                )}
-                onChange={handleClientPhoneChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ImageToIcon icon={phone} w={20} h={20} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </FormLabelComponent>
+            </FormLabelComponentWithError>
+            <CustomTextField
+              placeholder="Ingrese teléfono"
+              variant="outlined"
+              fullWidth
+              value={getSafeValue(
+                eventData.logistics.clientData.client.phoneNumber
+              )}
+              onChange={handleClientPhoneChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <ImageToIcon icon={phone} w={20} h={20} />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-            <FormLabelComponent>
+            <FormLabelComponentWithError error={!!inputErrors.client_email}>
               Correo electrónico
-              <CustomTextField
-                placeholder="Ingrese correo electrónico"
-                variant="outlined"
-                fullWidth
-                value={getSafeValue(
-                  eventData.logistics.clientData.client.email
-                )}
-                onChange={handleClientEmailChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ImageToIcon icon={email} w={20} h={20} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </FormLabelComponent>
+            </FormLabelComponentWithError>
+            <CustomTextField
+              placeholder="Ingrese correo electrónico"
+              variant="outlined"
+              fullWidth
+              value={getSafeValue(eventData.logistics.clientData.client.email)}
+              onChange={handleClientEmailChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <ImageToIcon icon={email} w={20} h={20} />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Box>
         </Collapse>
       </Box>

@@ -54,8 +54,8 @@ const NextActivities: React.FC<NextActivities> = ({ activities }) => {
                 sx={{
                   maxWidth: "350px",
                   bgcolor: 'white',
-                 borderRadius:'15px ' 
-
+                  borderRadius:'15px ' ,
+                  paddingBottom:'0px !important'
                 }}
               >
                 <CardContent>

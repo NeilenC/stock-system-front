@@ -13,20 +13,23 @@ import {
   CustomSelect,
   CustomTextField,
   FormLabelComponent,
+  FormLabelComponentWithError,
 } from "./CustomTextFields";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
-import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import calendar from "../../../../public/calendar.png";
-import ImageToIcon from "../../../styled-components/IconImages";
 import CustomDateTimePicker from "../../../styled-components/CustomeDateTimePicker";
 import { ActivityState } from "../enums";
 
-const GeneralInfoContent: React.FC = () => {
+export interface ComponentsProps {
+  inputErrors: Record<string, string>;
+}
+
+const GeneralInfoContent: React.FC<ComponentsProps> = ({
+  inputErrors,
+}) => {
   const { eventData, setGeneralInfo } = useEventStore();
   const [openGeneral, setOpenGeneral] = useState(true);
-  const [errors, setErrors] = useState<Record<string, string>>({}); // Para almacenar errores por campo
-
+  const [errors, setErrors] = useState<Record<string, string>>({}); 
 
   const handleToggleGeneral = () => setOpenGeneral(!openGeneral);
 
@@ -36,7 +39,6 @@ const GeneralInfoContent: React.FC = () => {
   ) => {
     setGeneralInfo(key, value);
   };
-
 
   const handleDateChange = (
     keyDate: keyof typeof eventData.generalInfo.details,
@@ -67,7 +69,7 @@ const GeneralInfoContent: React.FC = () => {
   const validateDates = (keyDate: string, date: Date): boolean => {
     const { initialDate, openingDate, closingDate, endDate } =
       eventData.generalInfo.details;
-  
+
     // Parsear todas las fechas en objetos Date válidos
     const dateOrder: Record<string, Date> = {
       initialDate: initialDate ? new Date(initialDate) : new Date(0),
@@ -75,23 +77,22 @@ const GeneralInfoContent: React.FC = () => {
       closingDate: closingDate ? new Date(closingDate) : new Date(0),
       endDate: endDate ? new Date(endDate) : new Date(0),
     };
-  
+
     // Actualiza la fecha que está cambiando
     dateOrder[keyDate] = date;
-  
+
     // Validar orden lógico de fechas
     if (
       dateOrder.initialDate.getTime() === 0 || // Evitar validaciones cuando falta initialDate
-      (dateOrder.initialDate <= dateOrder.openingDate || !openingDate) &&
-      (dateOrder.openingDate <= dateOrder.closingDate || !closingDate) &&
-      (dateOrder.closingDate <= dateOrder.endDate || !endDate)
+      ((dateOrder.initialDate <= dateOrder.openingDate || !openingDate) &&
+        (dateOrder.openingDate <= dateOrder.closingDate || !closingDate) &&
+        (dateOrder.closingDate <= dateOrder.endDate || !endDate))
     ) {
       return true; // Fechas son válidas
     }
-  
+
     return false; // Alguna fecha está fuera de orden
   };
-  
 
   return (
     <>
@@ -105,45 +106,47 @@ const GeneralInfoContent: React.FC = () => {
         <Collapse in={openGeneral}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormLabelComponent>
+              <FormLabelComponentWithError error={!!inputErrors.activity_name}>
                 Nombre de la actividad
-                <CustomTextField
-                  placeholder="Ingresa nombre de la actividad"
-                  variant="outlined"
-                  fullWidth
-                  value={eventData.generalInfo.details.nameEvent}
-                  onChange={(e: any) =>
-                    handleInputChange("nameEvent", e.target.value)
-                  }
-                />
-              </FormLabelComponent>
+              </FormLabelComponentWithError>
+              <CustomTextField
+                placeholder="Ingresa nombre de la actividad"
+                variant="outlined"
+                fullWidth
+                value={eventData.generalInfo.details.nameEvent}
+                onChange={(e: any) =>
+                  handleInputChange("nameEvent", e.target.value)
+                }
+              />
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabelComponent>
-                Fecha inicio / Inicio Armado
-                <CustomDateTimePicker
-                  value={
-                    eventData.generalInfo.details.initialDate
-                      ? dayjs(eventData.generalInfo.details.initialDate)
-                      : null
-                  }
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateChange(
-                      "initialDate",
-                      "initialTime",
-                      newValue ? newValue.toDate() : null
-                    )
-                  }
-                  error={!!errors.initialDate}
-                  helperText={errors.initialDate}
-                />
-              </FormLabelComponent>
+              <FormLabelComponentWithError error={!!inputErrors.initial_date}>
+                Fecha inicio / Inicio Armado{" "}
+              </FormLabelComponentWithError>
+              <CustomDateTimePicker
+                value={
+                  eventData.generalInfo.details.initialDate
+                    ? dayjs(eventData.generalInfo.details.initialDate)
+                    : null
+                }
+                onChange={(newValue: Dayjs | null) =>
+                  handleDateChange(
+                    "initialDate",
+                    "initialTime",
+                    newValue ? newValue.toDate() : null
+                  )
+                }
+                error={!!errors.initialDate}
+                helperText={errors.initialDate}
+              />
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabelComponent>
+              
+                <FormLabelComponentWithError error={!!inputErrors.opening_date}>
                 Fecha Apertura al público / Fin Armado
+              </FormLabelComponentWithError>
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.openingDate
@@ -157,15 +160,14 @@ const GeneralInfoContent: React.FC = () => {
                       newValue ? newValue.toDate() : null
                     )
                   }
-                  error={!!errors.openingDate}
-                  helperText={errors.openingDate}
                 />
-              </FormLabelComponent>
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabelComponent>
-                Fecha Cierre al público / Inicio Desarme
+            <FormLabelComponentWithError error={!!inputErrors.closing_date}>
+            Fecha Cierre al público / Inicio Desarme
+              </FormLabelComponentWithError>
+            
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.closingDate
@@ -179,15 +181,14 @@ const GeneralInfoContent: React.FC = () => {
                       newValue ? newValue.toDate() : null
                     )
                   }
-                  error={!!errors.closingDate}
-                  helperText={errors.closingDate}
                 />
-              </FormLabelComponent>
             </Grid>
 
             <Grid item xs={12}>
-              <FormLabelComponent>
-                Fecha finalización / Fin Desarme
+            <FormLabelComponentWithError error={!!inputErrors.end_date}>
+            Fecha finalización / Fin Desarme
+
+              </FormLabelComponentWithError>
                 <CustomDateTimePicker
                   value={
                     eventData.generalInfo.details.endDate
@@ -204,12 +205,14 @@ const GeneralInfoContent: React.FC = () => {
                   error={!!errors.endDate}
                   helperText={errors.endDate}
                 />
-              </FormLabelComponent>
             </Grid>
 
             <Grid item xs={6}>
               <FormControl fullWidth>
-                <FormLabelComponent>Tipo de Evento</FormLabelComponent>
+              <FormLabelComponentWithError error={!!inputErrors.type_activity}>
+              Tipo de Evento
+
+              </FormLabelComponentWithError>
                 <CustomSelect
                   placeholder="Seleccionar tipo"
                   value={eventData.generalInfo.details.typeEvent}
@@ -232,9 +235,11 @@ const GeneralInfoContent: React.FC = () => {
               </FormControl>
             </Grid>
 
-                        <Grid item xs={6} sx={{pb:2.5}}> 
+            <Grid item xs={6} sx={{ pb: 2.5 }}>
               <FormControl fullWidth>
-                <FormLabelComponent>Estado del Evento</FormLabelComponent>
+                <FormLabelComponentWithError error={!!inputErrors.state}>
+             Estado del Evento
+              </FormLabelComponentWithError>
                 <CustomSelect
                   placeholder="Seleccionar tipo"
                   value={eventData.generalInfo.details.state}
@@ -242,7 +247,7 @@ const GeneralInfoContent: React.FC = () => {
                     handleInputChange("state", e.target.value)
                   }
                 >
-                   {Object.values(ActivityState).map((state) => (
+                  {Object.values(ActivityState).map((state) => (
                     <MenuItem key={state} value={state}>
                       {state}
                     </MenuItem>
@@ -250,51 +255,6 @@ const GeneralInfoContent: React.FC = () => {
                 </CustomSelect>
               </FormControl>
             </Grid>
-
-
-            {/* <Grid item xs={6}>
-              <FormControl fullWidth>
-                <FormLabelComponent>Tipo de Contratación</FormLabelComponent>
-                <CustomSelect
-                  placeholder="Seleccionar tipo"
-                  value={eventData.generalInfo.details.typeContract}
-                  onChange={(e: any) =>
-                    handleInputChange("typeContract", e.target.value)
-                  }
-                >
-                  <MenuItem value="Arrendamiento">Arrendamiento</MenuItem>
-                  <MenuItem value="Llave en mano">Llave en mano</MenuItem>
-                </CustomSelect>
-              </FormControl>
-            </Grid> */}
-
-            {/* <Grid item xs={6}>
-              <FormLabelComponent>
-                Nombre en CWA
-                <CustomTextField
-                  placeholder="Ingresa nombre"
-                  variant="outlined"
-                  fullWidth
-                  value={eventData.generalInfo.details.CWAname}
-                  onChange={(e) => handleInputChange("CWAname", e.target.value)}
-                />
-              </FormLabelComponent>
-            </Grid>
-
-            <Grid item xs={6}>
-              <FormLabelComponent>
-                Número en CWA
-                <CustomTextField
-                  placeholder="Ingresa número"
-                  variant="outlined"
-                  fullWidth
-                  value={eventData.generalInfo.details.CWAnumber}
-                  onChange={(e) =>
-                    handleInputChange("CWAnumber", e.target.value)
-                  }
-                />
-              </FormLabelComponent>
-            </Grid> */}
           </Grid>
         </Collapse>
       </Box>

@@ -24,6 +24,8 @@ import { Activity, useActivityStore } from "../../zustand/activityStore";
 import { useMaterialStore } from "../../zustand/materialStore";
 import { MaterialProps } from "../Materials/materialsProps";
 import OrderCreateForm from "./components/OrderCreateForm";
+import { userInfo } from "os";
+import { useUserStore } from "../../zustand/useAuthStore";
 
 interface OrderProps {
   materialId: number;
@@ -43,6 +45,7 @@ const OrdersComponent = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [orderItems, setOrderItems] = useState<OrderProps[]>([]);
+  const userEmailStore = useUserStore((store) => store.email);
 
 
   const handleItemsPerPageChange = (event: any) => {
@@ -51,12 +54,11 @@ const OrdersComponent = () => {
   };
 
   
-console.log("acaaa", currentOrder)
-  
   const handleSubmit = async () => {
     const createOrderPayload = {
       activity_id: selectedActivity?.id, 
       createdAt: new Date(),
+      responsible: userEmailStore,
       orders_list: orderItems.map((item) => ({
         material: item.materialId, 
         quantity: item.quantity, 
