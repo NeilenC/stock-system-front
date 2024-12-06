@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, Typography } from "@mui/material";
+import { Grid, Box, Typography, Select, MenuItem } from "@mui/material";
 import ModalComponent from "../../../commons/modals/ModalComponent";
 import MaterialEditForm from "../Modal/Forms/MaterialEditForm";
 import { MaterialProps } from "../materialsProps";
@@ -54,7 +54,7 @@ const InactiveMaterialsTable = () => {
     itemsPerPage,
     totalItems,
     setIsFilteringInactive,
-    fetchMaterials,
+    fetchMaterials,updateItemsPerPage
   } = useMaterialsContext();
 
   const { clearFilters } = useFiltersContext();
@@ -238,19 +238,23 @@ const InactiveMaterialsTable = () => {
     }
   };
 
+
   const handleCreateMaterial = async (formData: any) => {
+console.log("formdataweifht", formData , typeof formData.weight)
+
+
     const formD = new FormData();
     formD.append("name", formData.name);
     formD.append("description", formData.description);
     formD.append("code", formData.code);
     formD.append("color", formData.color);
     formD.append("actual_stock", formData.actual_stock);
-    formD.append("weight", formData.weight.toString());
-    formD.append("width", formData.width.toString());
-    formD.append("depth", formData.depth.toString());
-    formD.append("height", formData.height.toString());
+    formD.append("weight", formData.weight);
+    formD.append("width", formData.width);
+    formD.append("depth", formData.depth);
+    formD.append("height", formData.height);
     formD.append("observations", formData.observations);
-    formD.append("price", formData.price.toString());
+    formD.append("price", formData.price);
     formD.append("category", formData.category);
 
     if (Array.isArray(formData.distribution_stock)) {
@@ -394,7 +398,10 @@ const InactiveMaterialsTable = () => {
       setFormData({ ...formData, image_url: e.target.files[0] });
     }
   };
-
+  const handleItemsPerPageChange = (event: any) => {
+    const value = parseInt(event.target.value, 10); // 
+    updateItemsPerPage(value); 
+  };
   return (
     <>
       <SectionComponent
@@ -406,7 +413,38 @@ const InactiveMaterialsTable = () => {
           onClick={clearAllFilters}
         ></CustomButton>
       </SectionComponent>
-      <Box sx={{}}>
+      <Box sx={{ p: "  10px 0px 0px  16px" , display:'flex'}}>
+        <Select
+          labelId="items-per-page-label"
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          label="Items por página"
+          sx={{ height: '45px' }}
+        >
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+          <MenuItem value={30}>30</MenuItem>
+          <MenuItem value={40}>40</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+        </Select>
+        <Typography variant='body1'sx={{alignContent:'center', pl:2}}>Registros por página</Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center", 
+          paddingBlock: "10px",
+          paddingInline: "16px",
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: "16px",
+            border: "1px solid #E2E8F0",
+            overflow: "hidden",
+          }}
+        >
         <Grid container>
           <TableHeader />
           <Filters handleFilter={handleFilter} />
@@ -524,6 +562,7 @@ const InactiveMaterialsTable = () => {
             onClose={() => setShowToast(false)}
           />
         )}
+      </Box>
       </Box>
     </>
   );
