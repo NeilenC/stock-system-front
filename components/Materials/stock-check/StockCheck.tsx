@@ -174,8 +174,8 @@ const StockCheck = () => {
               {filteredMaterials.map((material, index) => (
                 <Box key={index}>
                   <ListItem
-                    button
                     onClick={() => handleMaterialSelect(material)}
+                     component="li"
                   >
                     <ListItemText
                       primary={material.code}

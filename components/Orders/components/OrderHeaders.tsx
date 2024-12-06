@@ -3,9 +3,12 @@ import { Grid } from "@mui/material";
 import useScreenSize from "../../../hooks/useScreenSize";
 import theme from "../../../themes/theme";
 
-const getHeaderNames = () => {
-  const { isTablet } = useScreenSize();
-  return isTablet
+// El componente OrderHeaders es ahora el lugar donde se llama al hook useScreenSize
+const OrderHeaders = () => {
+  const { isTablet } = useScreenSize();  // Aquí usamos el hook dentro del componente
+
+  // Las cabeceras dependen del tamaño de la pantalla, por lo que las generamos dentro del componente
+  const columnNames = isTablet
     ? {
         activity: "Actividad",
         orderDate: "Creación",
@@ -18,12 +21,6 @@ const getHeaderNames = () => {
         responsible: "Responsable",
         state: "Estado",
       };
-};
-
-const OrderHeaders = () => {
-  const { screenSize, isTablet } = useScreenSize();
-
-  const columnNames = getHeaderNames();
 
   return (
     <Grid
@@ -46,7 +43,7 @@ const OrderHeaders = () => {
       <Grid item xs={2} sm={1.9}>
         {columnNames.state}
       </Grid>
-      <Grid item xs={4} sm={1}>
+      <Grid item xs={4} sm={2}>
         {columnNames.responsible}
       </Grid>
     </Grid>

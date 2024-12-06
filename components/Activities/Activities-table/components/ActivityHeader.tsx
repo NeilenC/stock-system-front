@@ -3,10 +3,10 @@ import { Grid } from "@mui/material";
 import useScreenSize from "../../../../hooks/useScreenSize";
 import theme from "../../../../themes/theme";
 
-// Header names based on filters
-const getHeaderNames = () => {
-  const { isTablet } = useScreenSize();
-  return isTablet
+const ActivityTableHeader = () => {
+  const { isTablet } = useScreenSize();  
+
+  const columnNames = isTablet
     ? {
         client_phone: "Teléfono",
         client_email: "Correo",
@@ -39,12 +39,6 @@ const getHeaderNames = () => {
         closing_date: "Fin Evento/Inicio Desarmado",
         end_date: "Fin Desarmado",
       };
-};
-
-const ActivityTableHeader = () => {
-  const { screenSize, isTablet } = useScreenSize();
-
-  const columnNames = getHeaderNames();
 
   return (
     <Grid
