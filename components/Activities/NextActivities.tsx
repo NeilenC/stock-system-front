@@ -15,6 +15,7 @@ import {
 } from "../../commons/activities-commons/DrawerBooking/enums";
 import ModalComponent from "../../commons/modals/ModalComponent";
 import ActivityEditForm from "./Activities-table/components/ActivityEditForm";
+import { useActivityStore } from "../../zustand/activityStore";
 
 interface NextActivities {
   activities: Array<any>;
@@ -22,7 +23,8 @@ interface NextActivities {
 const NextActivities: React.FC<NextActivities> = ({ activities }) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
-
+  const { activityToUpdate } =
+    useActivityStore();
 
   const getNormalizedState = (state: string): string => {
     return state

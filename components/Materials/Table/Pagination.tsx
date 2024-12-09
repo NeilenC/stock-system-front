@@ -52,17 +52,17 @@ const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
           {/* Números de página */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {start > 1 && (
-              <>
+              <> 
                 <Button
                   variant="outlined"
                   size="small" // Tamaño pequeño
                   onClick={() => onPageChange(1)}
                   sx={{ mx: 1 , bgcolor:'primary.main', color:'primary.dark',width:'10px'}} // Separación horizontal entre botones
                 >
-                  1 ...
+                  1 
                 </Button>
-                {start > 2 && <Typography sx={{ mx: 1 }}></Typography>}
-              </>
+                {start > 2 && <Typography sx={{ mx: 1 }}>...</Typography>}
+              </> 
             )}
 
             {Array.from({ length: end - start + 1 }, (_, index) => (
@@ -104,7 +104,7 @@ const Pagination = ({ page, onPageChange, totalItems, itemsPerPage }: any) => {
                   onClick={() => onPageChange(count)}
                   sx={{ mx: 1, bgcolor:'primary.main', color:'primary.dark', width:'10px' }} // Separación horizontal entre botones
                 >
-                  ... {count}
+                  {count}
                 </Button>
               </>
             )}

@@ -76,13 +76,17 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     sector_activities_ids: eventData.logistics.detailsLogistics.sectors?.map(
       (sector) => ({
         sector_id: sector.sector_id,
-        is_partially_rented: sector.is_partially_rented,
+        is_partially_rented:
+          sector.toggle_partially_rented
+            ? true
+            : sector.is_partially_rented,
         square_meters_rented: sector.square_meters_rented || 0,
       })
     ),
     notes: eventData.logistics.detailsLogistics.notes,
   };
 
+  
   const validateCreateMemoActivityDto = (dto: typeof createMemoActivityDto) => {
     const errors: Record<string, string> = {};
 

@@ -525,6 +525,7 @@ console.log("formdataweifht", formData , typeof formData.weight)
             title="Crear Material"
             onSubmit={() => handleCreateMaterial(formData)}
             textButton="Guardar"
+            width='900px'
             // loading={loading}
           >
             <CreateMaterialForm

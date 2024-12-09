@@ -15,6 +15,12 @@ import Toast from "../../../commons/Toast";
 import theme from "../../../themes/theme";
 import { useModalContext } from "./context/ModalContext";
 
+type StockInput = {
+  sector_id: number;
+  storaged_stock: number;
+};
+
+
 const initialFormData = {
   name: "",
   description: "",
@@ -177,6 +183,7 @@ const MaterialsTable = () => {
       );
     }
   };
+console.log("formdata", formData)
 
   const handleSave = async () => {
     try {
@@ -305,7 +312,7 @@ const MaterialsTable = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+   e:  React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
   
@@ -313,24 +320,24 @@ const MaterialsTable = () => {
     let newFormErrors = { ...formErrors };
     setFormData((prev) => {
   
-      // Validamos si el campo debe limpiarse
+
       if (name === "name" && value.trim() !== "") {
-        newFormErrors = { ...newFormErrors, name: "" }; // Limpia el error si 'name' no está vacío
+        newFormErrors = { ...newFormErrors, name: "" }; 
       }
       if (name === "category" && value) {
-        newFormErrors = { ...newFormErrors, category: "" }; // Limpia el error si 'category' está seleccionado
+        newFormErrors = { ...newFormErrors, category: "" }; 
       }
       if (name === "description" && value.trim() !== "") {
-        newFormErrors = { ...newFormErrors, description: "" }; // Limpia el error si 'description' no está vacío
+        newFormErrors = { ...newFormErrors, description: "" }; 
       }
       if (name === "code" && value.trim() !== "") {
-        newFormErrors = { ...newFormErrors, code: "" }; // Limpia el error si 'code' no está vacío
+        newFormErrors = { ...newFormErrors, code: "" }; 
       }
       if (name === "storaged_stock" && value !== "") {
-        newFormErrors = { ...newFormErrors, storaged_stock: "" }; // Limpia el error si 'storaged_stock' está correctamente completado
+        newFormErrors = { ...newFormErrors, storaged_stock: "" }; 
       }
       if (name === "distribution_stock.sector_id" && value !== "") {
-        newFormErrors = { ...newFormErrors, sector_id: "" }; // Limpia el error si 'sector_id' está seleccionado
+        newFormErrors = { ...newFormErrors, sector_id: "" }; 
       }
   
       // Manejo de otros campos en la estructura 'distribution_stock'
@@ -345,13 +352,13 @@ const MaterialsTable = () => {
               if (fieldName === "sector_id") {
                 return {
                   ...item,
-                  sector_id: Number(value), // Asegúrate de que `sector_id` sea un número
+                  sector_id: Number(value), // Asegura de que `sector_id` sea un número
                 };
               }
               if (fieldName === "storaged_stock") {
                 return {
                   ...item,
-                  storaged_stock: Number(value), // Asegúrate de que `storaged_stock` sea un número
+                  storaged_stock: Number(value), // Asegura de que `storaged_stock` sea un número
                 };
               }
               return { ...item, [fieldName]: value };
@@ -459,6 +466,7 @@ const MaterialsTable = () => {
             title="Crear Material"
             onSubmit={() => handleCreateMaterial(formData)}
             textButton="Guardar"
+            width="800px"
             // loading={loading}
           >
             <CreateMaterialForm
@@ -466,6 +474,7 @@ const MaterialsTable = () => {
               handleChange={handleChange}
               handleFileChange={handleFileChange}
               formErrors={formErrors}
+              setFormData={setFormData}
             />
           </ModalComponent>
         )}

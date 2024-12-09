@@ -90,11 +90,26 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
     setEditModalOpen(false);
     setActivity(null);
   };
-  
+  // console.log("activity to update ANTES ...", activityToUpdate) 
 
   const handleSaveChanges = async () => {
     if (activityToUpdate) {
 
+      activityToUpdate.sector_activities_ids = activityToUpdate.sector_activities_ids.map((sectorActivity) => {
+        // Si el sector tiene `toggle_partially_rented`
+        if (sectorActivity.toggle_partially_rented !== undefined) {
+          sectorActivity.is_partially_rented = sectorActivity.toggle_partially_rented;
+        } else {
+          // Si no tiene `toggle_partially_rented`, ajustar `is_partially_rented` según el caso
+          if (sectorActivity.is_partially_rented === false && sectorActivity.toggle_partially_rented === true) {
+            sectorActivity.is_partially_rented = true;
+          } else if (sectorActivity.is_partially_rented === false && sectorActivity.toggle_partially_rented === false) {
+            sectorActivity.is_partially_rented = false;
+          }
+        }
+        return sectorActivity;
+      });
+  
       try {
         const sendUpdate = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${selectedId}`,
@@ -109,8 +124,8 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
 
         if (sendUpdate.ok) {
           console.log("Actividad actualizada con éxito");
-          await fetchActivities(); // Refrescar la lista de actividades
-          handleCloseModal(); // Cerrar el modal
+          await fetchActivities();
+          handleCloseModal(); 
         } else {
           console.error(
             "Error al actualizar la actividad:",

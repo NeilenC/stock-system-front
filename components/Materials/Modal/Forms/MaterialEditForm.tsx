@@ -4,7 +4,13 @@ import { useMaterialStore } from "../../../../zustand/materialStore";
 import { FormLabelComponent } from "../../../../commons/styled-components/CustomTextFields";
 import { CustomTextFieldMaterial } from "../../StyledMaterial";
 
-const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number | null, updatedMaterial?:any }) => {
+const MaterialEditForm = ({
+  materialId,
+  updatedMaterial,
+}: {
+  materialId: number | null;
+  updatedMaterial?: any;
+}) => {
   const {
     material,
     categories,
@@ -15,17 +21,16 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
-    const numericFields = ["width", "depth", "weight", "height","price"];
+
+    const numericFields = ["width", "depth", "weight", "height", "price"];
     const processedValue = numericFields.includes(name)
       ? value === ""
         ? "" // Allow the field to be empty
         : parseFloat(value)
       : value;
-  
+
     setMaterial({ ...material, [name]: processedValue });
   };
-  
 
   const handleCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedCategoryId = parseInt(e.target.value); // Convierte el valor a número
@@ -45,19 +50,15 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
       });
     }
   };
-  
-  
-  
 
   useEffect(() => {
     if (materialId) {
       fetchMaterialData(materialId);
     } else if (updatedMaterial) {
-      setMaterial(updatedMaterial); 
+      setMaterial(updatedMaterial);
     }
     fetchCategories();
   }, [materialId, updatedMaterial]);
-  
 
   return (
     <form>
@@ -192,16 +193,11 @@ const MaterialEditForm = ({ materialId, updatedMaterial }: { materialId: number 
           />
         </Grid>
 
-  {/** Imágen */}
-<Grid item xs={12} sm={6}>
-  <FormLabelComponent>Imágen</FormLabelComponent>
-  <input 
-    type="file" 
-    onChange={handleFileChange} 
-    accept="image/*" 
-  />
-</Grid>
-
+        {/** Imágen */}
+        <Grid item xs={12} sm={6}>
+          <FormLabelComponent>Imágen</FormLabelComponent>
+          <input type="file" onChange={handleFileChange} accept="image/*" />
+        </Grid>
 
         {/** Observaciones */}
         <Grid item xs={12}>

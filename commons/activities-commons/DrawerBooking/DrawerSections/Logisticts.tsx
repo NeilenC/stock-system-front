@@ -14,23 +14,16 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  FormLabelComponentWithError,
-  StyledSelect,
-} from "./CustomTextFields";
+import { FormLabelComponentWithError, StyledSelect } from "./CustomTextFields";
 import useEventStore from "../activity-hook/useEventStore";
 import theme from "../../../../themes/theme";
 
 import add from "../../../../public/add.png";
 import removeIcon from "../../../../public/close-black.png";
 import { Stack } from "@mui/material";
-import useSectors, {
-  SectorActivity,
-  SectorProps,
-} from "../../../../hooks/useSectors";
+import useSectors, { SectorProps } from "../../../../hooks/useSectors";
 import ImageToIcon from "../../../styled-components/IconImages";
 import { ComponentsProps } from "./GeneralInfo";
-
 
 interface SectorOption {
   label: string;
@@ -38,38 +31,29 @@ interface SectorOption {
 }
 
 const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
-  const {
-    eventData,
-    setLogisticsAssembly,
-    setLogisticsDismantling,
-    setLogisticsDetails,
-    setSectors,
-  } = useEventStore();
+  const { eventData, setLogisticsDetails, setSectors } = useEventStore();
 
   const initialDate = eventData.generalInfo.details.initialDate;
   const endDate = eventData.generalInfo.details.endDate;
-  const [openLogistics, setOpenLogistics] = useState(true);
   const [openDetalles, setOpenDetalles] = useState(true);
-  const [openDesarme, setOpenDesarme] = useState(true);
-  const handleToggleLogistics = () => setOpenLogistics(!openLogistics);
-  const handleToggleDesarme = () => setOpenDesarme(!openDesarme);
   const handleToggleDetalles = () => setOpenDetalles(!openDetalles);
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
-  const sectorsInGlobalState =
+  const numberOfSectorsInGlobalState =
     eventData.logistics.detailsLogistics.sectors.length;
+  const ArrayOfSectorsInGlobalState =
+    eventData.logistics.detailsLogistics.sectors;
   const { sectorsToRent } = useSectors();
 
   // Filtrar los sectores disponibles, excluyendo los que ya están en el estado global
   const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
     // Verifica si el sector ya está presente en el estado global
-    const isSectorInGlobalState =
-      eventData.logistics.detailsLogistics.sectors.some(
-        (globalSector) => globalSector.sector_id === sector.id // Comparación de nombres
-      );
+    const isSectorInGlobalState = ArrayOfSectorsInGlobalState.some(
+      (globalSector) => globalSector.sector_id === sector.id
+    );
     return !isSectorInGlobalState;
   });
 
-  
+  console.log("ArrayOfSectorsInGlobalState", ArrayOfSectorsInGlobalState);
 
   // Función para verificar si hay intersección entre rangos de fechas
   const isDateOverlap = (
@@ -106,7 +90,6 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
     }
   }, [initialDate, endDate, filteredSectors]);
 
-
   // Agregar un nuevo sector
   const handleAddSector = () => {
     if (selectedSector !== null) {
@@ -115,11 +98,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
       );
       if (
         selected &&
-        !eventData.logistics.detailsLogistics.sectors.some(
-          (s) => s.sector_id === selected.id
-        )
+        !ArrayOfSectorsInGlobalState.some((s) => s.sector_id === selected.id)
       ) {
-
         const isOverlapAndPartiallyRented = selected.sector_activities_ids.some(
           (activity) =>
             isDateOverlap(
@@ -129,6 +109,7 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
               new Date(activity.activity.end_date)
             ) && activity.is_partially_rented
         );
+        console.log("isOverlapAndPartiallyRented", isOverlapAndPartiallyRented);
 
         const updatedSector = {
           sector_id: selected.id,
@@ -137,54 +118,45 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
           toggle_partially_rented: false,
           square_meters_rented: 0,
         };
-
+        console.log("updatedSector", updatedSector);
         // Actualizar el estado global
-        setSectors([
-          ...eventData.logistics.detailsLogistics.sectors,
-          updatedSector,
-        ]);
+        setSectors([...ArrayOfSectorsInGlobalState, updatedSector]);
       }
       setSelectedSector(null);
     }
   };
 
   const handleRemoveSector = (sectorId: number) => {
-    const updatedSectors = eventData.logistics.detailsLogistics.sectors.filter(
+    const updatedSectors = ArrayOfSectorsInGlobalState.filter(
       (sector) => sector.sector_id !== sectorId
     );
     setSectors(updatedSectors);
   };
 
-  // Alternar `isParciallyRented` de un sector
-  const handleToggleChange = (sectorId: number, togglePartiallyRented: boolean) => {
-    // Mapeamos los sectores en el estado global
-    const updatedSectors = eventData.logistics.detailsLogistics.sectors.map(
-      (sector) => {
-        // Si el sector no está en availableSectors, lo manejamos con la lógica original
-        return sector.sector_id === sectorId
-          ? { ...sector, toggle_partially_rented: togglePartiallyRented }
-
-          : sector;
-      }
-    );
-
+  const handleToggleChange = (
+    sectorId: number,
+    togglePartiallyRented: boolean
+  ) => {
+    const updatedSectors = ArrayOfSectorsInGlobalState.map((sector) => {
+      // Si el sector no está en availableSectors, lo manejamos con la lógica original
+      return sector.sector_id === sectorId
+        ? { ...sector, toggle_partially_rented: togglePartiallyRented }
+        : sector;
+    });
     setSectors(updatedSectors);
   };
 
   const handleSectorChange = (event: SelectChangeEvent<unknown>) => {
-    console.log(' seleccioandno', event.target.value)
     setSelectedSector(event.target.value as number);
   };
-
 
   const handleInputChangeDetails = (
     key: keyof typeof eventData.logistics.detailsLogistics,
     value: string
   ) => {
-    setLogisticsDetails(key, value); // Adjust to use the appropriate setter method
+    setLogisticsDetails(key, value);
   };
 
- 
   return (
     <>
       <TitleComponent variant="h6" text={"Logística del Evento"} />
@@ -196,7 +168,9 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
         />
         <Collapse in={openDetalles}>
           <Box>
-            <FormLabelComponentWithError error={!!inputErrors.sector_activities_ids}>
+            <FormLabelComponentWithError
+              error={!!inputErrors.sector_activities_ids}
+            >
               Areas Arrendadas
             </FormLabelComponentWithError>
 
@@ -217,13 +191,12 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                     displayEmpty
                     fullWidth
                     inputProps={{
-                      "aria-hidden": undefined, 
+                      "aria-hidden": undefined,
                     }}
                   >
                     {availableSectors.map((sector, index) => {
-
                       const isPartiallyRented =
-                      sector?.sector_activities_ids?.some(
+                        sector?.sector_activities_ids?.some(
                           (activity) =>
                             isDateOverlap(
                               new Date(initialDate),
@@ -249,7 +222,22 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                             },
                           }}
                         >
-                          {sector.name}
+                          <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            width="100%"
+                          >
+                            <span>{sector.name}</span>
+
+                            {/* Indicador de disponibilidad parcial */}
+                            {isPartiallyRented && (
+                              <span
+                                style={{ color: "#888", fontSize: "0.9em" }}
+                              >
+                                Disponibilidad parcial
+                              </span>
+                            )}
+                          </Box>
                         </MenuItem>
                       );
                     })}
@@ -275,7 +263,7 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
               </Box>
 
               {/* Section Header */}
-              {sectorsInGlobalState > 0 && (
+              {numberOfSectorsInGlobalState > 0 && (
                 <Box
                   sx={{
                     width: "100%",
@@ -299,15 +287,19 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
               <List
                 sx={{
                   width: "100%",
-                  bgcolor: sectorsInGlobalState ? "primary.light" : null,
+                  bgcolor: numberOfSectorsInGlobalState
+                    ? "primary.light"
+                    : null,
                 }}
               >
-                {sectorsInGlobalState > 0 && (
+                {numberOfSectorsInGlobalState > 0 && (
                   <List sx={{ width: "100%" }}>
-                    {eventData.logistics.detailsLogistics.sectors.map(
-                      (sector, index) => {
-                        console.log('sector.is_partially_rented', sector.is_partially_rented)
-                        return (
+                    {ArrayOfSectorsInGlobalState.map((sector, index) => {
+                      console.log(
+                        "sector.is_partially_rented",
+                        sector.is_partially_rented
+                      );
+                      return (
                         <ListItem
                           key={index}
                           sx={{
@@ -329,10 +321,16 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                           >
                             <Typography variant="body1">
                               {" "}
-                              {sector.is_partially_rented || sector.toggle_partially_rented ? "Parcial" : "Total"}
+                              {sector.is_partially_rented ||
+                              sector.toggle_partially_rented
+                                ? "Parcial"
+                                : "Total"}
                             </Typography>
                             <Switch
-                              checked={sector.is_partially_rented || sector.toggle_partially_rented}
+                              checked={
+                                sector.is_partially_rented ||
+                                sector.toggle_partially_rented
+                              }
                               disabled={sector.is_partially_rented}
                               onChange={() =>
                                 handleToggleChange(
@@ -370,8 +368,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                             </Tooltip>
                           </Box>
                         </ListItem>
-                      )}
-                    )}
+                      );
+                    })}
                   </List>
                 )}
               </List>

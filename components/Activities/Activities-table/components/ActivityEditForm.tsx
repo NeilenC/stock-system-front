@@ -24,9 +24,7 @@ import dayjs, { Dayjs } from "dayjs";
 import removeIcon from "../../../../public/close-black.png";
 import add from "../../../../public/add.png";
 import useSectors, { SectorProps } from "../../../../hooks/useSectors";
-import {
-  StyledSelect,
-} from "../../../../commons/activities-commons/DrawerBooking/DrawerSections/CustomTextFields";
+import { StyledSelect } from "../../../../commons/activities-commons/DrawerBooking/DrawerSections/CustomTextFields";
 import ImageToIcon from "../../../../commons/styled-components/IconImages";
 import { isDateOverlap } from "../../functions";
 
@@ -35,18 +33,18 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   const { activityToUpdate, setActivity, fetchActivityById } =
     useActivityStore();
   const { sectorsToRent } = useSectors();
-
-
+  const initialDate = activityToUpdate?.initial_date;
+  const endDate = activityToUpdate?.end_date;
 
   const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
-    //lista de IDs de los sectores ya ocupados en la actividad
-    const occupiedSectorIds =
+    //lista de  los sectores ya ocupados en la actividad
+    const addedSectorsInList =
       activityToUpdate?.sector_activities_ids.map(
         (sectorInActivity) => sectorInActivity.sector.id
       ) || [];
 
     // Verificar si el sector actual no está en la lista de sectores ocupados
-    return !occupiedSectorIds.includes(sector.id);
+    return !addedSectorsInList.includes(sector.id);
   });
 
   const availableSectors = useMemo(() => {
@@ -65,14 +63,14 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                 new Date(activity.activity.end_date)
               ) && activity.is_partially_rented
           );
-          return !isOverlappingAndPartiallyRented;
+          return isOverlappingAndPartiallyRented;
         }
         return true;
       });
     } else {
       return filteredSectors;
     }
-  }, [activityToUpdate, sectorsToRent]);
+  }, [initialDate, endDate, activityToUpdate, sectorsToRent]);
 
   const selectedSectors =
     activityToUpdate?.sector_activities_ids?.map((sectorActivity) => ({
@@ -82,7 +80,6 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
       toggle_partially_rented: sectorActivity.toggle_partially_rented,
       square_meters_rented: sectorActivity.square_meters_rented,
     })) || [];
-  console.log("selectedSectors", selectedSectors);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,40 +87,37 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   };
 
   const handleSectorChange = (sector_id: number | null) => {
-    if (!sector_id) return;
+    if (!sector_id || !activityToUpdate) return;
 
-    const sector = availableSectors.find((option) => option.id === sector_id);
-console.log("sector", sector)
-    if (sector) {
-      const isSectorAlreadyAdded =
-        activityToUpdate?.sector_activities_ids?.some(
-          (s) => s.sector.id === sector.id
-        );
+    const sector = availableSectors.find((s) => s.id === sector_id);
+    if (!sector) return;
 
-      if (!isSectorAlreadyAdded) {
-        const updatedSectors = [
-          ...(activityToUpdate?.sector_activities_ids || []),
-          {
-            is_partially_rented: false,
-            square_meters_rented: 0,
-            toggle_partially_rented: false,
-            sector: {
-              id: sector.id,
-              name: sector.name,
-            },
-          },
-        ];
+    // console.log("sector", sector);
+    const sectorActivities = sector.sector_activities_ids;
 
-        const newActivity = {
-          ...activityToUpdate,
-          sector_activities_ids: updatedSectors,
-        };
+    const isOverlapAndPartiallyRented = sectorActivities.some((activity) => {
+      return (
+        isDateOverlap(
+          new Date(activityToUpdate.initial_date),
+          new Date(activityToUpdate.end_date),
+          new Date(activity.activity.initial_date),
+          new Date(activity.activity.end_date)
+        ) && activity.is_partially_rented
+      );
+    });
 
-        setActivity(newActivity);
-        setSelectedSector(null);
-        setSelectedSector(null);
-      }
-    }
+    const updatedSectors = [
+      ...(activityToUpdate.sector_activities_ids || []),
+      {
+        is_partially_rented: isOverlapAndPartiallyRented,
+        square_meters_rented: 0,
+        toggle_partially_rented: false,
+        sector: { id: sector.id, name: sector.name },
+      },
+    ];
+
+    setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
+    setSelectedSector(null);
   };
 
   const handleRemoveSector = (sectorId: number) => {
@@ -132,17 +126,23 @@ console.log("sector", sector)
     setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
   };
 
-  const handleSectorDetailChange = (
+  const handleToggleChange = (
     sectorId: number,
-    field: string,
-    value: any
+    togglePartiallyRented: boolean
   ) => {
-    const updatedSectors =
-      activityToUpdate?.sector_activities_ids?.map((sector) =>
-        sector.sector.id === sectorId ? { ...sector, [field]: value } : sector
-      ) || [];
-
-    setActivity({ ...activityToUpdate, sector_activities_ids: updatedSectors });
+    const updatedSectors = activityToUpdate?.sector_activities_ids.map(
+      (sector: any) => {
+        // Si el sector no está en availableSectors, lo manejamos con la lógica original
+        return sector.sector.id === sectorId
+          ? { ...sector, toggle_partially_rented: togglePartiallyRented }
+          : sector;
+      }
+    );
+    setActivity({
+      ...activityToUpdate,
+      sector_activities_ids: updatedSectors,
+      toggle_partially_rented: togglePartiallyRented,
+    });
   };
 
   // Formatear fechas
@@ -271,7 +271,6 @@ console.log("sector", sector)
         <Grid item xs={12}>
           <FormLabelComponent>Áreas Arrendadas</FormLabelComponent>
           <Stack spacing={2} direction="column" alignItems="flex-start">
-            {/* Container for Select and Add Button in the same line */}
             <Box
               sx={{
                 display: "flex",
@@ -283,20 +282,52 @@ console.log("sector", sector)
               {/* Select for choosing sectors */}
               <FormControl fullWidth>
                 <StyledSelect
-                  labelId="sector-select-label"
                   value={selectedSector || ""}
-                  displayEmpty
-                  fullWidth
-                  inputProps={{
-                    "aria-hidden": undefined, 
-                  }}
-                  onChange={(e: any) => setSelectedSector(e.target.value)} 
+                  onChange={(e) => setSelectedSector(Number(e.target.value))}
                 >
-                  {availableSectors.map((sector, index) => (
-                    <MenuItem key={index} value={sector.id}>
-                      {sector.name}
-                    </MenuItem>
-                  ))}
+                  {availableSectors.map((sector) => {
+                    const isPartiallyRented =
+                      sector?.sector_activities_ids?.some(
+                        (activity) =>
+                          isDateOverlap(
+                            new Date(initialDate as string),
+                            new Date(endDate as string),
+                            new Date(activity.activity.initial_date),
+                            new Date(activity.activity.end_date)
+                          ) && activity.is_partially_rented
+                      );
+                    return (
+                      <MenuItem
+                        key={sector.id}
+                        value={sector.id}
+                        sx={{
+                          backgroundColor: isPartiallyRented
+                            ? "#FFEB9A"
+                            : "background.paper",
+                          "&:hover": {
+                            backgroundColor: isPartiallyRented
+                              ? "#FFEB9A"
+                              : "action.hover",
+                          },
+                        }}
+                      >
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          width="100%"
+                        >
+                          <span>{sector.name}</span>
+
+                          {/* Indicador de disponibilidad parcial */}
+                          {isPartiallyRented && (
+                            <span style={{ color: "#888", fontSize: "0.9em" }}>
+                              Disponibilidad parcial
+                            </span>
+                          )}
+                        </Box>
+                      </MenuItem>
+                    );
+                  })}
                 </StyledSelect>
               </FormControl>
 
@@ -337,60 +368,67 @@ console.log("sector", sector)
                   </Typography>
                 </Box>
                 <List sx={{ width: "100%", bgcolor: "primary.light" }}>
-                  {selectedSectors.map((sector, index) => (
-                    <ListItem
-                      key={index}
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <ListItemText primary={sector.label} />
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                  {selectedSectors.map((sector, index) => {
+                    return (
+                      <ListItem
+                        key={index}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
                       >
-                        <Typography variant="body1">
-                          {" "}
-                          {sector.is_partially_rented ||
-                          sector.toggle_partially_rented
-                            ? "Parcial"
-                            : "Total"}
-                        </Typography>
-                        <Switch
-                          checked={
-                            sector.is_partially_rented ||
+                        <ListItemText primary={sector.label} />
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                        >
+                          <Typography variant="body1">
+                            {" "}
+                            {sector.is_partially_rented ||
                             sector.toggle_partially_rented
-                          }
-                          onChange={(e) =>
-                            handleSectorDetailChange(
-                              sector.sector_id,
-                              "toggle_partially_rented",
-                              e.target.checked
-                            )
-                          }
-                          sx={{
-                            "& .MuiSwitch-switchBase.Mui-checked": {
-                              color: "white",
-                            },
-                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                              {
-                                backgroundColor: "secondary.main",
+                              ? "Parcial"
+                              : "Total"}
+                          </Typography>
+                          <Switch
+                            checked={
+                              sector.is_partially_rented ||
+                              sector.toggle_partially_rented
+                            }
+                            disabled={sector.is_partially_rented}
+                            onChange={(e) =>
+                              handleToggleChange(
+                                sector.sector_id,
+                                !sector.toggle_partially_rented
+                              )
+                            }
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: "white",
                               },
-                            "& .MuiSwitch-track": {
-                              backgroundColor: "gray",
-                            },
-                          }}
-                        />
-
-                        <Tooltip title="Eliminar sector">
-                          <ImageToIcon
-                            icon={removeIcon}
-                            w={20}
-                            h={20}
-                            onClick={() => handleRemoveSector(sector.sector_id)}
-                            sx={{ cursor: "pointer" }}
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: "secondary.main",
+                                },
+                              "& .MuiSwitch-track": {
+                                backgroundColor: "gray",
+                              },
+                            }}
                           />
-                        </Tooltip>
-                      </Box>
-                    </ListItem>
-                  ))}
+
+                          <Tooltip title="Eliminar sector">
+                            <ImageToIcon
+                              icon={removeIcon}
+                              w={20}
+                              h={20}
+                              onClick={() =>
+                                handleRemoveSector(sector.sector_id)
+                              }
+                              sx={{ cursor: "pointer" }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      </ListItem>
+                    );
+                  })}
                 </List>
               </>
             )}
