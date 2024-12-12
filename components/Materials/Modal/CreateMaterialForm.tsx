@@ -7,6 +7,7 @@ import {
   Typography,
   FormLabel,
   Autocomplete,
+  FormControl,
 } from "@mui/material";
 // import { FormLabelComponent } from "../../../commons/styled-components/CustomTextFields";
 import { CustomTextFieldMaterial } from "../StyledMaterial";
@@ -14,7 +15,7 @@ import theme from "../../../themes/theme";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import ImageToIcon from "../../../commons/styled-components/IconImages";
 import add from "../../../public/add.png";
-import deleteicon from '../../../public/delete.png'
+import deleteicon from "../../../public/delete.png";
 import CreateCategoryForm from "./ModalCategoryCreate";
 import CustomNumberInput from "../../../commons/styled-components/CustomNumberInput";
 import useSectors from "../../../hooks/useSectors";
@@ -25,7 +26,7 @@ interface FormLabelComponentProps {
 }
 
 type StockInput = {
-  sector_id: number;
+  material_location_in_sector: number;
   storaged_stock: number;
 };
 
@@ -52,7 +53,6 @@ const FormLabelComponent = ({ children, error }: FormLabelComponentProps) => {
     </FormLabel>
   );
 };
-
 const CreateMaterialForm = ({
   formData,
   handleChange,
@@ -65,10 +65,10 @@ const CreateMaterialForm = ({
   const { storageSectors } = useSectors();
   const [addMoreStock, setAddMoreStock] = useState(false);
   const [stockInputs, setStockInputs] = useState<StockInput[]>([
-    { sector_id: 0, storaged_stock: 0 },
+    { material_location_in_sector: 0, storaged_stock: 0 },
   ]);
+  console.log("ACA",formErrors.distribution_stock);
 
-  console.log("FORMDATA", formData);
   useEffect(() => {
     const loadCategories = async () => {
       await fetchCategories();
@@ -86,7 +86,7 @@ const CreateMaterialForm = ({
   const handleAddMoreStock = () => {
     // Solo agregar más inputs si no se excede la cantidad de `storageSectors`
     if (stockInputs.length < storageSectors.length) {
-      setStockInputs([...stockInputs, { sector_id: 0, storaged_stock: 0 }]);
+      setStockInputs([...stockInputs, { material_location_in_sector: 0, storaged_stock: 0 }]);
     }
   };
 
@@ -148,19 +148,34 @@ const CreateMaterialForm = ({
     setStockInputs(updatedInputs);
   };
 
-  // console.log("formData", formData);
-  const assignedSectors = stockInputs
-    .filter((input) => input.sector_id !== 0)
-    .map((input) => input.sector_id);
-  console.log(assignedSectors);
 
   return (
-    <form>
+    <FormControl>
       <Grid
         container
         spacing={1}
         alignItems="stretch"
-        sx={{ overflowY: "auto", maxHeight: "600px" }}
+        sx={{ overflowY: "auto", maxHeight: "600px", 
+          scrollbarWidth: "thin", // Para navegadores Firefox
+          scrollbarColor: "#888 ", // Para navegadores Firefox
+          "&::-webkit-scrollbar": {
+            width: "8px", // Ancho del scrollbar
+          },
+    
+          "&::-webkit-scrollbar-track": {
+            background: "#f0f0f0", // Fondo del track del scrollbar
+            borderRadius: "8px", // Bordes redondeados
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#888", // Color del thumb (parte móvil del scrollbar)
+            borderRadius: "8px", // Bordes redondeados
+            border: "2px solid #f0f0f0", // Bordes del thumb
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "#555", // Cambio de color cuando el cursor pasa sobre el thumb
+          },
+          transition: "all 0.3s ease",
+         }}
       >
         <Grid item xs={6} sm={4}>
           <FormLabelComponent error={formErrors.name}>
@@ -173,6 +188,7 @@ const CreateMaterialForm = ({
             fullWidth
             required
             margin="dense"
+            error={!!formErrors.name}
           />
         </Grid>
 
@@ -188,6 +204,7 @@ const CreateMaterialForm = ({
             fullWidth
             required
             margin="dense"
+            error={!!formErrors.code}
           />
         </Grid>
 
@@ -263,68 +280,92 @@ const CreateMaterialForm = ({
           <CreateCategoryForm isOpen={openModal} onClose={handleCloseModal} />
         )}
 
-{stockInputs.map((input, index) => (
-  <React.Fragment key={index}>
-    {/* Campo para Stock Inicial */}
-    <Grid item xs={5.5} sm={5.5}>
-      <FormLabelComponent error={formErrors.storaged_stock}>
-        Stock Inicial
-      </FormLabelComponent>
-      <CustomNumberInput
-        name={`distribution_stock[${index}].storaged_stock`}
-        value={input.storaged_stock}
-        onChange={(e: any) =>
-          handleInputChange(index, "storaged_stock", Number(e.target.value))
-        }
-        fullWidth
-        required
-        margin="dense"
-      />
-    </Grid>
+        {stockInputs.map((input, index) => (
+          <React.Fragment key={index}>
+            {/* Campo para Stock Inicial */}
+            <Grid item xs={5.5} sm={5.5}>
+              <FormLabelComponent
+                error={
+                  formErrors.distribution_stock?.[0]?.storaged_stock 
+                }
+              >
+                Stock Inicial
+              </FormLabelComponent>
+              <CustomNumberInput
+                name={`distribution_stock[${index}].storaged_stock`}
+                value={input.storaged_stock}
+                onChange={(e: any) =>
+                  handleInputChange(
+                    index,
+                    "storaged_stock",
+                    Number(e.target.value)
+                  )
+                }
+                fullWidth
+                required
+                margin="dense"
+                error={!!formErrors.distribution_stock?.[0]?.storaged_stock}
+                helperText={!!formErrors.distribution_stock?.[0]?.storaged_stock ? 'Este campo es obligatorio' : ''}
+              />
+            </Grid>
 
-    {/* Campo para Ubicación Stock */}
-    <Grid item xs={5.5} sm={index !== 0 ? 5.5 : 5.9}>
-      <FormLabelComponent error={formErrors.sector_id}>
-        Ubicación Stock
-      </FormLabelComponent>
-      <CustomTextFieldMaterial
-        name={`distribution_stock[${index}].sector_id`}
-        value={input.sector_id}
-        onChange={(e) =>
-          handleInputChange(index, "sector_id", Number(e.target.value))
-        }
-        required
-        fullWidth
-        margin="dense"
-        select
-      >
-        {storageSectors
-          
-          .map((sector) => (
-            <MenuItem key={sector.id} value={sector.id}>
-              {sector.name}
-            </MenuItem>
-          ))}
-      </CustomTextFieldMaterial>
-    </Grid>
+            {/* Campo para Ubicación Stock */}
+            <Grid item xs={5.5} sm={index !== 0 ? 5.5 : 5.9}>
+              <FormLabelComponent
+                error={
+                  formErrors.distribution_stock?.[0]?.material_location_in_sector || undefined
+                }
+              >
+                Ubicación Stock
+              </FormLabelComponent>
+              <CustomTextFieldMaterial
+                name={`distribution_stock[${index}].material_location_in_sector`}
+                value={input.material_location_in_sector}
+                onChange={(e) =>
+                  handleInputChange(index, "material_location_in_sector", Number(e.target.value))
+                }
+                required
+                fullWidth
+                margin="dense"
+                select
+                error={!!formErrors.distribution_stock?.[0]?.material_location_in_sector}
+                helperText={!!formErrors.distribution_stock?.[0]?.material_location_in_sector ? 'Los campos de stock y depósito son obligatorios' : ''}
 
-    {/* Delete Button (Icon) */}
-    {index !== 0 && ( // Prevent deleting the first row
-      <Grid item xs={1} sm={0.5} sx={{ display: "flex", alignItems: "center" }}>
-        <Tooltip title="Eliminar" arrow>
-          <ImageToIcon
-            icon={deleteicon}
-            w={24}
-            h={24}
-            onClick={() => handleRemoveStockInput(index)} 
-            sx={{ color: theme.palette.error.main , cursor: "pointer", pt: 4 }}
-          />
-         
-        </Tooltip>
-      </Grid>
-    )}
-  </React.Fragment>
-))}
+
+              >
+                {storageSectors.map((sector) => (
+                  <MenuItem key={sector.id} value={sector.id}>
+                    {sector.name}
+                  </MenuItem>
+                ))}
+              </CustomTextFieldMaterial>
+            </Grid>
+
+            {/* Delete Button (Icon) */}
+            {index !== 0 && ( // Prevent deleting the first row
+              <Grid
+                item
+                xs={1}
+                sm={0.5}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <Tooltip title="Eliminar" arrow>
+                  <ImageToIcon
+                    icon={deleteicon}
+                    w={24}
+                    h={24}
+                    onClick={() => handleRemoveStockInput(index)}
+                    sx={{
+                      color: theme.palette.error.main,
+                      cursor: "pointer",
+                      pt: 4,
+                    }}
+                  />
+                </Tooltip>
+              </Grid>
+            )}
+          </React.Fragment>
+        ))}
 
         {/* Botón para agregar más inputs */}
         <Grid item xs={1} sm={0.5}>
@@ -384,12 +425,21 @@ const CreateMaterialForm = ({
           <FormLabelComponent error={formErrors.price}>
             Precio
           </FormLabelComponent>
-          <CustomNumberInput
+          <CustomTextFieldMaterial
             name="price"
             value={formData.price}
-            onChange={handleChange}
+            // onChange={handleChange}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (value >= 0) {
+                handleChange(e);
+              }
+            }}
+            fullWidth
             required
             margin="dense"
+            error={!!formErrors.price}
+            
           />
         </Grid>
 
@@ -415,6 +465,7 @@ const CreateMaterialForm = ({
             fullWidth
             required
             margin="dense"
+            error={!!formErrors.description}
           />
         </Grid>
 
@@ -447,7 +498,7 @@ const CreateMaterialForm = ({
           />
         </Grid>
       </Grid>
-    </form>
+    </FormControl>
   );
 };
 

@@ -52,11 +52,11 @@ const FormLabelComponent = styled(FormLabel)(() => ({
   const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
   
     '& .MuiOutlinedInput-root': {
-      height: isFromBooking ?  '43px' : '38px',
+      height: isFromBooking ?  '43px' : '40px',
       borderRadius: '8px',
       border: '1px solid #E1E6EF',
-      marginBottom: isFromBooking ? '24px' : '0px',
-      marginTop:  isFromBooking ?'12px'  : '0px',
+      marginBottom:  '0px',
+      marginTop:  '10px',
       '& input': {
         padding: isFromBooking ?  '10px 14px':'8px' , 
       },
@@ -73,9 +73,9 @@ const FormLabelComponent = styled(FormLabel)(() => ({
 
   
   export const StyledSelect = styled(Select)`  // Para manejar estilos del placeholder del select
-  border: 1px solid ${theme.palette.info.light};  
-  border-radius: 8px;        
-  height: 40px;     
+  border-radius: 6px;        
+  height: 40px;    
+
   &:hover {
     border-color: ${theme.palette.info.light};  
   },

@@ -163,7 +163,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       if (!response.ok) {
         throw new Error(
           `Error ${response.status}: ${
-            data.message || "Error al confirmar la actividad"
+            data.message || "Error al confirmar el evento"
           }`
         );
       }
@@ -172,15 +172,15 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
       handleClose();
       resetForm();
       showToastMessage(
-        "¡ Creaste una nueva Actividad !",
+        "¡ Creaste una nueva Evento !",
         "",
         theme.palette.success.light,
         "white"
       );
-      console.log("Actividad confirmada:", data);
+      console.log("Evento confirmad:", data);
     } catch (error) {
       showToastMessage(
-        "Error al crear la actividad",
+        "Error al crear la Evento",
         "Intente de nuevo",
         theme.palette.error.light,
         "white"
@@ -242,7 +242,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
             alignItems: "center",
           }}
         >
-          Crear Actividad
+          Crear Evento
         </Typography>
       </Box>
 

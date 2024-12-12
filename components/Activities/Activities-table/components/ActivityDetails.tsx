@@ -44,13 +44,13 @@ const ActivityDetails = ({ activity }: ActivityDetailsProps) => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Nombre de la Actividad
+            Nombre del Evento
           </Typography>
           <Typography>{activity.activity_name}</Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" color="textSecondary" sx={{ fontWeight: 600 }}>
-            Tipo de Actividad
+            Tipo de Evento
           </Typography>
           <Typography>{activity.type_activity}</Typography>
         </Grid>

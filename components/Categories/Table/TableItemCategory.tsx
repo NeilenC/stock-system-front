@@ -17,7 +17,13 @@ import ModalComponent from "../../../commons/modals/ModalComponent";
 import ModalCategory from "../../Materials/Modal/ModalCategoryCreate";
 import { useMaterialStore } from "../../../zustand/materialStore";
 
-const TableItemCategory = ({ category, onEdit, index, setOpenModalEdit }: any) => {
+const TableItemCategory = ({
+  category,
+  onEdit,
+  index,
+  setOpenModalEdit,
+  onDeleteSuccess,
+}: any) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const [modalCategoryDelete, setModalCategoryDelete] = useState(false);
@@ -25,22 +31,21 @@ const TableItemCategory = ({ category, onEdit, index, setOpenModalEdit }: any) =
   const [categoryToEdit, setCategoryToEdit] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // const  [openModalEdit, setOpenModalEdit] = useState(false);
-  const [isEditSucces, setIsEditSuccess] = useState(false)
+  const [isEditSucces, setIsEditSuccess] = useState(false);
   const { fetchCategories } = useMaterialStore();
-  
-useEffect(()=> {
-  fetchCategories()
-},[isEditSucces])
 
+  useEffect(() => {
+    fetchCategories();
+  }, [isEditSucces]);
 
   const handleCloseModal = () => {
     setModalCategoryDelete(false);
     setErrorMessage("");
   };
-  const deleteCategory = async (id: number) => {
+  const deleteCategory = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_API_BASE}/materials-category/${categoryId}`,
+        `${process.env.NEXT_PUBLIC_API_BASE}/materials-category/${categoryId}`,
         {
           method: "DELETE",
         }
@@ -50,8 +55,8 @@ useEffect(()=> {
         const errorData = await response.json();
         throw new Error("Error al eliminar la categoría");
       }
-
-      // Si se elimina con éxito, cerrar el modal y refrescar la vista
+      console.log("RESPOSNE ===> ", response);
+      if (onDeleteSuccess) onDeleteSuccess();
       handleCloseModal();
     } catch (error: any) {
       setErrorMessage(
@@ -74,7 +79,7 @@ useEffect(()=> {
     <Grid
       container
       sx={{
-        p:'16px 30px',
+        p: "16px 30px",
         bgcolor: index % 2 === 0 ? "#f5f5f5" : "#ffffff",
       }}
     >
@@ -112,7 +117,7 @@ useEffect(()=> {
         >
           <MenuItem
             onClick={() => {
-              onEdit(category); 
+              onEdit(category);
               setOpenModalEdit(true);
               handleMenuClose();
             }}
@@ -126,7 +131,7 @@ useEffect(()=> {
           title="¿ Deseas eliminar ésta Categoría ?"
           textButton="Eliminar"
           isOpen={modalCategoryDelete}
-          onSubmit={() => categoryId && deleteCategory(categoryId)}
+          onSubmit={() => categoryId && deleteCategory()}
           width="380px"
           handleClose={() => setModalCategoryDelete(false)}
         >
@@ -137,16 +142,11 @@ useEffect(()=> {
                 {errorMessage}
               </Typography>
             ) : (
-              <span
-              >
-                &nbsp;
-              </span>
+              <span>&nbsp;</span>
             )}
           </Box>
         </ModalComponent>
       )}
-
-
     </Grid>
   );
 };

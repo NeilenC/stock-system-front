@@ -51,7 +51,7 @@ const TableActivities = () => {
                   justifyContent: "center",
                 }}
               >
-                No se encontraron actividades
+                No se encontraron eventos
               </Typography>
             )}
           </Box>

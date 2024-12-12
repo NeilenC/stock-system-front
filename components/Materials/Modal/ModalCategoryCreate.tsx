@@ -152,6 +152,12 @@ const ModalCategory = ({
 
     if (categories.includes(categoryName)) {
       setError(true);
+      showToastMessage(
+        "Categoría existente",
+        "",
+        theme.palette.error.light,
+        "white"
+      );
       return;
     }
 
@@ -171,29 +177,30 @@ const ModalCategory = ({
         }
       );
   
-      if (response.ok) {
-        showToastMessage(
-          "Categoría actualizada exitosamente.",
-          "",
-          theme.palette.success.light,
-          "white"
-        );
-        if (isEditSucces) isEditSucces(true);
+       if (response.ok) {
+        showToastMessage("Categoría actualizada exitosamente.", "", theme.palette.success.light, "white");
+        if (onCreateSuccess) onCreateSuccess();
+        await fetchCategories(); 
       } else {
         const errorData = await response.json();
-        const backendMessage = "Ya existe una categoría con ese nombre";
-        setSnackbarMessage(backendMessage);
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        showToastMessage(
+          "Categoría existente",
+          "",
+          theme.palette.error.light,
+          "white"
+        );
         
       }
   
       await fetchCategories();
       onClose();
     } catch (error) {
-      setSnackbarMessage("Ya existe una categoría con ese nombre.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      showToastMessage(
+        "Categoría existente",
+        "",
+        theme.palette.error.light,
+        "white"
+      );
     }
   
     setCategoryName("");

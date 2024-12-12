@@ -7,7 +7,7 @@ interface StoredMaterial {
   id: string;
   storaged_stock: number;
   material: { name: string };
-  sector_id: { name: string };
+  material_location_in_sector: { name: string };
 }
 
 const MaterialLogistics = ({
@@ -31,6 +31,7 @@ const MaterialLogistics = ({
       }
 
       const data = await response.json();
+      console.log("data", data)
       setStoredMaterials(data);
     } catch (error) {
       const errorMessage = (error as Error).message || "Error desconocido";
@@ -95,7 +96,7 @@ const MaterialLogistics = ({
                       {material?.storaged_stock} {material.material?.name}
                     </Typography>
                     <Typography variant="body1">
-                      {material?.sector_id?.name}
+                      {material?.material_location_in_sector?.name}
                     </Typography>
                   </Box>
                 </Box>

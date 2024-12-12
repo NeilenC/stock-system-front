@@ -27,7 +27,7 @@ const ActivityTableHeader = () => {
         client_phone: "Teléfono del Cliente",
         client_email: "Correo del Cliente",
         activity_name: "Nombre",
-        type_activity: "Tipo de Actividad",
+        type_activity: "Tipo de Evento",
         sector: "Sector",
         state: "Estado",
         type_of_contract: "Tipo de Contrato",

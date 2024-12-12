@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  TextField,
   Typography,
   List,
   ListItem,
@@ -15,7 +14,6 @@ import {
   Paper,
   Grid,
   Box,
-  InputAdornment,
 } from "@mui/material";
 import { useMaterialStore } from "../../../zustand/materialStore";
 import SectionComponent from "../../From-Nabvar/Navbar/Section-page/SectionComponent";
@@ -71,6 +69,7 @@ const StockCheck = () => {
       setDistributionStock(data);
     } catch (error) {
       console.error("Failed to fetch distribution stock:", error);
+
     }
   };
 
@@ -251,7 +250,7 @@ const StockCheck = () => {
                             padding: "12px",
                           }}
                         >
-                          {stock.sector_id.name}
+                          {stock.material_location_in_sector.name}
                         </TableCell>
                         <TableCell
                           sx={{

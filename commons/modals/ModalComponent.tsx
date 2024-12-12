@@ -73,7 +73,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         text={textButton}
         onCancel={handleClose} 
         onSave={onSubmit} 
-        loading={loading}
+        // loading={loading}
       />
       </Box>
     </Modal>

@@ -226,13 +226,9 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
                 eventData.logistics.clientData.client.clientName
               )}
               onChange={handleClientNameChange}
-              // InputProps={{
-              //   startAdornment: (
-              //     <InputAdornment position="start">
-              //       <ImageToIcon icon={phone} w={20} h={20} />
-              //     </InputAdornment>
-              //   ),
-              // }}
+              sx={{pb:'10px'}}
+
+             
             />
             <FormLabelComponentWithError error={!!inputErrors.client_phone}>
               Teléfono
@@ -252,6 +248,9 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
                   </InputAdornment>
                 ),
               }}
+              sx={{pb:'10px'}}
+
+
             />
 
             <FormLabelComponentWithError error={!!inputErrors.client_email}>
@@ -270,6 +269,8 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
                   </InputAdornment>
                 ),
               }}
+              sx={{pb:'10px'}}
+
             />
           </Box>
         </Collapse>

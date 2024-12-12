@@ -46,8 +46,10 @@ const AdjustStock = ({
   const handleStockAdjustmentConfirm = async () => {
     const userEmail = userEmailStore;
     const amount = quantity;
-    const sector_id = sectorId;
-
+    const material_location_in_sector = sectorId;
+console.log("userEmail", userEmail)
+console.log("amount", amount)
+console.log("material_location_in_sector", material_location_in_sector)
     const url =
       adjustmentType === "add"
         ? `${process.env.NEXT_PUBLIC_API_BASE}/materials/${material.id}/increase-stock`
@@ -64,7 +66,7 @@ const AdjustStock = ({
         body: JSON.stringify({
           amount,
           userEmail,
-          sector_id,
+          material_location_in_sector,
         }),
       });
 

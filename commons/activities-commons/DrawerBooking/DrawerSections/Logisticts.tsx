@@ -77,8 +77,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
               isDateOverlap(
                 new Date(initialDate),
                 new Date(endDate),
-                new Date(activity.activity.initial_date),
-                new Date(activity.activity.end_date)
+                new Date(activity.activity?.initial_date),
+                new Date(activity.activity?.end_date)
               ) && !activity.is_partially_rented
           );
           return !isOverlapAndFullyRented;
@@ -105,8 +105,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
             isDateOverlap(
               new Date(initialDate),
               new Date(endDate),
-              new Date(activity.activity.initial_date),
-              new Date(activity.activity.end_date)
+              new Date(activity.activity?.initial_date),
+              new Date(activity.activity?.end_date)
             ) && activity.is_partially_rented
         );
         console.log("isOverlapAndPartiallyRented", isOverlapAndPartiallyRented);
@@ -193,6 +193,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                     inputProps={{
                       "aria-hidden": undefined,
                     }}
+                  sx={{marginTop:'10px'}}
+
                   >
                     {availableSectors.map((sector, index) => {
                       const isPartiallyRented =
@@ -201,8 +203,8 @@ const LogisticsSection: React.FC<ComponentsProps> = ({ inputErrors }) => {
                             isDateOverlap(
                               new Date(initialDate),
                               new Date(endDate),
-                              new Date(activity.activity.initial_date),
-                              new Date(activity.activity.end_date)
+                              new Date(activity.activity?.initial_date),
+                              new Date(activity.activity?.end_date)
                             ) && activity.is_partially_rented
                         );
 

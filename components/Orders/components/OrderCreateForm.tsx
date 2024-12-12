@@ -56,7 +56,7 @@ const OrderCreateForm = ({
   const [isActivityLocked, setIsActivityLocked] = useState(false);
   const { storageSectors } = useSectors();
   const { isTablet , screenSize } = useScreenSize();
-  console.log("storageSectors", storageSectors);
+
   // Carga los pedidos del localStorage al iniciar el componente
   useEffect(() => {
     const storedOrders = localStorage.getItem("orderItems");
@@ -85,7 +85,7 @@ const OrderCreateForm = ({
         );
         const data: Activity[] = await response.json();
 
-        // Filtrar solo las actividades confirmadas
+        // Filtrar solo los eventos confirmadas
         const confirmedActivities = data.filter(
           (activity) => activity.state === "Confirmado"
         );
@@ -135,7 +135,7 @@ const OrderCreateForm = ({
         // Filtrar los depósitos que contienen el material
         const depositsWithMaterial = storagedMaterials.map((item: any) => {
           const sector = storageSectors.find(
-            (sector: any) => sector.id === item.sector_id.id
+            (sector: any) => sector.id === item.material_location_in_sector.id
           );
           return {
             id: sector?.id,
@@ -156,10 +156,19 @@ const OrderCreateForm = ({
     }
   }, [materialId, storageSectors]);
 
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     const selectedSector = filteredDeposits.find(
       (sector) => sector.id === sectorId
     );
+
+    const checkMaterialsAvailability = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE}/distribution-stock/compare-dates/${selectedActivity.id}`
+    );
+    const getCheck = await checkMaterialsAvailability.json();
+
+
+
+
 
     if (Number(quantity) <= 0) {
       setError("Debe agregar una cantidad mayor a 0");
@@ -208,7 +217,7 @@ const OrderCreateForm = ({
             gap: isTablet ? 1 : 3,
           }}
         >
-          {/* Select para actividades */}
+          {/* Select para eventos */}
           <Box
             sx={{
               display: "flex",
@@ -217,7 +226,7 @@ const OrderCreateForm = ({
             }}
           >
             <FormControl sx={{ width: isTablet ? 170 : 300 }} size="small">
-              <FormLabel sx={{fontSize:'17px'}}>Actividad</FormLabel>
+              <FormLabel sx={{fontSize:'17px'}}>Evento</FormLabel>
               <Autocomplete
                 options={activities}
                 getOptionLabel={(option) => option.activity_name}
@@ -239,7 +248,7 @@ const OrderCreateForm = ({
             </FormControl>
             <Box sx={{ pt: 2.6 }}>
               {isTablet ? (
-                <Tooltip title="Cambiar actividad" arrow>
+                <Tooltip title="Cambiar evento" arrow>
                   <span>
                     <ImageToIcon
                       icon={change}
@@ -252,7 +261,7 @@ const OrderCreateForm = ({
                 </Tooltip>
               ) : (
                 <CustomButton
-                  text="Cambiar Actividad"
+                  text="Cambiar Evento"
                   onClick={() => setIsActivityLocked(false)}
                   sx={{
                     "&:hover": { bgcolor: "secondary.dark" },

@@ -23,6 +23,7 @@ import listaclientes from "../../../public/navbar/listaclientes.png";
 import Link from "next/link";
 import controlPanel from "../../../public/navbar/control-panel.png";
 import space from "../../../public/sector.png";
+import spacedark from "../../../public/space.png";
 import gestion from "../../../public/navbar/gestion.png";
 import deposito from "../../../public/deposito.png";
 import logo from "../../../public/navbar/logo.png";
@@ -85,51 +86,66 @@ const NavbarComponent = () => {
 
   const navbarOptions = [
     {
-      label: "Espacios",
-      href: "/gestion/sectors",
-      iconSrc: space,
+      label: "Stock",
+      iconSrc: deposito,
+      options: [
+        {
+          label: "Materiales",
+          href: "/stock/materiales",
+          iconSrc: materials,
+        },
+
+        {
+          label: "Materiales Inactivos",
+          href: "/stock/materiales-inactivos",
+          iconSrc: materials,
+        },
+
+        {
+          label: "Categorías",
+          href: "/stock/categorias",
+          iconSrc: category,
+        },
+        {
+          label: "Stock por Espacio",
+          href: "/stock/espacios",
+          iconSrc: stockInventory,
+        },
+        {
+          label: "Disponibilidad de Materiales",
+          href: "#",
+          iconSrc: stockInventory,
+        },
+      ],
     },
+
     {
       label: "Gestión",
       iconSrc: tree,
       options: [
         {
-          label: "Actividades",
-          href: "/gestion/actividades",
+          label: "Eventos",
+          href: "/gestion/eventos",
           iconSrc: calendar,
         },
         {
-          label: "Pedidos",
+          label: "Solicitud de materiales",
           href: "/gestion/pedidos",
           iconSrc: orderlist,
-        },
-        {
-          label: "Materiales Eliminados",
-          href: "/gestion/materiales-inactivos",
-          iconSrc: materials,
         },
       ],
     },
     {
-      label: "Depósito",
-      iconSrc: deposito,
-      options: [
-        {
-          label: "Materiales",
-          href: "/deposito/materiales",
-          iconSrc: materials,
-        },
-        {
-          label: "Categorías",
-          href: "/deposito/categorias",
-          iconSrc: category,
-        },
-        {
-          label: "Stock",
-          href: "/deposito/stock",
-          iconSrc: stockInventory,
-        },
-      ],
+      label: "Espacios",
+      iconSrc: space,
+      href: "/gestion/sectors",
+      // options: [
+      //   {
+      //     label: "Administración de Espacios",
+      //     iconSrc: spacedark,
+      //   },
+
+      // ],
     },
     {
       label: username,
@@ -286,44 +302,45 @@ const NavbarComponent = () => {
                   </Menu>
                 </>
               ) : (
-                <Link
-                  href={option.href}
-                  passHref
-                  style={{ textDecoration: "none" }}
-                >
-                  <Button
-                    onClick={() => handleSelectItem(option.label)}
-                    sx={{
-                      color: theme.palette.secondary.contrastText,
-                      fontSize: isMediumScreen ? "14px" : "18px",
-                      display: "flex",
-                      alignItems: "center",
-                      backgroundColor:
-                        selectedOption === option.label
-                          ? theme.palette.secondary.main
-                          : "transparent",
-                      borderRadius: "8px",
-                      padding: "10px 16px",
-                      width: 1,
-                    }}
-                    startIcon={
-                      <ImageToIcon
-                        icon={option.iconSrc}
-                        w={26}
-                        h={26}
-                        sx={{ mt: 1 }}
-                      />
-                    }
+                  <Link
+                    href={option.href}
+                    passHref
+                    style={{ textDecoration: "none" }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ fontWeight: 500, fontSize: "16px" }}
+                    <Button
+                      onClick={() => handleSelectItem(option.label)}
+                      sx={{
+                        color: theme.palette.secondary.contrastText,
+                        fontSize: isMediumScreen ? "14px" : "18px",
+                        display: "flex",
+                        alignItems: "center",
+                        // backgroundColor:
+                        //   selectedOption === option.label
+                        //     ? theme.palette.secondary.main
+                        //     : "transparent",
+                        borderRadius: "8px",
+                        padding: "10px 16px",
+                        width: 1,
+                      }}
+                      startIcon={
+                        <ImageToIcon
+                          icon={option.iconSrc}
+                          w={26}
+                          h={26}
+                          sx={{ mt: 1 }}
+                        />
+                      }
                     >
-                      {option.label}
-                    </Typography>
-                  </Button>
-                </Link>
-              )}
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 500, fontSize: "16px" }}
+                      >
+                        {option.label}
+                      </Typography>
+                    </Button>
+                  </Link>
+                )
+              }
             </Box>
           ))}
         </Box>

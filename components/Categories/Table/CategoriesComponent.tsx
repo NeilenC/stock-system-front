@@ -37,13 +37,12 @@ const CategoriesComponent = () => {
   } = useCategoriesContext();
 
   const [showToast, setShowToast] = useState(false);
-  const [openModalEdit, setOpenModalEdit] = useState(false)
+  const [openModalEdit, setOpenModalEdit] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false); // Estado de carga
-  const [selectedCategory, setSelectedCategory] = useState<CategoryProps | null>(null);
-
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryProps | null>(null);
 
   const [toastProps, setToastProps] = useState({
     messageLeft: "",
@@ -52,47 +51,32 @@ const CategoriesComponent = () => {
     color: "",
   });
 
-
-
   const handleCloseModalCreate = () => {
     setOpenModalCreate(false);
     setFormData(initialFormData);
   };
 
-  const handleCreateCategorySuccess = () => {
+  const handleCreateOrEditCategorySuccess = () => {
     fetchCategories();
   };
 
-  const handleEdit = (category: CategoryProps) => {
-    // setCategoryId(category.id);
-    setSelectedCategory(category)
-    setIsEditModalOpen(true);
+  const handleDeleteSuccess = () => {
+    fetchCategories();
   };
-  console.log("selectedCategory", selectedCategory)
+
+
+  const handleEdit = (category: CategoryProps) => {
+    setSelectedCategory(category); 
+    setOpenModalEdit(true); 
+  };
+
+  console.log("selectedCategory", selectedCategory);
 
   const handleDelete = (Category: any) => {
     setCategoryId(Category.id);
     setSelectedCategory(Category);
     setIsDeleteModalOpen(true);
   };
-
-  const handleModalClose = () => {
-    setIsEditModalOpen(false);
-  };
-
-  const handleDeleteModalClose = () => {
-    setIsDeleteModalOpen(false);
-    setSelectedCategory(null); // Limpiar el Category seleccionado al cerrar el modal
-  };
-
-  const handleDeleteConfirm = async () => {};
-
-  const handleCreateCategory = async (formData: any) => {};
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {};
-  console.log("itemsperpage", itemsPerPage)
 
   return (
     <>
@@ -103,12 +87,11 @@ const CategoriesComponent = () => {
           onClick={() => setOpenModalCreate(true)}
         />
       </SectionComponent>
-     
 
       <Box
         sx={{
           justifyContent: "center",
-          alignItems: "center", 
+          alignItems: "center",
           paddingBlock: "10px",
           paddingInline: "16px",
         }}
@@ -120,79 +103,83 @@ const CategoriesComponent = () => {
             overflow: "hidden",
           }}
         >
-        <FiltersCategories handleFilter={handleFilter} />
+          <FiltersCategories handleFilter={handleFilter} />
 
+          <Grid container>
+            <HeaderCategories />
+            <Box
+              sx={{
+                height: "450px",
+                overflowX: "auto",
+                width: "100%",
+                bgcolor: theme.palette.primary.main,
+              }}
+            >
+              {currentCategories.length ? (
+                currentCategories.map((category: any, index: any) => (
+                  <TableItemCategory
+                    key={category.id}
+                    category={category}
+                    index={index}
+                    onEdit={handleEdit}
+                    onDeleteSuccess={handleDeleteSuccess}
+                    openDeleteModal={() => handleDelete(category)}
+                    setOpenModalEdit={setOpenModalEdit}
+                  />
+                ))
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{ p: 5, display: "flex", justifyContent: "center" }}
+                >
+                  {" "}
+                  No se encontraron Categorías{" "}
+                </Typography>
+              )}
+            </Box>
+          </Grid>
 
-        <Grid container>
-          <HeaderCategories />
-          <Box
-            sx={{
-              height: "450px",
-              overflowX: "auto",
-              width: "100%",
-              bgcolor: theme.palette.primary.main,
+          <Pagination
+            page={currentPage}
+            onPageChange={(newPage: any) => {
+              handlePageChange(newPage);
             }}
-          >
-            {currentCategories.length ? (
-              currentCategories.map((category: any, index: any) => (
-                <TableItemCategory
-                  key={category.id}
-                  category={category}
-                  index={index}
-                  onEdit={handleEdit}
-                  openDeleteModal={() => handleDelete(category)}
-                  setOpenModalEdit={setOpenModalEdit}
-                />
-              ))
-            ) : (
-              <Typography
-                variant="h6"
-                sx={{ p: 5, display: "flex", justifyContent: "center" }}
-              >
-                {" "}
-                No se encontraron Categorías{" "}
-              </Typography>
-            )}
-          </Box>
-        </Grid>
-
-        <Pagination
-          page={currentPage}
-          onPageChange={(newPage: any) => {
-            handlePageChange(newPage);
-          }}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-        />
-
-        {openModalCreate && (
-          <ModalCategory
-            isOpen={openModalCreate}
-            onClose={handleCloseModalCreate}
-            onCreateSuccess={handleCreateCategorySuccess}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
           />
-        )}
 
+          {openModalCreate && (
+            <ModalCategory
+              isOpen={openModalCreate}
+              onClose={handleCloseModalCreate}
+              onCreateSuccess={handleCreateOrEditCategorySuccess}
+              categoryToEdit={selectedCategory}
+            />
+          )}
 
-        {showToast && (
-          <Toast
-            messageLeft={toastProps.messageLeft}
-            messageRight={toastProps.messageRight}
-            bgcolor={toastProps.bgcolor}
-            color={toastProps.color}
-            onClose={() => setShowToast(false)}
-          />
-        )}
+          {showToast && (
+            <Toast
+              messageLeft={toastProps.messageLeft}
+              messageRight={toastProps.messageRight}
+              bgcolor={toastProps.bgcolor}
+              color={toastProps.color}
+              onClose={() => setShowToast(false)}
+            />
+          )}
+        </Box>
       </Box>
-</Box>
-{openModalEdit && (
-    <ModalCategory
-      isOpen={openModalEdit}
-      onClose={() => setOpenModalEdit(false)}
-      categoryToEdit={selectedCategory}
-      // isEditSucces={setIsEditSuccess}
-    />
-  )}
+      {openModalEdit && (
+        <ModalCategory
+          isOpen={openModalEdit}
+          onCreateSuccess={handleCreateOrEditCategorySuccess}
+
+          onClose={() => {
+            setOpenModalEdit(false);
+            setSelectedCategory(null); 
+          }}
+          categoryToEdit={selectedCategory} 
+        />
+      )}
     </>
   );
 };

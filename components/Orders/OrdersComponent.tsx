@@ -12,19 +12,14 @@ import OrderFilters from "./components/OrderFilters";
 import OrderHeaders from "./components/OrderHeaders";
 import theme from "../../themes/theme";
 import { useOrderContext } from "./context/useOrderContext";
-import { useOrderFiltersContext } from "./context/OrderFiltersContext";
 import OrderRowItem from "./components/OrderRowItem";
 import SectionComponent from "../From-Nabvar/Navbar/Section-page/SectionComponent";
 import CustomButton from "../../commons/buttons-commons/CustomButton";
 import order from "../../public/orderlist.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalComponent from "../../commons/modals/ModalComponent";
-import useSectors from "../../hooks/useSectors";
-import { Activity, useActivityStore } from "../../zustand/activityStore";
-import { useMaterialStore } from "../../zustand/materialStore";
-import { MaterialProps } from "../Materials/materialsProps";
+import { Activity } from "../../zustand/activityStore";
 import OrderCreateForm from "./components/OrderCreateForm";
-import { userInfo } from "os";
 import { useUserStore } from "../../zustand/useAuthStore";
 
 interface OrderProps {
@@ -47,6 +42,7 @@ const OrdersComponent = () => {
   const [orderItems, setOrderItems] = useState<OrderProps[]>([]);
   const userEmailStore = useUserStore((store) => store.email);
 
+  console.log("ORDERS ===>", currentOrder)
 
   const handleItemsPerPageChange = (event: any) => {
     const value = parseInt(event.target.value, 10); //
@@ -59,10 +55,10 @@ const OrdersComponent = () => {
       activity_id: selectedActivity?.id, 
       createdAt: new Date(),
       responsible: userEmailStore,
-      orders_list: orderItems.map((item) => ({
+      distribution_stock_order: orderItems.map((item) => ({
         material: item.materialId, 
         quantity: item.quantity, 
-        sector: item.sectorId, 
+        material_location_in_sector: item.sectorId, 
       })),
     };
   

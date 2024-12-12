@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Chip,
-  Grid,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import { Box, Chip, Grid, Menu, MenuItem, Tooltip } from "@mui/material";
 import ImageToIcon from "../../../../commons/styled-components/IconImages";
 import edit from "../../../../public/edit.png";
 import deleteicon from "../../../../public/delete.png";
@@ -90,26 +83,33 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
     setEditModalOpen(false);
     setActivity(null);
   };
-  // console.log("activity to update ANTES ...", activityToUpdate) 
+  // console.log("activity to update ANTES ...", activityToUpdate)
 
   const handleSaveChanges = async () => {
     if (activityToUpdate) {
-
-      activityToUpdate.sector_activities_ids = activityToUpdate.sector_activities_ids.map((sectorActivity) => {
-        // Si el sector tiene `toggle_partially_rented`
-        if (sectorActivity.toggle_partially_rented !== undefined) {
-          sectorActivity.is_partially_rented = sectorActivity.toggle_partially_rented;
-        } else {
-          // Si no tiene `toggle_partially_rented`, ajustar `is_partially_rented` según el caso
-          if (sectorActivity.is_partially_rented === false && sectorActivity.toggle_partially_rented === true) {
-            sectorActivity.is_partially_rented = true;
-          } else if (sectorActivity.is_partially_rented === false && sectorActivity.toggle_partially_rented === false) {
-            sectorActivity.is_partially_rented = false;
+      activityToUpdate.sector_activities_ids =
+        activityToUpdate.sector_activities_ids.map((sectorActivity) => {
+          // Si el sector tiene `toggle_partially_rented`
+          if (sectorActivity.toggle_partially_rented !== undefined) {
+            sectorActivity.is_partially_rented =
+              sectorActivity.toggle_partially_rented;
+          } else {
+            // Si no tiene `toggle_partially_rented`, ajustar `is_partially_rented` según el caso
+            if (
+              sectorActivity.is_partially_rented === false &&
+              sectorActivity.toggle_partially_rented === true
+            ) {
+              sectorActivity.is_partially_rented = true;
+            } else if (
+              sectorActivity.is_partially_rented === false &&
+              sectorActivity.toggle_partially_rented === false
+            ) {
+              sectorActivity.is_partially_rented = false;
+            }
           }
-        }
-        return sectorActivity;
-      });
-  
+          return sectorActivity;
+        });
+console.log("ACITIVTY UPDATED ====>", activityToUpdate)
       try {
         const sendUpdate = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${selectedId}`,
@@ -123,12 +123,12 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
         );
 
         if (sendUpdate.ok) {
-          console.log("Actividad actualizada con éxito");
+          console.log("Evento actualizada con éxito");
           await fetchActivities();
-          handleCloseModal(); 
+          handleCloseModal();
         } else {
           console.error(
-            "Error al actualizar la actividad:",
+            "Error al actualizar la Evento:",
             await sendUpdate.text()
           );
         }
@@ -143,7 +143,7 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
       console.error("No se encontró un ID válido para eliminar.");
       return;
     }
-  console.log("SELECTidToDeleteED ID", idToDelete);
+    console.log("SELECTidToDeleteED ID", idToDelete);
     try {
       const sendUpdate = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/memo-activity/${idToDelete}`,
@@ -155,19 +155,20 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
           body: JSON.stringify({ is_active: false }),
         }
       );
-  
+
       if (sendUpdate.ok) {
-        console.log("Actividad desactivada exitosamente");
-        await fetchActivities(); 
+        console.log("Evento desactivado exitosamente");
+        await fetchActivities();
       } else {
-        console.error("Error al desactivar la actividad:", await sendUpdate.text());
+        console.error(
+          "Error al desactivar el evento:",
+          await sendUpdate.text()
+        );
       }
     } catch (error) {
       console.error("Error en la solicitud de desactivación:", error);
     }
   };
-  
-
 
   return (
     <Grid
@@ -298,13 +299,12 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
       {editModalOpen && (
         <ModalComponent
           isOpen={editModalOpen}
-          title="Editar Actividad"
+          title="Editar Evento"
           onSubmit={handleSaveChanges}
           handleClose={handleCloseModal}
           textButton="Editar"
           width="70%"
         >
-          
           <ActivityEditForm activityId={selectedId} />
         </ModalComponent>
       )}
@@ -312,7 +312,7 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
       {openDeleteModal && (
         <ModalComponent
           isOpen={openDeleteModal}
-          title={`¿ Estas seguro que deseas elimiar esta Actividad ?`}
+          title={`¿ Estas seguro que deseas elimiar este Evento ?`}
           onSubmit={() => handleDeactivateActivity(selectedIdToDelete!)}
           handleClose={() => setOpenDeleteModal(false)}
           textButton="Eliminar"

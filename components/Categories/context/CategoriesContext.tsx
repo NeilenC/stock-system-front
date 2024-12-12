@@ -7,6 +7,7 @@ import React, {
 } from "react";
 // import useMaterialsFilter from "../Hooks/useMaterialsFilter";
 export interface CategoryProps {
+  id: number;
   category_name: string;
   name: string;
 }

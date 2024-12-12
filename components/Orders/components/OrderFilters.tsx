@@ -9,11 +9,17 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
   const { isTablet } = useScreenSize();
 
   const {
+    orderId,
+    initialDate,
+    endDate,
     material,
     state,
     responsible,
     orderDate,
     activity,
+    setOrderId,
+    setInitialDate,
+    setEndDate,
     setState,
     setmaterial,
     setResponsible,
@@ -42,8 +48,17 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
       case "state":
         setState(value);
         break;
-      case "activity":
-        setActivity(value);
+      case "activity.activity_name":
+        setActivity((prev) => ({ ...prev, activity_name: value }));
+        break;
+      case "orderId":
+        setOrderId(value);
+        break;
+      case "activity.initial_date":
+        setActivity((prev) => ({ ...prev, initial_date: value }));
+        break;
+      case "activity.end_date":
+        setActivity((prev) => ({ ...prev, end_date: value }));
         break;
       default:
         break;
@@ -51,6 +66,12 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
 
     // Collect current filter values and update
     const filters = {
+      orderId,
+      activity: {
+        activity_name: activity.activity_name || "",
+        initial_date: activity.initial_date || "",
+        end_date: activity.end_date || "",
+      },
       material,
       orderDate: orderDate,
       state,
@@ -58,22 +79,28 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
     };
     handleFilter({ ...filters, [field]: value });
   };
-
   const clearAllFilters = () => {
     clearFilters();
     handleFilter({
+      orderId: "",
+      initialDate: "",
+      endDate: "",
       material: "",
       state: "",
       responsible: "",
       orderDate: "",
-      activity: "",
+      activity: {
+        activity_name: "",
+        initial_date: "",
+        end_date: "",
+      },
     });
   };
 
   return (
     <Grid
       container
-      gap={isTablet ? 5 : 12}
+      gap={6}
       sx={{
         paddingInline: 3,
         textAlign: "center",
@@ -89,16 +116,46 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
       /> */}
 
       <FilterField
+        value={orderId}
+        onChange={(e) => handleFilterChange("orderId", e.target.value)}
+        placeholder="id"
+        size={isTablet ? 1 : 1}
+        maxLength={15}
+      />
+
+      <FilterField
         value={orderDate}
         onChange={(e) => handleFilterChange("orderDate", e.target.value)}
         placeholder="Tipo"
-        size={isTablet ? 1 : 1.6}
+        size={isTablet ? 1 : 1}
         maxLength={15}
       />
       <FilterField
-        value={activity}
-        onChange={(e) => handleFilterChange("activity", e.target.value)}
-        placeholder="Actividad"
+        value={activity.activity_name || ""}
+        onChange={(e) =>
+          handleFilterChange("activity.activity_name", e.target.value)
+        }
+        placeholder="nombre evento"
+        size={1.3}
+        maxLength={15}
+      />
+
+      <FilterField
+        value={activity.initial_date || ""}
+        onChange={(e) =>
+          handleFilterChange("activity.initial_date", e.target.value)
+        }
+        placeholder="nombre evento"
+        size={1.3}
+        maxLength={15}
+      />
+
+      <FilterField
+        value={activity.end_date || ""}
+        onChange={(e) =>
+          handleFilterChange("activity.end_date", e.target.value)
+        }
+        placeholder="nombre evento"
         size={1.3}
         maxLength={15}
       />
@@ -107,7 +164,7 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
         value={state}
         onChange={(e) => handleFilterChange("state", e.target.value)}
         placeholder="Estado"
-        size={1.6}
+        size={1}
         maxLength={15}
       />
 
@@ -115,13 +172,13 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
         value={responsible}
         onChange={(e) => handleFilterChange("responsible", e.target.value)}
         placeholder="responsable"
-        size={isTablet ? 1 : 2}
+        size={isTablet ? 1 : 1}
         maxLength={15}
       />
       <Grid
         item
-        xs={12}
-        sm={isTablet ? 4 : 2.6}
+        xs={2}
+        sm={isTablet ? 4 : 1}
         container
         justifyContent="flex-end"
         alignItems="center"
@@ -137,7 +194,7 @@ const OrderFilters = ({ handleFilter }: { handleFilter: any }) => {
             fontSize: "16px",
             fontWeight: "500",
             cursor: "pointer",
-            width: isTablet ? "150px" : "200px",
+            width: isTablet ? "150px" : "300px",
           }}
         />
       </Grid>

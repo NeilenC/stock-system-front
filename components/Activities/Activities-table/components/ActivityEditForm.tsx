@@ -43,7 +43,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
         (sectorInActivity) => sectorInActivity.sector.id
       ) || [];
 
-    // Verificar si el sector actual no está en la lista de sectores ocupados
+    // Verifica si el sector actual no está en la lista de sectores ocupados
     return !addedSectorsInList.includes(sector.id);
   });
 
@@ -52,15 +52,14 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
       return filteredSectors.filter((sector: SectorProps) => {
         if (sector.sector_activities_ids?.length) {
           const sectorActivities = sector.sector_activities_ids;
-
           // Verifica si alguna actividad tiene solapamiento y si está parcialmente alquilada
           const isOverlappingAndPartiallyRented = sectorActivities.some(
             (activity) =>
               isDateOverlap(
                 new Date(activityToUpdate.initial_date),
                 new Date(activityToUpdate.end_date),
-                new Date(activity.activity.initial_date),
-                new Date(activity.activity.end_date)
+                new Date(activity.activity?.initial_date),
+                new Date(activity.activity?.end_date)
               ) && activity.is_partially_rented
           );
           return isOverlappingAndPartiallyRented;
@@ -162,11 +161,21 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   }, [activityId]);
 
   return (
-    <Box sx={{ maxHeight: "500px", overflow: "auto" }}>
+    <Box  sx={{
+      maxHeight: "500px",
+      overflow: "auto",
+      scrollbarWidth: "thin", // Para navegadores Firefox
+      scrollbarColor: "#888 ", // Para navegadores Firefox
+      "&::-webkit-scrollbar": {
+        width: "8px", // Ancho del scrollbar
+      },
+
+   
+    }}>
       <Grid container spacing={2}>
         {/** Nombre de la Actividad */}
         <Grid item xs={12}>
-          <FormLabelComponent>Nombre de la Actividad</FormLabelComponent>
+          <FormLabelComponent>Nombre del Evento</FormLabelComponent>
           <CustomTextFieldMaterial
             margin="dense"
             name="activity_name"
@@ -292,8 +301,8 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
                           isDateOverlap(
                             new Date(initialDate as string),
                             new Date(endDate as string),
-                            new Date(activity.activity.initial_date),
-                            new Date(activity.activity.end_date)
+                            new Date(activity.activity?.initial_date),
+                            new Date(activity.activity?.end_date)
                           ) && activity.is_partially_rented
                       );
                     return (
@@ -436,7 +445,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormLabelComponent>Tipo de Actividad</FormLabelComponent>
+          <FormLabelComponent>Tipo de Evento</FormLabelComponent>
           <CustomTextFieldMaterial
             fullWidth
             margin="dense"
@@ -460,7 +469,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
             fullWidth
             margin="dense"
             name="state"
-            value={activityToUpdate?.state}
+             value={activityToUpdate?.state || ''}
             onChange={handleInputChange}
             select
           >

@@ -107,10 +107,10 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormLabelComponentWithError error={!!inputErrors.activity_name}>
-                Nombre de la actividad
+                Nombre del Evento
               </FormLabelComponentWithError>
               <CustomTextField
-                placeholder="Ingresa nombre de la actividad"
+                placeholder="Ingresa el nombre del evento"
                 variant="outlined"
                 fullWidth
                 value={eventData.generalInfo.details.nameEvent}
@@ -219,6 +219,7 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
                   onChange={(e: any) =>
                     handleInputChange("typeEvent", e.target.value)
                   }
+                  sx={{marginTop:'10px', marginBottom:'16px'}}
                 >
                   <MenuItem value="Feria">Feria</MenuItem>
                   <MenuItem value="Feria propia">Feria propia</MenuItem>
@@ -246,6 +247,8 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
                   onChange={(e: any) =>
                     handleInputChange("state", e.target.value)
                   }
+                  sx={{marginTop:'10px', marginBottom:'16px'}}
+
                 >
                   {Object.values(ActivityState).map((state) => (
                     <MenuItem key={state} value={state}>

@@ -24,6 +24,7 @@ const StockMovemments = ({ materialId }: { materialId: number }) => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/stockchange/material/${materialId}`
       );
+
       const data = await response.json();
       if (response.ok && data.length > 0) {
         setStockMovements(data); // Almacena todos los movimientos

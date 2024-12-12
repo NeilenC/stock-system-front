@@ -45,7 +45,7 @@ const NextActivities: React.FC<NextActivities> = ({ activities }) => {
           alignItems: "flex-start",
         }}
       >
-        {/* Contenedor de las actividades */}
+        {/* Contenedor de las eventos */}
         <Grid
           container
           sx={{ paddingInline: "20px", maxWidth: "1300px", pt: 3}}
@@ -104,7 +104,7 @@ const NextActivities: React.FC<NextActivities> = ({ activities }) => {
                   <Grid container spacing={1} marginBottom={2}>
                     <Grid item xs={5}>
                       <Typography variant="body2" color="text.secondary">
-                        Tipo de Actividad
+                        Tipo de Evento
                       </Typography>
                     </Grid>
                     <Grid item xs={7} textAlign="right">
@@ -160,7 +160,7 @@ const NextActivities: React.FC<NextActivities> = ({ activities }) => {
         <Divider sx={{ width: 1, paddingBlock: 3 }} />
         {isEditModalOpen && (
           <ModalComponent
-            title="Editar Actividad"
+            title="Editar Evento"
             onSubmit={() => {}}
             isOpen={isEditModalOpen}
             handleClose={() => setEditModalOpen(false)}

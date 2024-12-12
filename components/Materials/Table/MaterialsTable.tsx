@@ -16,7 +16,7 @@ import theme from "../../../themes/theme";
 import { useModalContext } from "./context/ModalContext";
 
 type StockInput = {
-  sector_id: number;
+  material_location_in_sector: number;
   storaged_stock: number;
 };
 
@@ -38,7 +38,7 @@ const initialFormData = {
   category: "",
   distribution_stock: [
     {
-      sector_id: 0,
+      material_location_in_sector: 0,
       storaged_stock: 0,
     },
   ],
@@ -77,22 +77,33 @@ const MaterialsTable = () => {
     newErrors.observations = formData.observations ? "" : " * ";
     newErrors.price = formData.price ? "" : " * ";
 
-    // Validación de sector_id
-    newErrors.sector_id = formData.distribution_stock[0].sector_id ? "" : " * ";
+ // Validación de material_location_in_sector y storaged_stock
+ if (!formData.distribution_stock || formData.distribution_stock.length === 0) {
+  // Generar errores globales si no hay elementos en el arreglo
+  newErrors.distribution_stock = [
+    { material_location_in_sector: " * ", storaged_stock: " * " },
+  ];
+} else {
+  // Validación de cada campo dentro de `distribution_stock`
+  newErrors.distribution_stock = formData.distribution_stock.map((item: any) => ({
+    material_location_in_sector: item.material_location_in_sector ? "" : " * ",
+    storaged_stock: item.storaged_stock ? "" : " * ",
+  }));
+}
 
-    // Validación de cada campo dentro de `distribution_stock`
-    newErrors.distribution_stock = formData.distribution_stock.map(
-      (item: any, index: number) => ({
-        sector_id: item.sector_id ? "" : " * ",
-        storaged_stock: item.storaged_stock ? "" : " * ",
-      })
+setFormErrors(newErrors);
+
+// Comprobar si existen errores
+const hasErrors = Object.values(newErrors).some((fieldError: any) => {
+  if (Array.isArray(fieldError)) {
+    return fieldError.some((subError) =>
+      Object.values(subError).some((value) => value)
     );
-
-    // Actualizamos el estado de errores
-    setFormErrors(newErrors);
-
-    // Retornamos `true` si no hay errores, `false` si existe al menos uno
-    return Object.values(newErrors).every((fieldError: any) => !fieldError);
+  }
+  return fieldError;
+});
+  
+    return !hasErrors;
   };
 
   const [selectedMaterial, setSelectedMaterial] =
@@ -183,7 +194,6 @@ const MaterialsTable = () => {
       );
     }
   };
-console.log("formdata", formData)
 
   const handleSave = async () => {
     try {
@@ -265,7 +275,7 @@ console.log("formdata", formData)
 
     if (Array.isArray(formData.distribution_stock)) {
       formData.distribution_stock.forEach((item: any, index: number) => {
-        formD.append(`distribution_stock[${index}][sector_id]`, item.sector_id);
+        formD.append(`distribution_stock[${index}][material_location_in_sector]`, item.material_location_in_sector);
         formD.append(
           `distribution_stock[${index}][storaged_stock]`,
           item.storaged_stock
@@ -276,7 +286,7 @@ console.log("formdata", formData)
       formD.append("image", formData.image_url);
     }
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/materials/create`,
@@ -336,9 +346,10 @@ console.log("formdata", formData)
       if (name === "storaged_stock" && value !== "") {
         newFormErrors = { ...newFormErrors, storaged_stock: "" }; 
       }
-      if (name === "distribution_stock.sector_id" && value !== "") {
-        newFormErrors = { ...newFormErrors, sector_id: "" }; 
+      if (name === "distribution_stock.material_location_in_sector" && value !== "") {
+        newFormErrors = { ...newFormErrors, material_location_in_sector: "" }; 
       }
+
   
       // Manejo de otros campos en la estructura 'distribution_stock'
       if (name.startsWith("distribution_stock.")) {
@@ -349,10 +360,10 @@ console.log("formdata", formData)
           ...prev,
           distribution_stock: prev.distribution_stock.map((item, idx) => {
             if (idx === index) {
-              if (fieldName === "sector_id") {
+              if (fieldName === "material_location_in_sector") {
                 return {
                   ...item,
-                  sector_id: Number(value), // Asegura de que `sector_id` sea un número
+                  material_location_in_sector: Number(value), // Asegura de que `material_location_in_sector` sea un número
                 };
               }
               if (fieldName === "storaged_stock") {

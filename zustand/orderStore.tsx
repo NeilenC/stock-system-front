@@ -27,7 +27,7 @@ export const useOrderStore = create<OrderStore>()(
     fetchOrderById: async (id: number) => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/order/${id}`
+          `${process.env.NEXT_PUBLIC_API_BASE}/activity-order/${id}`
         );
         const data: OrderState = await response.json();
         set({ updatedOrder: data });
@@ -39,7 +39,7 @@ export const useOrderStore = create<OrderStore>()(
     fetchOrders: async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/order`
+          `${process.env.NEXT_PUBLIC_API_BASE}/activity-order`
         );
         const data: OrderState[] = await response.json();
         set({ orders: data });

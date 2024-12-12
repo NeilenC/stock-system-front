@@ -6,9 +6,18 @@ import React, {
   useMemo,
 } from "react";
 
+export interface Activity {
+  activity_name: string;
+  initial_date: string;
+  end_date: string;
+}
+
 export interface FiltersOrderState {
+  id: string;
+  initia_date: string; // ¿Quizás un error tipográfico? Puede ser initial_date
+  end_date: string;
   creation_date: string;
-  activity: string;
+  activity: Activity; // Cambiado a un objeto con su propio tipo
   materials: string;
   responsible: string;
   state: string;
@@ -29,13 +38,26 @@ type OrderContextType = {
   updateItemsPerPage: (items: number) => void;
 };
 
-const initialFilters = {
+const initialFilters: {
+  orderId: string;
+  materials: string;
+  activity: Partial<Activity>; 
+  orderDate: string;
+  state: string;
+  responsible: string;
+} = {
+  orderId: "",
   materials: "",
-  activity: "",
+  activity: {
+    activity_name: "",
+    initial_date: "",
+    end_date: "",
+  },
   orderDate: "",
   state: "",
   responsible: "",
 };
+
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
@@ -75,11 +97,45 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const filteredOrder = useMemo(() => {
     let filtered = order;
+
+    if (filters.orderId) {
+      filtered = filtered.filter((order) =>
+        order.id.toLowerCase().includes(filters.orderId.toLowerCase())
+      );
+    }
+
+
     if (filters.materials) {
       filtered = filtered.filter((order) =>
         order.materials.toLowerCase().includes(filters.materials.toLowerCase())
       );
     }
+
+    if (filters.activity) {
+      filtered = filtered.filter((order) =>
+        order.activity?.activity_name
+          ?.toLowerCase()
+          .includes(filters.activity.activity_name.toLowerCase())
+      );
+    }
+
+
+    if (filters.activity.initial_date) {
+      filtered = filtered.filter((order) =>
+        order.activity?.initial_date
+          ?.toLowerCase()
+          .includes(filters.activity.initial_date.toLowerCase())
+      );
+    }
+  
+    if (filters.activity.end_date) {
+      filtered = filtered.filter((order) =>
+        order.activity?.end_date
+          ?.toLowerCase()
+          .includes(filters.activity.end_date.toLowerCase())
+      );
+    }
+
 
     if (filters.responsible) {
       filtered = filtered.filter((order) =>

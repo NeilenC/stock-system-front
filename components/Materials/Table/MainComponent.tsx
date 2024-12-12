@@ -24,7 +24,7 @@ import { exportToExcel } from "../../../commons/template/exportExcel";
 import useScreenSize from "../../../hooks/useScreenSize";
 import { useModalContext } from "./context/ModalContext";
 
-const MainComponent = () => {
+const MainMaterialsComponent = () => {
   // const [openModalCreate, setOpenModalCreate] = useState(false);
   const handleOpenModalCreate = () => {
     setOpenModalCreate(true);
@@ -49,6 +49,7 @@ const MainComponent = () => {
       width: "",
     });
   };
+
   const { itemsPerPage, updateItemsPerPage } = useMaterialsContext();
   const handleItemsPerPageChange = (event: any) => {
     const value = parseInt(event.target.value, 10); // 
@@ -165,4 +166,4 @@ const MainComponent = () => {
   );
 };
 
-export default MainComponent;
+export default MainMaterialsComponent;

@@ -3,7 +3,7 @@ import React from "react";
 import SectorsComponent from "../../../components/sectors/SectorsComponent";
 import Sectors from "../../../components/sectors/Sectors";
 import useSectors from "../../../hooks/useSectors";
-import Activities from "../../../components/Activities/Activities";
+import Events from "../../../components/Activities/Activities";
 import OrdersComponent from "../../../components/Orders/OrdersComponent";
 import InactiveMaterialsTable from "../../../components/Materials/InactiveMaterials/InactiveMaterialsTable";
 
@@ -20,7 +20,7 @@ const Management = () => {
           <Sectors salas={salas} setSalas={setSalas} />
         </SectorsComponent>
       )}
-      {option === "actividades" && <Activities />}
+      {option === "eventos" && <Events />}
       {option === "pedidos" && <OrdersComponent />}
       {option === 'materiales-inactivos' && <InactiveMaterialsTable/>}
     </div>

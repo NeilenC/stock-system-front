@@ -119,7 +119,7 @@ const ActivityFilters = ({ handleFilter }: { handleFilter: any }) => {
       <FilterField
         value={activityName}
         onChange={(e) => handleFilterChange("activityName", e.target.value)}
-        placeholder="Actividad"
+        placeholder="Evento"
         size={1.3}
       />
       <FilterField

@@ -36,7 +36,7 @@ const initialFormData = {
   category: "",
   distribution_stock: [
     {
-      sector_id: 0,
+      material_location_in_sector: 0,
       storaged_stock: 0,
     },
   ],
@@ -240,7 +240,6 @@ const InactiveMaterialsTable = () => {
 
 
   const handleCreateMaterial = async (formData: any) => {
-console.log("formdataweifht", formData , typeof formData.weight)
 
 
     const formD = new FormData();
@@ -259,7 +258,7 @@ console.log("formdataweifht", formData , typeof formData.weight)
 
     if (Array.isArray(formData.distribution_stock)) {
       formData.distribution_stock.forEach((item: any, index: number) => {
-        formD.append(`distribution_stock[${index}][sector_id]`, item.sector_id);
+        formD.append(`distribution_stock[${index}][material_location_in_sector]`, item.material_location_in_sector);
         formD.append(
           `distribution_stock[${index}][storaged_stock]`,
           item.storaged_stock
@@ -325,17 +324,16 @@ console.log("formdataweifht", formData , typeof formData.weight)
           ...prev,
           distribution_stock: prev.distribution_stock.map((item, idx) => {
             if (idx === index) {
-              // Asignación de valores correctos y asegurándonos de que sean números
-              if (fieldName === "sector_id") {
+              if (fieldName === "material_location_in_sector") {
                 return {
                   ...item,
-                  sector_id: Number(value), // Asegúrate de que `sector_id` sea un número
+                  material_location_in_sector: Number(value), 
                 };
               }
               if (fieldName === "storaged_stock") {
                 return {
                   ...item,
-                  storaged_stock: Number(value), // Asegúrate de que `storaged_stock` sea un número
+                  storaged_stock: Number(value), 
                 };
               }
               return { ...item, [fieldName]: value };
@@ -525,7 +523,6 @@ console.log("formdataweifht", formData , typeof formData.weight)
             title="Crear Material"
             onSubmit={() => handleCreateMaterial(formData)}
             textButton="Guardar"
-            width='900px'
             // loading={loading}
           >
             <CreateMaterialForm

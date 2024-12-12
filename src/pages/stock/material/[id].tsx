@@ -12,7 +12,7 @@ import StockMovemments from "../../../../components/Materials/stock-check/StockM
 import { useRouter } from "next/router";
 import MaterialLogistics from "../../../../components/Materials/material-check/MaterialLogistics";
 
-const MaterialMovements2 = () => {
+const MaterialMovements = () => {
   const router = useRouter();
   const { id } = router.query;
   const [selectedTab, setSelectedTab] = useState(0);
@@ -89,4 +89,4 @@ const MaterialMovements2 = () => {
   );
 };
 
-export default MaterialMovements2;
+export default MaterialMovements;

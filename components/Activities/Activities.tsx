@@ -20,7 +20,7 @@ import NextActivities from "./NextActivities";
 import TableActivities from "./TableActivities";
 import { useActivitiesContext } from "./Activities-table/context/useActivitiesContext";
 
-const Activities = () => {
+const Events = () => {
   const { activities , itemsPerPage, updateItemsPerPage} = useActivitiesContext();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,13 +46,13 @@ const nextConfirmedActivities = activities.filter((act) => act.state === 'Confir
 
   return (
     <>
-      <SectionComponent icon={calendar} text={"Actividades"}>
+      <SectionComponent icon={calendar} text={"Eventos"}>
         {/* Botón para limpiar filtros */}
 
         <CustomButton
           icon={add}
           onClick={handleOpenDrawer}
-          text={"Crear Actividad"}
+          text={"Crear Evento"}
         />
       </SectionComponent>
       <Box sx={{ }}>
@@ -64,7 +64,7 @@ const nextConfirmedActivities = activities.filter((act) => act.state === 'Confir
           </Typography>
         ) : activities.length === 0 ? (
           <Typography align="center" marginTop={2}>
-            No hay actividades disponibles.
+            No hay Eventos disponibles.
           </Typography>
         ) : (
           <NextActivities activities={nextConfirmedActivities.slice(0, 3)} />
@@ -113,4 +113,4 @@ const nextConfirmedActivities = activities.filter((act) => act.state === 'Confir
   );
 };
 
-export default Activities;
+export default Events;

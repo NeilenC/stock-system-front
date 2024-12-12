@@ -27,15 +27,15 @@ const useEvent = () => {
 
   // Mapeo de campos del evento
   const eventFields = event ? [
-    { label: 'Nombre de la actividad', value: event.activity_name },
+    { label: 'Nombre del evento', value: event.activity_name },
     { label: 'Fecha inicial', value: event.initial_date },
     { label: 'Fecha final', value: event.end_date },
     { label: 'Fecha de apertura', value: event.opening_date },
     { label: 'Fecha de cierre', value: event.closing_date },
     { label: 'Hora de apertura', value: event.opening_time },
     { label: 'Hora de cierre', value: event.closing_time },
-    { label: 'Horario de la actividad en el recinto', value: event.activity_schedule_on_property },
-    { label: 'Tipo de actividad', value: event.type_activity },
+    { label: 'Horario del evento en el recinto', value: event.activity_schedule_on_property },
+    { label: 'Tipo de evento', value: event.type_activity },
     { label: 'Estado', value: event.state },
     { label: 'Tipo de contrato', value: event.type_of_contract },
     { label: 'Nombre del CWA', value: event.cwa_name },
@@ -51,7 +51,7 @@ const useEvent = () => {
     { label: 'Fecha de inicio de desarme', value: event.initial_date_dismantling },
     { label: 'Hora de inicio de desarme', value: event.initial_time_dismantling },
     { label: 'Punto de entrada', value: event.entry_point },
-    { label: 'Fecha de actividad en el recinto', value: event.activity_date_on_property },
+    { label: 'Fecha del evento en el recinto', value: event.activity_date_on_property },
     { label: 'Notas', value: event.notes },
     { label: 'Teléfono del cliente', value: event.client_phone },
     { label: 'Email del cliente', value: event.client_email },
