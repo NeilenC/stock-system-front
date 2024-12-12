@@ -12,7 +12,7 @@ import phone from "../../../../public/drawer/phone.png";
 import ImageToIcon from "../../../styled-components/IconImages";
 import { ComponentsProps } from "./GeneralInfo";
 
-const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
+const ClientData: React.FC = () => {
   const {
     eventData,
     setClientData,
@@ -24,7 +24,7 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
   const [openOrganizer, setOpenOrganizer] = useState(true);
   const [openDirector, setOpenDirector] = useState(true);
   const [openIntendente, setOpenIntendente] = useState(true);
-
+console.log("eventdata", eventData)
   const handleToggleClient = () => setOpenClient(!openClient);
   const handleToggleOrganizer = () => setOpenOrganizer(!openOrganizer);
   const handleToggleDirector = () => setOpenDirector(!openDirector);
@@ -215,7 +215,7 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
               />
             </FormLabelComponent> */}
 
-            <FormLabelComponentWithError error={!!inputErrors.client_name}>
+            <FormLabelComponentWithError >
               Nombre del Cliente{" "}
             </FormLabelComponentWithError>
             <CustomTextField
@@ -230,7 +230,7 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
 
              
             />
-            <FormLabelComponentWithError error={!!inputErrors.client_phone}>
+            <FormLabelComponentWithError>
               Teléfono
             </FormLabelComponentWithError>
             <CustomTextField
@@ -253,7 +253,7 @@ const ClientData: React.FC<ComponentsProps> = ({ inputErrors }) => {
 
             />
 
-            <FormLabelComponentWithError error={!!inputErrors.client_email}>
+            <FormLabelComponentWithError >
               Correo electrónico
             </FormLabelComponentWithError>
             <CustomTextField

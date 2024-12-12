@@ -24,7 +24,6 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const { fetchActivities } = useActivitiesContext();
   const [errors, setErrors] = useState<Record<string, string>>({}); 
 
-  console.log("eventData", eventData);
   const [showToast, setShowToast] = useState(false);
   const [toastProps, setToastProps] = useState({
     messageLeft: "",
@@ -48,9 +47,9 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
     resetForm();
     setErrors({});
   };
-  const clientIdFromStore = useEventStore(
-    (state) => state.eventData.logistics.clientData.client.clientId
-  );
+  // const clientIdFromStore = useEventStore(
+  //   (state) => state.eventData.logistics.clientData.client.clientId
+  // );
   const sectors = useEventStore(
     (state) => state.eventData.logistics.detailsLogistics.sectors
   );
@@ -58,7 +57,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   // Crea el payload que se ajusta a tu DTO `CreateMemoActivityDto`
   const createMemoActivityDto = {
     // //Datos del cliente
-    client_id: clientIdFromStore,
+    // client_id: clientIdFromStore,
     client_name: eventData.logistics.clientData.client.clientName,
     client_phone: eventData.logistics.clientData.client.phoneNumber,
     client_email: eventData.logistics.clientData.client.email,
@@ -90,9 +89,9 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const validateCreateMemoActivityDto = (dto: typeof createMemoActivityDto) => {
     const errors: Record<string, string> = {};
 
-    if (!dto.client_name) errors.client_name = "*";
-    if (!dto.client_email) errors.client_email = "*";
-    if (!dto.client_phone) errors.client_phone = "*";
+    // if (!dto.client_name) errors.client_name = "*";
+    // if (!dto.client_email) errors.client_email = "*";
+    // if (!dto.client_phone) errors.client_phone = "*";
     if (!dto.activity_name) errors.activity_name = "*";
     if (!dto.state) errors.state = "*";
     if (!dto.type_activity) errors.type_activity = "*";
@@ -278,7 +277,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
         {/* <OperationalDetails /> */}
 
         {/* Información del cliente */}
-        <ClientData  inputErrors={errors} />
+        <ClientData  />
       </Box>
 
       {/* Botón Fijo en la parte inferior */}

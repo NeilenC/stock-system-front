@@ -59,7 +59,7 @@ export interface EventData {
     };
     clientData: {
       client: {
-        clientId: number | null;
+        // clientId: number | null;
         clientName: string;
         phoneNumber: string | null;
         email: string;
@@ -449,7 +449,7 @@ const useEventStore = create<EventStore>((set) => ({
           },
           clientData: {
             client: {
-              clientId: null,
+              // clientId: null,
               clientName: "",
               phoneNumber: null,
               email: "",

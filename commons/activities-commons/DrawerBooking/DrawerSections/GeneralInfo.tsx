@@ -12,7 +12,6 @@ import useEventStore from "../activity-hook/useEventStore";
 import {
   CustomSelect,
   CustomTextField,
-  FormLabelComponent,
   FormLabelComponentWithError,
 } from "./CustomTextFields";
 import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
@@ -33,8 +32,6 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
 
   const handleToggleGeneral = () => setOpenGeneral(!openGeneral);
 
-  console.log("errors", errors);
-console.log("eventdata", eventData)
   return (
     <>
       <TitleComponent variant="h6" text="Información general" />
