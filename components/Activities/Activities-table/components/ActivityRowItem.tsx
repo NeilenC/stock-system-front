@@ -87,6 +87,9 @@ const ActivityRowItem = ({ activity, onEdit, index }: any) => {
 
   const handleSaveChanges = async () => {
     if (activityToUpdate) {
+
+
+
       activityToUpdate.sector_activities_ids =
         activityToUpdate.sector_activities_ids.map((sectorActivity) => {
           // Si el sector tiene `toggle_partially_rented`

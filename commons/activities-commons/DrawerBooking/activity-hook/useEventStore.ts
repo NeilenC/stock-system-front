@@ -8,15 +8,18 @@ export interface EventData {
       typeContract: string;
       CWAname: string;
       CWAnumber: number;
-      initialDate: string;
+      initialDate?: string;
+      openingDate?: string;
+      closingDate?: string;
+      endDate?: string;
       initialTime: string;
-      openingDate: string;
+      
       openingTime: string;
-      closingDate: string;
+      
       closingTime: string;
-      endDate: string;
       endTime: string;
       state: string;
+      [key: string]: any; // Cualquier otro campo que pueda existir en details
     };
   };
   logistics: {

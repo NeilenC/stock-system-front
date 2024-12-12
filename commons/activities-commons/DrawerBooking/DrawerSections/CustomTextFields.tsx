@@ -52,8 +52,8 @@ const FormLabelComponent = styled(FormLabel)(() => ({
   const CustomTextField = styled(TextField)<{ isFromBooking?: boolean }>(({ isFromBooking = true}) => ({
   
     '& .MuiOutlinedInput-root': {
-      height: isFromBooking ?  '43px' : '40px',
-      borderRadius: '8px',
+      height:   '45px' ,
+      borderRadius: '6px',
       border: '1px solid #E1E6EF',
       marginBottom:  '0px',
       marginTop:  '10px',

@@ -19,6 +19,7 @@ import { SecondTitleComponent, TitleComponent } from "./TitlesComponent";
 import dayjs, { Dayjs } from "dayjs";
 import CustomDateTimePicker from "../../../styled-components/CustomeDateTimePicker";
 import { ActivityState } from "../enums";
+import { useEventValidation } from "../context/EventValidationContext";
 
 export interface ComponentsProps {
   inputErrors: Record<string, string>;
@@ -27,73 +28,13 @@ export interface ComponentsProps {
 const GeneralInfoContent: React.FC<ComponentsProps> = ({
   inputErrors,
 }) => {
-  const { eventData, setGeneralInfo } = useEventStore();
+  const { eventData, errors, handleInputChange, handleDateChange } = useEventValidation(); 
   const [openGeneral, setOpenGeneral] = useState(true);
-  const [errors, setErrors] = useState<Record<string, string>>({}); 
 
   const handleToggleGeneral = () => setOpenGeneral(!openGeneral);
 
-  const handleInputChange = (
-    key: keyof typeof eventData.generalInfo.details,
-    value: string
-  ) => {
-    setGeneralInfo(key, value);
-  };
-
-  const handleDateChange = (
-    keyDate: keyof typeof eventData.generalInfo.details,
-    keyTime: keyof typeof eventData.generalInfo.details,
-    date: Date | null
-  ) => {
-    if (date && !isNaN(date.getTime())) {
-      const selectedDate = date.toISOString().split("T")[0];
-      const selectedTime = date.toTimeString().split(" ")[0].substring(0, 5);
-
-      // Validar fechas antes de actualizar
-      const isValid = validateDates(keyDate, date);
-      if (isValid) {
-        setErrors((prevErrors) => ({ ...prevErrors, [keyDate]: "" }));
-        handleInputChange(keyDate, selectedDate);
-        handleInputChange(keyTime, selectedTime);
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [keyDate]: "La fecha seleccionada no es válida",
-        }));
-      }
-    } else {
-      console.error("Invalid date selected");
-    }
-  };
-
-  const validateDates = (keyDate: string, date: Date): boolean => {
-    const { initialDate, openingDate, closingDate, endDate } =
-      eventData.generalInfo.details;
-
-    // Parsear todas las fechas en objetos Date válidos
-    const dateOrder: Record<string, Date> = {
-      initialDate: initialDate ? new Date(initialDate) : new Date(0),
-      openingDate: openingDate ? new Date(openingDate) : new Date(0),
-      closingDate: closingDate ? new Date(closingDate) : new Date(0),
-      endDate: endDate ? new Date(endDate) : new Date(0),
-    };
-
-    // Actualiza la fecha que está cambiando
-    dateOrder[keyDate] = date;
-
-    // Validar orden lógico de fechas
-    if (
-      dateOrder.initialDate.getTime() === 0 || // Evitar validaciones cuando falta initialDate
-      ((dateOrder.initialDate <= dateOrder.openingDate || !openingDate) &&
-        (dateOrder.openingDate <= dateOrder.closingDate || !closingDate) &&
-        (dateOrder.closingDate <= dateOrder.endDate || !endDate))
-    ) {
-      return true; // Fechas son válidas
-    }
-
-    return false; // Alguna fecha está fuera de orden
-  };
-
+  console.log("errors", errors);
+console.log("eventdata", eventData)
   return (
     <>
       <TitleComponent variant="h6" text="Información general" />
@@ -125,11 +66,9 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
                 Fecha inicio / Inicio Armado{" "}
               </FormLabelComponentWithError>
               <CustomDateTimePicker
-                value={
-                  eventData.generalInfo.details.initialDate
-                    ? dayjs(eventData.generalInfo.details.initialDate)
-                    : null
-                }
+                value={eventData.generalInfo.details.initialDate
+                  ? dayjs(eventData.generalInfo.details.initialDate)
+                  : null}
                 onChange={(newValue: Dayjs | null) =>
                   handleDateChange(
                     "initialDate",
@@ -143,83 +82,77 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
             </Grid>
 
             <Grid item xs={12}>
-              
-                <FormLabelComponentWithError error={!!inputErrors.opening_date}>
+              <FormLabelComponentWithError error={!!inputErrors.opening_date}>
                 Fecha Apertura al público / Fin Armado
               </FormLabelComponentWithError>
-                <CustomDateTimePicker
-                  value={
-                    eventData.generalInfo.details.openingDate
-                      ? dayjs(eventData.generalInfo.details.openingDate)
-                      : null
-                  }
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateChange(
-                      "openingDate",
-                      "openingTime",
-                      newValue ? newValue.toDate() : null
-                    )
-                  }
-                />
+              <CustomDateTimePicker
+                value={eventData.generalInfo.details.openingDate
+                  ? dayjs(eventData.generalInfo.details.openingDate)
+                  : null}
+                onChange={(newValue: Dayjs | null) =>
+                  handleDateChange(
+                    "openingDate",
+                    "openingTime",
+                    newValue ? newValue.toDate() : null
+                  )
+                }
+                error={!!errors.openingDate}
+                helperText={errors.openingDate}
+              />
             </Grid>
 
             <Grid item xs={12}>
-            <FormLabelComponentWithError error={!!inputErrors.closing_date}>
-            Fecha Cierre al público / Inicio Desarme
+              <FormLabelComponentWithError error={!!inputErrors.closing_date}>
+                Fecha Cierre al público / Inicio Desarme
               </FormLabelComponentWithError>
-            
-                <CustomDateTimePicker
-                  value={
-                    eventData.generalInfo.details.closingDate
-                      ? dayjs(eventData.generalInfo.details.closingDate)
-                      : null
-                  }
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateChange(
-                      "closingDate",
-                      "closingTime",
-                      newValue ? newValue.toDate() : null
-                    )
-                  }
-                />
+              <CustomDateTimePicker
+                value={eventData.generalInfo.details.closingDate
+                  ? dayjs(eventData.generalInfo.details.closingDate)
+                  : null}
+                onChange={(newValue: Dayjs | null) =>
+                  handleDateChange(
+                    "closingDate",
+                    "closingTime",
+                    newValue ? newValue.toDate() : null
+                  )
+                }
+                error={!!errors.closingDate}
+                helperText={errors.closingDate}
+              />
             </Grid>
 
             <Grid item xs={12}>
-            <FormLabelComponentWithError error={!!inputErrors.end_date}>
-            Fecha finalización / Fin Desarme
-
+              <FormLabelComponentWithError error={!!inputErrors.end_date}>
+                Fecha finalización / Fin Desarme
               </FormLabelComponentWithError>
-                <CustomDateTimePicker
-                  value={
-                    eventData.generalInfo.details.endDate
-                      ? dayjs(eventData.generalInfo.details.endDate)
-                      : null
-                  }
-                  onChange={(newValue: Dayjs | null) =>
-                    handleDateChange(
-                      "endDate",
-                      "endTime",
-                      newValue ? newValue.toDate() : null
-                    )
-                  }
-                  error={!!errors.endDate}
-                  helperText={errors.endDate}
-                />
+              <CustomDateTimePicker
+                value={eventData.generalInfo.details.endDate
+                  ? dayjs(eventData.generalInfo.details.endDate)
+                  : null}
+                onChange={(newValue: Dayjs | null) =>
+                  handleDateChange(
+                    "endDate",
+                    "endTime",
+                    newValue ? newValue.toDate() : null
+                  )
+                }
+                error={!!errors.endDate}
+                helperText={errors.endDate}
+              />
             </Grid>
 
             <Grid item xs={6}>
               <FormControl fullWidth>
-              <FormLabelComponentWithError error={!!inputErrors.type_activity}>
-              Tipo de Evento
-
-              </FormLabelComponentWithError>
+                <FormLabelComponentWithError error={!!inputErrors.type_activity}>
+                  Tipo de Evento
+                </FormLabelComponentWithError>
                 <CustomSelect
                   placeholder="Seleccionar tipo"
                   value={eventData.generalInfo.details.typeEvent}
                   onChange={(e: any) =>
                     handleInputChange("typeEvent", e.target.value)
                   }
-                  sx={{marginTop:'10px', marginBottom:'16px'}}
+                  sx={{ marginTop: '10px', marginBottom: '16px' }}
                 >
                   <MenuItem value="Feria">Feria</MenuItem>
                   <MenuItem value="Feria propia">Feria propia</MenuItem>
@@ -239,16 +172,15 @@ const GeneralInfoContent: React.FC<ComponentsProps> = ({
             <Grid item xs={6} sx={{ pb: 2.5 }}>
               <FormControl fullWidth>
                 <FormLabelComponentWithError error={!!inputErrors.state}>
-             Estado del Evento
-              </FormLabelComponentWithError>
+                  Estado del Evento
+                </FormLabelComponentWithError>
                 <CustomSelect
                   placeholder="Seleccionar tipo"
                   value={eventData.generalInfo.details.state}
                   onChange={(e: any) =>
                     handleInputChange("state", e.target.value)
                   }
-                  sx={{marginTop:'10px', marginBottom:'16px'}}
-
+                  sx={{ marginTop: '10px', marginBottom: '16px' }}
                 >
                   {Object.values(ActivityState).map((state) => (
                     <MenuItem key={state} value={state}>

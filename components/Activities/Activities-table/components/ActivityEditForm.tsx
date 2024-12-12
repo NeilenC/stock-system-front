@@ -35,7 +35,12 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
   const { sectorsToRent } = useSectors();
   const initialDate = activityToUpdate?.initial_date;
   const endDate = activityToUpdate?.end_date;
-
+  const [errors, setErrors] = useState<any>({
+    initial_date: '',
+    opening_date: '',
+    closing_date: '',
+    end_date: '',
+  });
   const filteredSectors = sectorsToRent.filter((sector: SectorProps) => {
     //lista de  los sectores ya ocupados en la actividad
     const addedSectorsInList =
@@ -46,6 +51,7 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
     // Verifica si el sector actual no está en la lista de sectores ocupados
     return !addedSectorsInList.includes(sector.id);
   });
+  console.log("sectoractivitityes" , activityToUpdate)
 
   const availableSectors = useMemo(() => {
     if (activityToUpdate) {
@@ -144,139 +150,157 @@ const ActivityEditForm = ({ activityId }: { activityId: number | null }) => {
     });
   };
 
-  // Formatear fechas
-  const handleDateChange = (keyDate: string, date: Date | null) => {
-    const formattedDate = date ? dayjs(date).format("YYYY-MM-DD") : null;
-    setActivity({ ...activityToUpdate, [keyDate]: formattedDate });
+ const validateDates = (formattedDates:any) => {
+    const { initial_date, opening_date, end_date } = formattedDates;
+
+  
+    let errors: { [key: string]: string } = {};
+
+    if (initial_date && opening_date && dayjs(initial_date).isAfter(dayjs(opening_date))) {
+      errors.initial_date = 'Fecha inicial no puede ser mayor a apertura al público';
+    }
+
+    if (opening_date && end_date && dayjs(opening_date).isAfter(dayjs(end_date))) {
+      errors.opening_date = 'Apertura al público no puede ser mayor a cierre al público';
+    }
+
+    if (initial_date && end_date && dayjs(initial_date).isAfter(dayjs(end_date))) {
+      errors.end_date = 'Fecha inicial no puede ser mayor a fin del contrato';
+    }
+
+    return errors;
+};
+
+const handleDateTimeChangeWithValidation = (keyDate: string, date: Date | null, keyTime: string, time: Dayjs | null) => {
+  const formattedDate = date ? dayjs(date).format('YYYY-MM-DD') : null;
+  const formattedTime = time ? time.format('HH:mm') : null;
+
+  const formattedDates = {
+    ...activityToUpdate,
+    [keyDate]: formattedDate,
+    [keyTime]: formattedTime,
   };
 
-  const handleTimeChange = (keyTime: string, time: Dayjs | null) => {
-    const formattedTime = time ? time.format("HH:mm") : null;
-    setActivity({ ...activityToUpdate, [keyTime]: formattedTime });
-  };
+  const validationErrors = validateDates(formattedDates);
 
-  // Cargar datos de la actividad
-  useEffect(() => {
+  if (Object.keys(validationErrors).length === 0) {
+    setActivity(formattedDates);
+    setErrors({});
+  } else {
+    setErrors(validationErrors);
+  }
+};
+
+
+
+useEffect(() => {
     if (activityId) fetchActivityById(activityId);
-  }, [activityId]);
+}, [activityId, errors]);
 
-  return (
-    <Box  sx={{
-      maxHeight: "500px",
-      overflow: "auto",
-      scrollbarWidth: "thin", // Para navegadores Firefox
-      scrollbarColor: "#888 ", // Para navegadores Firefox
-      "&::-webkit-scrollbar": {
-        width: "8px", // Ancho del scrollbar
-      },
+return (
+    <Box
+        sx={{
+            maxHeight: "500px",
+            overflow: "auto",
+            scrollbarWidth: "thin", // Para navegadores Firefox
+            scrollbarColor: "#888 ", // Para navegadores Firefox
+            "&::-webkit-scrollbar": {
+                width: "8px", // Ancho del scrollbar
+            },
+        }}
+    >
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <FormLabelComponent>Nombre del Evento</FormLabelComponent>
+                <CustomTextFieldMaterial
+                    margin="dense"
+                    name="activity_name"
+                    value={activityToUpdate?.activity_name || ""}
+                    onChange={handleInputChange}
+                />
+            </Grid>
 
-   
-    }}>
-      <Grid container spacing={2}>
-        {/** Nombre de la Actividad */}
-        <Grid item xs={12}>
-          <FormLabelComponent>Nombre del Evento</FormLabelComponent>
-          <CustomTextFieldMaterial
-            margin="dense"
-            name="activity_name"
-            value={activityToUpdate?.activity_name || ""}
-            onChange={handleInputChange}
-          />
-        </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormLabelComponent>Fecha Inicial</FormLabelComponent>
+                <CustomDateTimePicker
+                    value={
+                        activityToUpdate?.initial_date && activityToUpdate?.initial_time
+                            ? dayjs(`${activityToUpdate.initial_date} ${activityToUpdate.initial_time}`)
+                            : null
+                    }
+                    onChange={(newDate: Dayjs | null) => {
+                        if (newDate) {
+                            handleDateTimeChangeWithValidation("initial_date", newDate.toDate(), "initial_time", newDate);
+                        } else {
+                            handleDateTimeChangeWithValidation("initial_date", null, "initial_time", null);
+                        }
+                    }}
+                    withTime={true}
+                    helperText={errors.initial_date}
+                />
+            </Grid>
 
-        {/** Fecha Inicial */}
-        <Grid item xs={12} sm={6}>
-          <FormLabelComponent>Fecha Inicial</FormLabelComponent>
-          <CustomDateTimePicker
-            value={
-              activityToUpdate?.initial_date && activityToUpdate?.initial_time
-                ? dayjs(
-                    `${activityToUpdate.initial_date} ${activityToUpdate.initial_time}`
-                  )
-                : null
-            }
-            onChange={(newDate: Dayjs | null) => {
-              if (newDate) {
-                handleDateChange("initial_date", newDate.toDate());
-                handleTimeChange("initial_time", newDate);
-              } else {
-                handleDateChange("initial_date", null);
-                handleTimeChange("initial_time", null);
-              }
-            }}
-            withTime={true}
-          />
-        </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormLabelComponent>Apertura al público</FormLabelComponent>
+                <CustomDateTimePicker
+                    value={
+                        activityToUpdate?.opening_date && activityToUpdate?.opening_time
+                            ? dayjs(`${activityToUpdate.opening_date} ${activityToUpdate.opening_time}`)
+                            : null
+                    }
+                    onChange={(newDate: Dayjs | null) => {
+                        if (newDate) {
+                            handleDateTimeChangeWithValidation("opening_date", newDate.toDate(), "opening_time", newDate);
+                        } else {
+                            handleDateTimeChangeWithValidation("opening_date", null, "opening_time", null);
+                        }
+                    }}
 
-        <Grid item xs={12} sm={6}>
-          <FormLabelComponent>Apertura al público</FormLabelComponent>
-          <CustomDateTimePicker
-            value={
-              activityToUpdate?.opening_date && activityToUpdate?.opening_time
-                ? dayjs(
-                    `${activityToUpdate.opening_date} ${activityToUpdate.opening_time}`
-                  )
-                : null
-            }
-            onChange={(newDate: Dayjs | null) => {
-              if (newDate) {
-                handleDateChange("opening_date", newDate.toDate());
-                handleTimeChange("opening_time", newDate);
-              } else {
-                handleDateChange("opening_date", null);
-                handleTimeChange("opening_time", null);
-              }
-            }}
-            withTime={true}
-          />
-        </Grid>
+                    
+                    withTime={true}
+                    helperText={errors.opening_date}
+                />
+            </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <FormLabelComponent>Cierre al público</FormLabelComponent>
-          <CustomDateTimePicker
-            value={
-              activityToUpdate?.closing_date && activityToUpdate?.closing_time
-                ? dayjs(
-                    `${activityToUpdate.closing_date} ${activityToUpdate.closing_time}`
-                  )
-                : null
-            }
-            onChange={(newDate: Dayjs | null) => {
-              if (newDate) {
-                handleDateChange("closing_date", newDate.toDate());
-                handleTimeChange("closing_time", newDate);
-              } else {
-                handleDateChange("closing_date", null);
-                handleTimeChange("closing_time", null);
-              }
-            }}
-            withTime={true}
-          />
-        </Grid>
+            <Grid item xs={12} sm={6}>
+                <FormLabelComponent>Cierre al público</FormLabelComponent>
+                <CustomDateTimePicker
+                    value={
+                        activityToUpdate?.closing_date && activityToUpdate?.closing_time
+                            ? dayjs(`${activityToUpdate.closing_date} ${activityToUpdate.closing_time}`)
+                            : null
+                    }
+                    onChange={(newDate: Dayjs | null) => {
+                        if (newDate) {
+                            handleDateTimeChangeWithValidation("closing_date", newDate.toDate(), "closing_time", newDate);
+                        } else {
+                            handleDateTimeChangeWithValidation("closing_date", null, "closing_time", null);
+                        }
+                    }}
+                    withTime={true}
+                    helperText={errors.closing_date}
+                />
+            </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <FormLabelComponent>Fin del contrato</FormLabelComponent>
-          <CustomDateTimePicker
-            value={
-              activityToUpdate?.end_date && activityToUpdate?.end_time
-                ? dayjs(
-                    `${activityToUpdate.end_date} ${activityToUpdate.end_time}`
-                  )
-                : null
-            }
-            onChange={(newDate: Dayjs | null) => {
-              if (newDate) {
-                handleDateChange("end_date", newDate.toDate());
-                handleTimeChange("end_time", newDate);
-              } else {
-                handleDateChange("end_date", null);
-                handleTimeChange("end_time", null);
-              }
-            }}
-            withTime={true}
-          />
-        </Grid>
-
+            <Grid item xs={12} sm={6}>
+                <FormLabelComponent>Fin del contrato</FormLabelComponent>
+                <CustomDateTimePicker
+                    value={
+                        activityToUpdate?.end_date && activityToUpdate?.end_time
+                            ? dayjs(`${activityToUpdate.end_date} ${activityToUpdate.end_time}`)
+                            : null
+                    }
+                    onChange={(newDate: Dayjs | null) => {
+                        if (newDate) {
+                            handleDateTimeChangeWithValidation("end_date", newDate.toDate(), "end_time", newDate);
+                        } else {
+                            handleDateTimeChangeWithValidation("end_date", null, "end_time", null);
+                        }
+                    }}
+                    withTime={true}
+                    helperText={errors.end_date}
+                />
+            </Grid>
         <Grid item xs={12}>
           <FormLabelComponent>Áreas Arrendadas</FormLabelComponent>
           <Stack spacing={2} direction="column" alignItems="flex-start">

@@ -22,7 +22,7 @@ const DrawerBooking: React.FC<DrawerBookingProps> = ({ isOpen, setIsOpen }) => {
   const eventData = useEventStore.getState().eventData;
   const resetForm = useEventStore.getState().resetForm;
   const { fetchActivities } = useActivitiesContext();
-  const [errors, setErrors] = useState<Record<string, string>>({}); // Para almacenar errores por campo
+  const [errors, setErrors] = useState<Record<string, string>>({}); 
 
   console.log("eventData", eventData);
   const [showToast, setShowToast] = useState(false);
