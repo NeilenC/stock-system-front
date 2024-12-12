@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import {
   Box,
   FormControl,
+  FormHelperText,
   Grid,
   List,
   ListItem,
@@ -236,8 +237,9 @@ return (
                         }
                     }}
                     withTime={true}
-                    helperText={errors.initial_date}
+                    // helperText={errors.initial_date}
                 />
+                <FormHelperText error>{errors.initial_date}</FormHelperText>
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -258,8 +260,10 @@ return (
 
                     
                     withTime={true}
-                    helperText={errors.opening_date}
+              
                 />
+                <FormHelperText error>{errors.opening_date}</FormHelperText>
+
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -278,8 +282,10 @@ return (
                         }
                     }}
                     withTime={true}
-                    helperText={errors.closing_date}
+                   
                 />
+                <FormHelperText error>{errors.closing_date}</FormHelperText>
+
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -298,8 +304,9 @@ return (
                         }
                     }}
                     withTime={true}
-                    helperText={errors.end_date}
                 />
+                <FormHelperText error>{errors.end_date}</FormHelperText>
+
             </Grid>
         <Grid item xs={12}>
           <FormLabelComponent>Áreas Arrendadas</FormLabelComponent>
